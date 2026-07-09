@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+networkx
+osmnx
+shapely
+twilio
+websockets
+pydantic
