@@ -24,9 +24,9 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --primary-light: #eff6ff;
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --primary-light: #f0fdfa;
             
             --success: #10b981;
             --success-light: #ecfdf5;
@@ -121,7 +121,7 @@
         }
 
         .landing-title span {
-            background: linear-gradient(to right, #2563eb, #3b82f6);
+            background: linear-gradient(to right, #0f766e, #14b8a6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -150,7 +150,7 @@
         .btn-primary {
             background-color: var(--primary);
             color: white;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 4px 6px rgba(15, 118, 110, 0.2);
         }
 
         .btn-primary:hover {
@@ -273,7 +273,7 @@
 
         .form-control:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
         }
 
         .btn-block {
@@ -905,17 +905,17 @@
                             <div class="parameters-form" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;">
                                 <div class="form-group">
                                     <label for="latitude" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Ignition Latitude</label>
-                                    <input type="number" step="0.000001" id="latitude" name="latitude" class="form-control" value="-2.145" required style="border-color: var(--border-color);">
+                                    <input type="number" step="0.000001" id="latitude" name="latitude" class="form-control" value="-2.145" required style="border-color: var(--border-color);" oninput="updateMapCenterFromInput()">
                                 </div>
                                 <div class="form-group">
                                     <label for="longitude" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Ignition Longitude</label>
-                                    <input type="number" step="0.000001" id="longitude" name="longitude" class="form-control" value="-59.000" required style="border-color: var(--border-color);">
+                                    <input type="number" step="0.000001" id="longitude" name="longitude" class="form-control" value="-59.000" required style="border-color: var(--border-color);" oninput="updateMapCenterFromInput()">
                                 </div>
                             </div>
                         </div>
                         
                         <div style="margin-top: auto; padding-top: 1.5rem;">
-                            <button type="submit" class="btn btn-primary btn-block" style="padding: 0.9rem; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);">
+                            <button type="submit" class="btn btn-primary btn-block" style="padding: 0.9rem; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, var(--primary) 0%, #0d9488 100%);">
                                 Execute Digital Twin Simulation <i class="fa-solid fa-play"></i>
                             </button>
                         </div>
@@ -981,37 +981,39 @@
                     </div>
 
                     <!-- Live Simulation Metrics -->
-                    <div class="stats-panel">
-                        <div class="card-title" style="border:none; padding:0; margin-bottom:1rem; font-size:1.1rem;">
-                            <i class="fa-solid fa-chart-simple"></i> Run Statistics
+                    <div class="stats-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <!-- 8-Directional Propagation Panel -->
+                        <div class="directional-panel" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm);">
+                            <div class="card-title" style="border:none; padding:0; margin-bottom:1rem; font-size:1.05rem; font-weight: 700;">
+                                <i class="fa-solid fa-compass" style="color: var(--primary);"></i> 8-Directional Propagation
+                            </div>
+                            <div id="directional-grid" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <div class="dir-loader" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 1rem;">
+                                    Start simulation to track directional coordinates
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.25rem;">
+                                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Active Fire Center (Centroid):</div>
+                                <div id="live-centroid-coords" style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--primary);">Lat: -, Lon: -</div>
+                            </div>
                         </div>
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-icon stat-icon-blue"><i class="fa-solid fa-maximize"></i></div>
-                                <div class="stat-info">
-                                    <h4>Max Spread Radius</h4>
-                                    <p id="stat-radius">0.00 m</p>
-                                </div>
+
+                        <!-- Hazard Rating Alert Agent Panel -->
+                        <div class="alert-panel" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div class="card-title" style="border:none; padding:0; margin-bottom:0.5rem; font-size:1.05rem; font-weight: 700;">
+                                <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Hazard Rating Agent
                             </div>
-                            <div class="stat-item">
-                                <div class="stat-icon stat-icon-red"><i class="fa-solid fa-fire"></i></div>
-                                <div class="stat-info">
-                                    <h4>Peak Burning Cells</h4>
-                                    <p id="stat-peak">0</p>
+                            <div id="hazard-agent-content" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">DAMAGE FACTOR:</span>
+                                    <span id="dfactor-value" style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--text-main);">0.00%</span>
                                 </div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-icon stat-icon-orange"><i class="fa-solid fa-circle-nodes"></i></div>
-                                <div class="stat-info">
-                                    <h4>Total Burned Area</h4>
-                                    <p id="stat-area">0.00 m²</p>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">THREAT LEVEL:</span>
+                                    <span id="threat-badge" class="badge" style="background-color: var(--success-light); color: var(--success); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; text-transform: uppercase;">GOOD</span>
                                 </div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-icon stat-icon-green"><i class="fa-solid fa-location-crosshairs"></i></div>
-                                <div class="stat-info">
-                                    <h4>Final Centroid</h4>
-                                    <p id="stat-centroid">Lat: -, Lon: -</p>
+                                <div id="threat-message" style="margin-top: 0.5rem; background: var(--bg-main); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; border-left: 4px solid var(--success);">
+                                    Active fire spread is minimal. Threat is low.
                                 </div>
                             </div>
                         </div>
@@ -1019,44 +1021,132 @@
                 </div>
             </div>
 
-            <!-- Python Visualizations outputs -->
-            <div class="analytics-section card">
-                <div class="card-title">
-                    <i class="fa-solid fa-chart-area"></i> Python Visualization Output Report
-                </div>
-                <div class="plots-grid">
 
-                    <div class="plot-card">
-                        <h3><i class="fa-regular fa-clock"></i> Fire Arrival Time Map</h3>
-                        <div class="plot-image-wrapper">
-                            <img id="plot-arrival-time" src="" alt="Fire Arrival Time Plot">
+
+            <!-- ========================================== -->
+            <!-- EMAIL ALERT COMMAND CENTER                  -->
+            <!-- ========================================== -->
+            <div class="card" style="margin-top: 2rem; border-top: 3px solid var(--primary);">
+                <div class="card-title" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="fa-solid fa-bell-exclamation"></i> Email Alert Command Center</span>
+                    <span id="alert-master-status-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 20px; background: var(--bg-main); color: var(--text-muted); border: 1px solid var(--border-color);">ALERTS OFF</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem 0 0.5rem;">
+
+                    <!-- LEFT: Configuration Panel -->
+                    <div>
+                        <p style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Configuration</p>
+
+                        <!-- Enable Toggle -->
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-main);">Auto Email Alerts</div>
+                                <div style="font-size: 0.78rem; color: var(--text-muted);">Trigger emails when threat threshold is crossed</div>
+                            </div>
+                            <label style="position: relative; display: inline-block; width: 46px; height: 24px; cursor: pointer;">
+                                <input type="checkbox" id="alert-enabled-toggle" onchange="onAlertToggle(this.checked)" style="opacity:0; width:0; height:0; position:absolute;">
+                                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background: var(--border-color); border-radius: 24px; transition: 0.3s;" id="toggle-track">
+                                    <span style="position:absolute; content:''; height:18px; width:18px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.3s;" id="toggle-thumb"></span>
+                                </span>
+                            </label>
                         </div>
+
+                        <!-- Threshold -->
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Alert Threshold Level</label>
+                            <select id="alert-threshold" class="form-control" style="margin-top: 0.35rem;" onchange="saveAlertConfig()">
+                                <option value="BAD">BAD — D-Factor ≥ 5%</option>
+                                <option value="HIGH" selected>HIGH — D-Factor ≥ 15%</option>
+                                <option value="EXTREMELY HIGH">EXTREMELY HIGH — D-Factor ≥ 40%</option>
+                            </select>
+                        </div>
+
+                        <!-- SMTP Section -->
+                        <details style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+                            <summary style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); cursor: pointer;">SMTP Credentials</summary>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.85rem;">
+                                <div class="form-group">
+                                    <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Host</label>
+                                    <input type="text" id="smtp-host" class="form-control" value="smtp.gmail.com" style="margin-top:0.25rem; font-size:0.85rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Port</label>
+                                    <input type="number" id="smtp-port" class="form-control" value="587" style="margin-top:0.25rem; font-size:0.85rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Username</label>
+                                    <input type="email" id="smtp-user" class="form-control" value="sarveshbala27@gmail.com" style="margin-top:0.25rem; font-size:0.85rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size: 0.8rem; color: var(--text-muted);">App Password</label>
+                                    <input type="password" id="smtp-password" class="form-control" value="cyvrsvxeuqjfoxhb" style="margin-top:0.25rem; font-size:0.85rem;">
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Recipients -->
+                        <div style="margin-bottom: 1rem;">
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Recipient Emails</label>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-fire" style="color: var(--danger);"></i> Fire Dept</span>
+                                    <input type="email" id="email-fire" class="form-control" value="sarveshbala27@gmail.com" style="font-size:0.83rem; flex:1;">
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-truck-medical" style="color: var(--warning);"></i> Ambulance</span>
+                                    <input type="email" id="email-ambulance" class="form-control" value="barathrithish7@gmail.com" style="font-size:0.83rem; flex:1;">
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-people-carry-box" style="color: var(--success);"></i> Rescue</span>
+                                    <input type="email" id="email-rescue" class="form-control" value="sarveshbala27@gmail.com" style="font-size:0.83rem; flex:1;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveAlertConfig()" style="width: 100%;">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Configuration
+                        </button>
                     </div>
-                    <div class="plot-card">
-                        <h3><i class="fa-solid fa-route"></i> Fire Centroid Trajectory</h3>
-                        <div class="plot-image-wrapper">
-                            <img id="plot-centroid" src="" alt="Fire Centroid Path Plot">
+
+                    <!-- RIGHT: Status Panel -->
+                    <div>
+                        <p style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Dispatch Status</p>
+
+                        <!-- Last alert info -->
+                        <div id="alert-last-dispatch" style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem; min-height: 60px;">
+                            <div style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">No alerts dispatched yet. Alerts will auto-trigger when the simulation crosses your configured threshold.</div>
                         </div>
-                    </div>
-                    <div class="plot-card">
-                        <h3><i class="fa-solid fa-chart-line"></i> Wildfire Growth Curve</h3>
-                        <div class="plot-image-wrapper">
-                            <img id="plot-growth" src="" alt="Wildfire Growth Curve Plot">
+
+                        <!-- Per-recipient badges -->
+                        <div id="alert-recipient-statuses" style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.25rem;">
+                            <div class="alert-dept-row" id="status-fire" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
+                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-fire" style="color: var(--danger); margin-right: 0.4rem;"></i>Fire Department</span>
+                                <span class="dept-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
+                            </div>
+                            <div class="alert-dept-row" id="status-ambulance" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
+                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-truck-medical" style="color: var(--warning); margin-right: 0.4rem;"></i>Ambulance</span>
+                                <span class="dept-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
+                            </div>
+                            <div class="alert-dept-row" id="status-rescue" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
+                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-people-carry-box" style="color: var(--success); margin-right: 0.4rem;"></i>Rescue Team</span>
+                                <span class="dept-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="plot-card">
-                        <h3><i class="fa-solid fa-expand"></i> Wildfire Spread Radius</h3>
-                        <div class="plot-image-wrapper">
-                            <img id="plot-radius" src="" alt="Wildfire Spread Radius Plot">
-                        </div>
+
+                        <!-- Manual test button -->
+                        <button class="btn" onclick="triggerTestAlert()" style="width: 100%; background: transparent; border: 2px solid var(--primary); color: var(--primary); font-weight: 700; padding: 0.75rem; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; font-size: 0.9rem;" onmouseover="this.style.background='var(--primary)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--primary)';">
+                            <i class="fa-solid fa-paper-plane"></i> Send Test Alert Now
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+
         <footer>
             Guesin.ai &copy; 2026. All rights reserved.
         </footer>
     </div>
+
 
     <!-- Javascript Logical Code -->
     <script>
@@ -1214,6 +1304,13 @@
 
             // Build default grid overlay immediately
             buildGridOverlay(-2.145, -59.000);
+
+            // Click event on map to update inputs and marker position dynamically
+            map.on('click', function(e) {
+                document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+                document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+                buildGridOverlay(e.latlng.lat, e.latlng.lng);
+            });
         }
 
         // Coordinate Conversion helper (same as Python xy_to_latlon)
@@ -1263,10 +1360,18 @@
                 gridRectangles.push(rowRects);
             }
             
-            // Set marker at the center (ignition) point
-            ignitionMarker = L.marker([ignitionLat, ignitionLon]).addTo(map)
+            // Set marker at the center (ignition) point (draggable)
+            ignitionMarker = L.marker([ignitionLat, ignitionLon], { draggable: true }).addTo(map)
                 .bindPopup(`<b>Ignition Center</b><br>Lat: ${ignitionLat.toFixed(5)}<br>Lon: ${ignitionLon.toFixed(5)}`)
                 .openPopup();
+
+            // Listen to dragend to update latitude and longitude inputs and rebuild overlay
+            ignitionMarker.on('dragend', function(e) {
+                const position = ignitionMarker.getLatLng();
+                document.getElementById('latitude').value = position.lat.toFixed(6);
+                document.getElementById('longitude').value = position.lng.toFixed(6);
+                buildGridOverlay(position.lat, position.lng);
+            });
             
             // Set view
             map.setView([ignitionLat, ignitionLon], 14);
@@ -1275,6 +1380,21 @@
             setTimeout(() => {
                 map.invalidateSize();
             }, 100);
+        }
+
+        let debounceTimer = null;
+        function updateMapCenterFromInput() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const latVal = parseFloat(document.getElementById('latitude').value);
+                const lonVal = parseFloat(document.getElementById('longitude').value);
+                
+                if (!isNaN(latVal) && !isNaN(lonVal) && latVal >= -90 && latVal <= 90 && lonVal >= -180 && lonVal <= 180) {
+                    if (map) {
+                        buildGridOverlay(latVal, lonVal);
+                    }
+                }
+            }, 300);
         }
 
         function clearGridOverlay() {
@@ -1330,19 +1450,7 @@
                     // Initialize Leaflet Grid Overlay centered on the new ignition point
                     buildGridOverlay(data.ignition_lat, data.ignition_lon);
                     
-                    // Update stats
-                    document.getElementById('stat-radius').innerText = `${data.stats.max_spread_radius.toFixed(2)} m`;
-                    document.getElementById('stat-peak').innerText = data.stats.max_burning_cells;
-                    document.getElementById('stat-area').innerText = `${data.stats.total_burned_area.toFixed(2)} m²`;
-                    document.getElementById('stat-centroid').innerText = `Lat: ${data.stats.final_lat.toFixed(4)}, Lon: ${data.stats.final_lon.toFixed(4)}`;
-                    
-                    // Update static plot images
-                    const rand = Math.random(); // Prevent browser cache
-                    document.getElementById('plot-arrival-time').src = `${data.plots.arrival_time}?t=${rand}`;
-                    document.getElementById('plot-centroid').src = `${data.plots.centroid}?t=${rand}`;
-                    document.getElementById('plot-growth').src = `${data.plots.growth}?t=${rand}`;
-                    document.getElementById('plot-radius').src = `${data.plots.radius}?t=${rand}`;
-                    
+
                     // Prepare player
                     const duration = parseInt(document.getElementById('duration').value);
                     const step = parseInt(document.getElementById('step').value);
@@ -1448,6 +1556,348 @@
             
             // Update slider value
             document.getElementById('timeline-slider').value = stepIdx;
+            
+            // Update directional stats and hazard level lively
+            updateDirectionalStats(currentSimTime, ignite_t);
+        }
+
+        // Compute and update directional coordinates, live centroid movement, and Hazard Agent analysis
+        function updateDirectionalStats(currentSimTime, ignite_t) {
+            const r_ignite = 25;
+            const c_ignite = 25;
+            const cell_size = 30.0;
+            
+            // 8 Directions state
+            const directions = {
+                "North": { dr: -1, dc: 0, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-up" },
+                "North-East": { dr: -1, dc: 1, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-up-right" },
+                "East": { dr: 0, dc: 1, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-right" },
+                "South-East": { dr: 1, dc: 1, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-down-right" },
+                "South": { dr: 1, dc: 0, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-down" },
+                "South-West": { dr: 1, dc: -1, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-down-left" },
+                "West": { dr: 0, dc: -1, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-left" },
+                "North-West": { dr: -1, dc: -1, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-up-left" }
+            };
+
+            let burningCount = 0;
+            let burnedCount = 0;
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const igTime = ignite_t[r][c];
+                    if (igTime <= currentSimTime) {
+                        if (currentSimTime < igTime + 15.0) {
+                            burningCount++;
+                        } else {
+                            burnedCount++;
+                        }
+
+                        // Determine direction relative to ignition center (25, 25)
+                        const dr = r - r_ignite;
+                        const dc = c - c_ignite;
+                        
+                        if (dr === 0 && dc === 0) continue; // skip the center cell for directional math
+                        
+                        const dy = -dr;
+                        const dx = dc;
+                        
+                        let angle = Math.atan2(dy, dx) * 180 / Math.PI; // -180 to 180
+                        
+                        let dirName = "";
+                        if (angle >= -22.5 && angle < 22.5) {
+                            dirName = "East";
+                        } else if (angle >= 22.5 && angle < 67.5) {
+                            dirName = "North-East";
+                        } else if (angle >= 67.5 && angle < 112.5) {
+                            dirName = "North";
+                        } else if (angle >= 112.5 && angle < 157.5) {
+                            dirName = "North-West";
+                        } else if (angle >= 157.5 || angle < -157.5) {
+                            dirName = "West";
+                        } else if (angle >= -157.5 && angle < -112.5) {
+                            dirName = "South-West";
+                        } else if (angle >= -112.5 && angle < -67.5) {
+                            dirName = "South";
+                        } else if (angle >= -67.5 && angle < -22.5) {
+                            dirName = "South-East";
+                        }
+                        
+                        const dist = Math.sqrt(dx*dx + dy*dy) * cell_size;
+                        if (dist > directions[dirName].dist) {
+                            const coords = xyToLatLon(dc * cell_size, (r_ignite - r) * cell_size, simulationData.ignition_lat, simulationData.ignition_lon);
+                            directions[dirName].lat = coords[0];
+                            directions[dirName].lon = coords[1];
+                            directions[dirName].dist = dist;
+                            
+                            if (currentSimTime < igTime + 15.0) {
+                                directions[dirName].status = "Active";
+                            } else {
+                                directions[dirName].status = "Burned";
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Update Directional Grid HTML
+            const gridContainer = document.getElementById("directional-grid");
+            gridContainer.innerHTML = "";
+            
+            Object.keys(directions).forEach(name => {
+                const dir = directions[name];
+                let coordsText = "No active fire";
+                let statusColor = "var(--success)";
+                let statusBg = "var(--success-light)";
+                
+                if (dir.lat !== null) {
+                    coordsText = `${dir.lat.toFixed(5)}, ${dir.lon.toFixed(5)}`;
+                    if (dir.status === "Active") {
+                        statusColor = "#ef4444";
+                        statusBg = "#fef2f2";
+                    } else {
+                        statusColor = "var(--dark-gray)";
+                        statusBg = "var(--border-color)";
+                    }
+                }
+                
+                const itemHtml = `
+                    <div class="dir-item" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-size: 0.85rem;"><i class="fa-solid ${dir.icon}"></i></span>
+                            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">${name}</span>
+                        </div>
+                        <div style="text-align: right; display: flex; flex-direction: column;">
+                            <span style="font-size: 0.85rem; font-weight: 700; font-family: monospace; color: var(--text-main);">${coordsText}</span>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: ${statusColor}; background: ${statusBg}; padding: 0.1rem 0.4rem; border-radius: 4px; display: inline-block; align-self: flex-end; margin-top: 0.15rem; text-transform: uppercase;">${dir.status}</span>
+                        </div>
+                    </div>
+                `;
+                gridContainer.insertAdjacentHTML("beforeend", itemHtml);
+            });
+
+            // Update Centroid Coordinates lively
+            const centroidEl = document.getElementById("live-centroid-coords");
+            if (simulationData && simulationData.centroids) {
+                const stepVal = parseInt(document.getElementById('step').value);
+                const stepIdx = Math.round(currentSimTime / stepVal);
+                const centroids = simulationData.centroids;
+                if (centroids[stepIdx]) {
+                    const cLat = centroids[stepIdx].lat;
+                    const cLon = centroids[stepIdx].lon;
+                    centroidEl.innerText = `Lat: ${cLat.toFixed(6)}, Lon: ${cLon.toFixed(6)}`;
+                } else {
+                    centroidEl.innerText = `Lat: ${simulationData.ignition_lat.toFixed(6)}, Lon: ${simulationData.ignition_lon.toFixed(6)}`;
+                }
+            } else {
+                centroidEl.innerText = "Lat: -, Lon: -";
+            }
+
+            // Update Hazard Rating Alert Agent
+            const totalCells = GRID_SIZE * GRID_SIZE;
+            const totalFired = burningCount + burnedCount;
+            const dFactor = (totalFired / totalCells) * 100;
+            
+            document.getElementById("dfactor-value").innerText = `${dFactor.toFixed(2)}%`;
+            
+            const badge = document.getElementById("threat-badge");
+            const message = document.getElementById("threat-message");
+            
+            if (dFactor >= 40.0) {
+                badge.innerText = "EXTREMELY HIGH";
+                badge.style.backgroundColor = "var(--danger-light)";
+                badge.style.color = "var(--danger)";
+                message.innerHTML = `<strong>CRITICAL HAZARD:</strong> Fire has consumed a massive area of the digital twin grid (${dFactor.toFixed(2)}%). Immediate containment measures and evacuation protocols are recommended.`;
+                message.style.borderLeftColor = "var(--danger)";
+            } else if (dFactor >= 15.0) {
+                badge.innerText = "HIGH";
+                badge.style.backgroundColor = "var(--danger-light)";
+                badge.style.color = "var(--danger)";
+                message.innerHTML = `<strong>HIGH ALERT:</strong> Active wildfire expansion detected (${dFactor.toFixed(2)}% burned/burning). Prepare localized suppression strategies and deploy emergency crews.`;
+                message.style.borderLeftColor = "var(--danger)";
+            } else if (dFactor >= 5.0) {
+                badge.innerText = "BAD";
+                badge.style.backgroundColor = "var(--warning-light)";
+                badge.style.color = "var(--warning)";
+                message.innerHTML = `<strong>WARNING:</strong> Wildfire propagation is increasing (${dFactor.toFixed(2)}% burned/burning). Monitor directional spread coordinates closely.`;
+                message.style.borderLeftColor = "var(--warning)";
+            } else {
+                badge.innerText = "GOOD";
+                badge.style.backgroundColor = "var(--success-light)";
+                badge.style.color = "var(--success)";
+                message.innerHTML = `<strong>SAFE STATUS:</strong> Fire footprint is minimal (${dFactor.toFixed(2)}% burned/burning). Threat level remains low and localized.`;
+                message.style.borderLeftColor = "var(--success)";
+            }
+
+            // Auto-fire email alert check (called every frame, debounced server-side)
+            const currentThreat = badge.innerText;
+            const centroidCoords = document.getElementById('live-centroid-coords').innerText;
+            let cLat = simulationData ? simulationData.ignition_lat : 0;
+            let cLon = simulationData ? simulationData.ignition_lon : 0;
+            if (simulationData && simulationData.centroids) {
+                const si = Math.round(currentSimTime / parseInt(document.getElementById('step').value));
+                if (simulationData.centroids[si]) {
+                    cLat = simulationData.centroids[si].lat;
+                    cLon = simulationData.centroids[si].lon;
+                }
+            }
+            checkAndFireEmailTrigger(dFactor, currentThreat, cLat, cLon);
+        }
+
+        // ============================================================
+        // EMAIL ALERT COMMAND CENTER — JavaScript
+        // ============================================================
+
+        // Toggle visual state of the on/off switch
+        function onAlertToggle(isEnabled) {
+            const track = document.getElementById('toggle-track');
+            const thumb = document.getElementById('toggle-thumb');
+            const badge = document.getElementById('alert-master-status-badge');
+            if (isEnabled) {
+                track.style.background = 'var(--primary)';
+                thumb.style.transform = 'translateX(22px)';
+                badge.innerText = 'ALERTS ON';
+                badge.style.background = 'var(--primary-light)';
+                badge.style.color = 'var(--primary)';
+                badge.style.borderColor = 'var(--primary)';
+            } else {
+                track.style.background = 'var(--border-color)';
+                thumb.style.transform = 'translateX(0)';
+                badge.innerText = 'ALERTS OFF';
+                badge.style.background = 'var(--bg-main)';
+                badge.style.color = 'var(--text-muted)';
+                badge.style.borderColor = 'var(--border-color)';
+            }
+            saveAlertConfig();
+        }
+
+        // Save configuration to backend
+        async function saveAlertConfig() {
+            const enabled = document.getElementById('alert-enabled-toggle').checked;
+            const threshold = document.getElementById('alert-threshold').value;
+            const smtpHost = document.getElementById('smtp-host').value;
+            const smtpPort = parseInt(document.getElementById('smtp-port').value) || 587;
+            const smtpUser = document.getElementById('smtp-user').value;
+            const smtpPass = document.getElementById('smtp-password').value;
+
+            const payload = {
+                enabled,
+                threshold,
+                smtp_host: smtpHost,
+                smtp_port: smtpPort,
+                smtp_user: smtpUser,
+                smtp_password: smtpPass,
+                smtp_from: smtpUser,
+                recipients: [
+                    { id: "fire",      name: "Fire Department", email: document.getElementById('email-fire').value },
+                    { id: "ambulance", name: "Ambulance",        email: document.getElementById('email-ambulance').value },
+                    { id: "rescue",    name: "Rescue Team",      email: document.getElementById('email-rescue').value }
+                ]
+            };
+
+            try {
+                const res = await fetch('/alert-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Config save failed');
+                console.log('Alert config saved.');
+            } catch (err) {
+                console.error('Failed to save alert config:', err);
+            }
+        }
+
+        // Update per-recipient status badge
+        function updateRecipientBadge(id, statusText, statusType) {
+            const row = document.getElementById(`status-${id}`);
+            if (!row) return;
+            const badge = row.querySelector('.dept-badge');
+            const colors = {
+                sent:    { bg: '#dcfce7', color: '#16a34a' },
+                failed:  { bg: '#fee2e2', color: '#dc2626' },
+                pending: { bg: '#fef9c3', color: '#ca8a04' },
+                standby: { bg: 'var(--border-color)', color: 'var(--text-muted)' }
+            };
+            const c = colors[statusType] || colors.standby;
+            badge.innerText = statusText;
+            badge.style.background = c.bg;
+            badge.style.color = c.color;
+        }
+
+        // Update last dispatch info box
+        function updateLastDispatch(threatLevel, dFactor, ts) {
+            const box = document.getElementById('alert-last-dispatch');
+            box.innerHTML = `
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+                    <i class="fa-solid fa-circle-exclamation" style="color:var(--danger); font-size:1rem;"></i>
+                    <strong style="font-size:0.9rem; color:var(--text-main);">${threatLevel} Alert Dispatched</strong>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">D-Factor: ${dFactor.toFixed(2)}% &nbsp;|&nbsp; ${ts}</div>
+            `;
+        }
+
+        // Debounce guard for client-side (prevents calling server every frame)
+        let _lastAlertThreat = null;
+        let _lastAlertTimestamp = 0;
+
+        async function checkAndFireEmailTrigger(dFactor, threatLevel, lat, lon) {
+            // Only fire if alerts are enabled
+            if (!document.getElementById('alert-enabled-toggle').checked) return;
+            // Only fire if threat changed to a higher level or enough time passed (30s guard client-side)
+            const now = Date.now();
+            if (_lastAlertThreat === threatLevel && (now - _lastAlertTimestamp) < 30000) return;
+
+            try {
+                const res = await fetch('/trigger-alert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ threat_level: threatLevel, d_factor: dFactor, lat, lon })
+                });
+                const data = await res.json();
+                if (data.status === 'triggered' && data.result) {
+                    _lastAlertThreat = threatLevel;
+                    _lastAlertTimestamp = now;
+                    const ts = data.result.dispatched_at || new Date().toISOString();
+                    updateLastDispatch(threatLevel, dFactor, ts);
+                    // Update per-recipient badges
+                    data.result.recipients.forEach(r => {
+                        updateRecipientBadge(r.id, r.status === 'sent' ? '✓ EMAIL SENT' : '✗ FAILED', r.status === 'sent' ? 'sent' : 'failed');
+                    });
+                }
+            } catch (err) {
+                console.error('Alert trigger error:', err);
+            }
+        }
+
+        // Manual test alert button handler
+        async function triggerTestAlert() {
+            const lat = parseFloat(document.getElementById('latitude').value) || -2.145;
+            const lon = parseFloat(document.getElementById('longitude').value) || -59.0;
+
+            // Set all badges to pending
+            ['fire', 'ambulance', 'rescue'].forEach(id => updateRecipientBadge(id, '⏳ SENDING...', 'pending'));
+
+            try {
+                const res = await fetch('/trigger-alert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ threat_level: "HIGH", d_factor: 20.0, lat, lon, force: true })
+                });
+                const data = await res.json();
+                if (data.status === 'triggered' && data.result) {
+                    const ts = data.result.dispatched_at || new Date().toISOString();
+                    updateLastDispatch("TEST — HIGH", 20.0, ts);
+                    data.result.recipients.forEach(r => {
+                        updateRecipientBadge(r.id, r.status === 'sent' ? '✓ EMAIL SENT' : '✗ FAILED', r.status === 'sent' ? 'sent' : 'failed');
+                    });
+                } else {
+                    const msg = data.reason || 'Unknown error';
+                    ['fire', 'ambulance', 'rescue'].forEach(id => updateRecipientBadge(id, 'SKIPPED', 'standby'));
+                    document.getElementById('alert-last-dispatch').innerHTML = `<div style="font-size:0.82rem; color:var(--text-muted);">Skipped: ${msg}</div>`;
+                }
+            } catch (err) {
+                ['fire', 'ambulance', 'rescue'].forEach(id => updateRecipientBadge(id, '✗ FAILED', 'failed'));
+            }
         }
 
         // Timeline Slider change

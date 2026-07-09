@@ -2,8 +2,11 @@ import asyncio
 import json
 import logging
 import os
+import smtplib
 import pandas as pd
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone, timedelta
+from email.message import EmailMessage
 from typing import Dict, List, Optional
 from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, HTTPException, status, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -846,3 +849,188 @@ async def run_wildfire_prediction(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"status": "error", "message": f"Simulation failed: {str(e)}"}
         )
+
+
+# ============================================================
+# EMAIL ALERT DISPATCH ENGINE
+# ============================================================
+
+class AlertDispatcher:
+    """Lightweight email dispatcher adapted from Evacuation/backend/dispatch_engine.py."""
+
+    def __init__(self):
+        self.enabled = False
+        self.threshold = "HIGH"  # BAD | HIGH | EXTREMELY HIGH
+        self.smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
+        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        self.smtp_user = os.getenv("SMTP_USER", "theguesin.ai@gmail.com")
+        self.smtp_password = os.getenv("SMTP_PASSWORD", "jtrnkorvcmqtvowc")
+        self.smtp_from = os.getenv("SMTP_FROM", self.smtp_user)
+        self.recipients = [
+            {"id": "fire",      "name": "Fire Department",  "email": os.getenv("FIRE_DEPT_EMAIL",  "sarveshbala27@gmail.com")},
+            {"id": "ambulance", "name": "Ambulance",         "email": os.getenv("AMBULANCE_EMAIL",  "barathrithish7@gmail.com")},
+            {"id": "rescue",   "name": "Rescue Team",       "email": os.getenv("RESCUE_EMAIL",     "sarveshbala27@gmail.com")},
+        ]
+        # Debounce: maps threat_level -> last sent datetime
+        self._last_sent: Dict[str, datetime] = {}
+        self.DEBOUNCE_MINUTES = 5
+
+    def configure(self, config: dict):
+        self.enabled = config.get("enabled", self.enabled)
+        self.threshold = config.get("threshold", self.threshold)
+        self.smtp_host = config.get("smtp_host", self.smtp_host)
+        self.smtp_port = int(config.get("smtp_port", self.smtp_port))
+        self.smtp_user = config.get("smtp_user", self.smtp_user)
+        self.smtp_password = config.get("smtp_password", self.smtp_password)
+        self.smtp_from = config.get("smtp_from", self.smtp_user)
+        recips = config.get("recipients")
+        if recips:
+            self.recipients = recips
+
+    def _can_send(self, threat_level: str) -> bool:
+        last = self._last_sent.get(threat_level)
+        if last is None:
+            return True
+        return datetime.now(timezone.utc) - last > timedelta(minutes=self.DEBOUNCE_MINUTES)
+
+    def _threshold_met(self, threat_level: str) -> bool:
+        order = {"GOOD": 0, "BAD": 1, "HIGH": 2, "EXTREMELY HIGH": 3}
+        return order.get(threat_level, 0) >= order.get(self.threshold, 1)
+
+    def _send_email_sync(self, recipient: str, subject: str, body: str) -> bool:
+        if not self.smtp_user or not self.smtp_password:
+            return False
+        msg = EmailMessage()
+        msg["Subject"] = subject
+        msg["From"] = self.smtp_from
+        msg["To"] = recipient
+        msg.set_content(body)
+        strategies = [
+            (False, self.smtp_host, self.smtp_port, True),
+            (True,  self.smtp_host, 465, False),
+            (False, self.smtp_host, 587, True),
+        ]
+        for use_ssl, host, port, use_tls in strategies:
+            try:
+                if use_ssl:
+                    with smtplib.SMTP_SSL(host, port, timeout=10) as srv:
+                        srv.login(self.smtp_user, self.smtp_password)
+                        srv.send_message(msg)
+                else:
+                    with smtplib.SMTP(host, port, timeout=10) as srv:
+                        srv.ehlo()
+                        if use_tls:
+                            srv.starttls()
+                            srv.ehlo()
+                        srv.login(self.smtp_user, self.smtp_password)
+                        srv.send_message(msg)
+                return True
+            except Exception:
+                pass
+        return False
+
+    async def dispatch(self, threat_level: str, d_factor: float, lat: float, lon: float) -> dict:
+        """
+        Sends email alerts to all configured recipients.
+        Returns a status dict with per-recipient results.
+        """
+        now = datetime.now(timezone.utc)
+        self._last_sent[threat_level] = now
+        ts = now.strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        subject = f"[GUESIN.AI] WILDFIRE ALERT — {threat_level} Threat Detected"
+        body = (
+            f"GUESIN.AI Wildfire Digital Twin — Automated Alert\n"
+            f"{'='*50}\n"
+            f"Threat Level  : {threat_level}\n"
+            f"Damage Factor : {d_factor:.2f}% of monitored grid area burned/burning\n"
+            f"Fire Centroid : Lat {lat:.6f}, Lon {lon:.6f}\n"
+            f"Time          : {ts}\n"
+            f"{'='*50}\n"
+            f"Immediate response is recommended. Monitor the Guesin.ai digital twin\n"
+            f"dashboard for real-time directional spread coordinates.\n"
+        )
+
+        results = []
+        for dept in self.recipients:
+            email = dept.get("email", "")
+            if not email:
+                results.append({"id": dept["id"], "name": dept["name"], "status": "skipped", "message": "No email configured"})
+                continue
+            success = await asyncio.get_event_loop().run_in_executor(None, self._send_email_sync, email, subject, body)
+            results.append({
+                "id": dept["id"],
+                "name": dept["name"],
+                "email": email,
+                "status": "sent" if success else "failed",
+                "message": "Email delivered" if success else "SMTP delivery failed — check credentials",
+                "timestamp": ts
+            })
+        return {"dispatched_at": ts, "recipients": results}
+
+
+# Global alert dispatcher instance
+alert_dispatcher = AlertDispatcher()
+
+
+class AlertConfigRequest(BaseModel):
+    enabled: Optional[bool] = None
+    threshold: Optional[str] = None
+    smtp_host: Optional[str] = None
+    smtp_port: Optional[int] = None
+    smtp_user: Optional[str] = None
+    smtp_password: Optional[str] = None
+    smtp_from: Optional[str] = None
+    recipients: Optional[List[Dict]] = None
+
+
+class TriggerAlertRequest(BaseModel):
+    threat_level: str
+    d_factor: float
+    lat: float
+    lon: float
+    force: Optional[bool] = False
+
+
+@app.post("/alert-config")
+async def configure_alert(config: AlertConfigRequest):
+    """Update email alert configuration from the dashboard."""
+    alert_dispatcher.configure(config.model_dump(exclude_none=True))
+    return {
+        "status": "ok",
+        "enabled": alert_dispatcher.enabled,
+        "threshold": alert_dispatcher.threshold,
+        "smtp_user": alert_dispatcher.smtp_user,
+        "recipients": alert_dispatcher.recipients
+    }
+
+
+@app.get("/alert-config")
+async def get_alert_config():
+    """Get current email alert configuration."""
+    return {
+        "enabled": alert_dispatcher.enabled,
+        "threshold": alert_dispatcher.threshold,
+        "smtp_host": alert_dispatcher.smtp_host,
+        "smtp_port": alert_dispatcher.smtp_port,
+        "smtp_user": alert_dispatcher.smtp_user,
+        "smtp_from": alert_dispatcher.smtp_from,
+        "recipients": alert_dispatcher.recipients
+    }
+
+
+@app.post("/trigger-alert")
+async def trigger_alert(req: TriggerAlertRequest):
+    """Trigger email alert if thresholds are met. Called from the frontend simulation player."""
+    if not alert_dispatcher.enabled:
+        return {"status": "skipped", "reason": "Email alerts are disabled"}
+
+    if not alert_dispatcher._threshold_met(req.threat_level):
+        return {"status": "skipped", "reason": f"Threat level {req.threat_level} is below configured threshold ({alert_dispatcher.threshold})"}
+
+    if not req.force and not alert_dispatcher._can_send(req.threat_level):
+        return {"status": "debounced", "reason": f"Alert for {req.threat_level} was already sent within the last {alert_dispatcher.DEBOUNCE_MINUTES} minutes"}
+
+    logger.info(f"Dispatching email alert — Level: {req.threat_level}, D-Factor: {req.d_factor:.2f}%")
+    result = await alert_dispatcher.dispatch(req.threat_level, req.d_factor, req.lat, req.lon)
+    return {"status": "triggered", "result": result}
