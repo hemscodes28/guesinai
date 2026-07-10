@@ -1590,6 +1590,45 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Evacuee Control Center Panel -->
+                    <div class="evacuee-panel"
+                        style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="card-title"
+                            style="border:none; padding:0; margin-bottom:0.5rem; font-size:1.05rem; font-weight: 700;">
+                            <i class="fa-solid fa-person-running" style="color: var(--primary);"></i> Evacuee Routing & Tracking
+                        </div>
+                        <button type="button" id="select-evacuee-btn" onclick="toggleCitizenPlacement()" class="btn btn-outline"
+                            style="font-weight:700; border-color: var(--primary); color: var(--primary); justify-content: center; width: 100%;">
+                            <i class="fa-solid fa-map-pin"></i> Select Evacuee Location
+                        </button>
+                        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+                            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">STATUS:</span>
+                            <span id="evacuee-status-badge" class="badge"
+                                style="background-color: var(--border-color); color: var(--text-muted); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; text-transform: uppercase;">NOT DEPLOYED</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.25rem;">
+                            <div style="background: var(--bg-main); padding: 0.5rem; border-radius: var(--radius-md); text-align: center;">
+                                <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Position</div>
+                                <div id="evacuee-pos" style="font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-main);"> - </div>
+                            </div>
+                            <div style="background: var(--bg-main); padding: 0.5rem; border-radius: var(--radius-md); text-align: center;">
+                                <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Reroutes</div>
+                                <div id="evacuee-reroutes" style="font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-main);">0</div>
+                            </div>
+                            <div style="background: var(--bg-main); padding: 0.5rem; border-radius: var(--radius-md); text-align: center;">
+                                <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Remaining</div>
+                                <div id="evacuee-dist" style="font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-main);"> - </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Status Log</span>
+                            <div id="evacuee-log"
+                                style="background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.72rem; padding: 0.6rem; border-radius: var(--radius-md); height: 100px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.25rem; text-align: left; border: 1px solid var(--border-color);">
+                                <div style="color: var(--text-muted);">No active logs. Click "Select Evacuee Location" then click on the map.</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2188,6 +2227,24 @@
         let centroidPolyline = null;
         let ignitionMarker = null;
 
+        // Citizen evacuation states
+        let citizenCell = null; // [r, c]
+        let citizenPath = []; // array of [r, c]
+        let citizenOriginalPath = []; // array of [r, c]
+        let citizenStatus = "NOT DEPLOYED";
+        let rerouteCount = 0;
+        let citizenMarker = null;
+        let activePathPolyline = null;
+        let blockedPathPolyline = null;
+        let blockedPathSegment = null;
+        let routingLogs = [];
+        let citizenStartStep = 0;
+        let citizenPlacementActive = false;
+
+        // Forest trails states
+        let trailGrid = Array.from({ length: 50 }, () => new Array(50).fill(false));
+        let trailPolylines = [];
+
         function initCanvasEmpty() {
             if (map) return;
 
@@ -2211,6 +2268,7 @@
 
             // Click event on map to update inputs and marker position dynamically
             map.on('click', function (e) {
+                if (citizenPlacementActive || firebreakModeActive) return;
                 document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
                 document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
                 buildGridOverlay(e.latlng.lat, e.latlng.lng);
@@ -2259,6 +2317,19 @@
 
                     rect.bindTooltip(`Cell: (${r}, ${c})<br>State: Unburned`, { sticky: true });
 
+                    rect.on('click', function (e) {
+                        L.DomEvent.stopPropagation(e);
+                        if (citizenPlacementActive) {
+                            placeCitizenFromMap(e);
+                        } else if (firebreakModeActive) {
+                            addFirebreakFromMap(e);
+                        } else {
+                            document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+                            document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+                            buildGridOverlay(e.latlng.lat, e.latlng.lng);
+                        }
+                    });
+
                     rowRects.push(rect);
                 }
                 gridRectangles.push(rowRects);
@@ -2279,6 +2350,10 @@
 
             // Set view
             map.setView([ignitionLat, ignitionLon], 14);
+
+            // Initialize and draw forest trails
+            initTrailGrid();
+            drawForestTrailsOnMap();
 
             // Invalidate size to ensure Leaflet renders correctly inside dynamic templates
             setTimeout(() => {
@@ -2319,6 +2394,10 @@
             if (centroidPolyline) {
                 map.removeLayer(centroidPolyline);
                 centroidPolyline = null;
+            }
+            if (trailPolylines && trailPolylines.length > 0) {
+                trailPolylines.forEach(layer => map.removeLayer(layer));
+                trailPolylines = [];
             }
         }
 
@@ -2370,6 +2449,7 @@
                     document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
 
                     // Draw step 0
+                    clearCitizenComplete();
                     drawGridAtStep(0);
 
                 } else {
@@ -2468,6 +2548,11 @@
 
             // Update directional stats and hazard level lively
             updateDirectionalStats(currentSimTime, ignite_t);
+
+            // Update citizen's position and path at each tick
+            if (citizenCell) {
+                simulateCitizenToStep(stepIdx);
+            }
         }
 
         // Compute and update directional coordinates, live centroid movement, and Hazard Agent analysis
@@ -3002,6 +3087,9 @@
             const track = document.getElementById('wi-fb-track');
             const thumb = document.getElementById('wi-fb-thumb');
             if (enabled) {
+                if (citizenPlacementActive) {
+                    toggleCitizenPlacement(false);
+                }
                 track.style.background = '#7c3aed';
                 thumb.style.transform = 'translateX(22px)';
                 if (map) {
@@ -3038,6 +3126,523 @@
                     updateFirebreakList();
                 }
             }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // AMAZON FOREST TRAILS / ROUTES
+        // ═══════════════════════════════════════════════════════════════
+
+        function initTrailGrid() {
+            trailGrid = Array.from({ length: 50 }, () => new Array(50).fill(false));
+            
+            // North-South Trail
+            for (let r = 0; r < 50; r++) {
+                const c = Math.round(15 + 10 * Math.sin(r * 0.1));
+                if (c >= 0 && c < 50) {
+                    trailGrid[r][c] = true;
+                    if (c + 1 < 50) trailGrid[r][c+1] = true;
+                }
+            }
+            
+            // East-West Trail
+            for (let c = 0; c < 50; c++) {
+                const r = Math.round(25 + 12 * Math.cos(c * 0.08));
+                if (r >= 0 && r < 50) {
+                    trailGrid[r][c] = true;
+                    if (r + 1 < 50) trailGrid[r+1][c] = true;
+                }
+            }
+            
+            // Diagonal Trail
+            for (let i = 0; i < 50; i++) {
+                const r = i;
+                const c = Math.round(i + 4 * Math.sin(i * 0.15));
+                if (r >= 0 && r < 50 && c >= 0 && c < 50) {
+                    trailGrid[r][c] = true;
+                    if (c + 1 < 50) trailGrid[r][c+1] = true;
+                }
+            }
+
+            // Connector Trail 4
+            for (let r = 5; r < 45; r++) {
+                const c = Math.round(38 - 10 * Math.sin(r * 0.08));
+                if (c >= 0 && c < 50) {
+                    trailGrid[r][c] = true;
+                    if (c + 1 < 50) trailGrid[r][c+1] = true;
+                }
+            }
+        }
+
+        function drawForestTrailsOnMap() {
+            if (trailPolylines && trailPolylines.length > 0) {
+                trailPolylines.forEach(layer => map.removeLayer(layer));
+                trailPolylines = [];
+            }
+
+            const trails = [];
+
+            // Trail 1
+            const t1 = [];
+            for (let r = 0; r < 50; r++) {
+                const c = Math.round(15 + 10 * Math.sin(r * 0.1));
+                if (c >= 0 && c < 50) t1.push(getCellCoords(r, c));
+            }
+            trails.push(t1);
+
+            // Trail 2
+            const t2 = [];
+            for (let c = 0; c < 50; c++) {
+                const r = Math.round(25 + 12 * Math.cos(c * 0.08));
+                if (r >= 0 && r < 50) t2.push(getCellCoords(r, c));
+            }
+            trails.push(t2);
+
+            // Trail 3
+            const t3 = [];
+            for (let i = 0; i < 50; i++) {
+                const r = i;
+                const c = Math.round(i + 4 * Math.sin(i * 0.15));
+                if (r >= 0 && r < 50 && c >= 0 && c < 50) t3.push(getCellCoords(r, c));
+            }
+            trails.push(t3);
+
+            // Trail 4
+            const t4 = [];
+            for (let r = 5; r < 45; r++) {
+                const c = Math.round(38 - 10 * Math.sin(r * 0.08));
+                if (c >= 0 && c < 50) t4.push(getCellCoords(r, c));
+            }
+            trails.push(t4);
+
+            trails.forEach(points => {
+                const poly = L.polyline(points, {
+                    color: '#b45309', // amber/brown trail color
+                    weight: 3.2,
+                    dashArray: '6, 8',
+                    opacity: 0.85
+                }).addTo(map);
+                poly.bindTooltip("Amazon Forest Route", { sticky: true });
+                trailPolylines.push(poly);
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // CITIZEN EVACUATION & DYNAMIC REROUTING
+        // ═══════════════════════════════════════════════════════════════
+
+        function toggleCitizenPlacement(forceState) {
+            if (forceState !== undefined) {
+                citizenPlacementActive = forceState;
+            } else {
+                citizenPlacementActive = !citizenPlacementActive;
+            }
+
+            const btn = document.getElementById('select-evacuee-btn');
+            if (citizenPlacementActive) {
+                if (firebreakModeActive) {
+                    document.getElementById('wi-firebreak-toggle').checked = false;
+                    toggleFirebreakMode(false);
+                }
+                btn.innerHTML = '<i class="fa-solid fa-ban"></i> Cancel Placement';
+                btn.style.borderColor = 'var(--danger)';
+                btn.style.color = 'var(--danger)';
+                if (map) {
+                    document.getElementById('digital-twin-map').style.cursor = 'crosshair';
+                    map.on('click', placeCitizenFromMap);
+                }
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-map-pin"></i> Select Evacuee Location';
+                btn.style.borderColor = 'var(--primary)';
+                btn.style.color = 'var(--primary)';
+                if (map) {
+                    document.getElementById('digital-twin-map').style.cursor = '';
+                    map.off('click', placeCitizenFromMap);
+                }
+            }
+        }
+
+        function placeCitizenFromMap(e) {
+            if (!map || !citizenPlacementActive) return;
+            if (!simulationData) {
+                alert("Please execute the digital twin simulation first by clicking 'Execute Digital Twin Simulation'.");
+                toggleCitizenPlacement(false);
+                return;
+            }
+            const { lat, lng } = e.latlng;
+            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
+            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
+            const cell_size = 30.0;
+            const earthRadius = 6371000.0;
+            const dy = (lat - ignLat) * Math.PI / 180 * earthRadius;
+            const dx = (lng - ignLon) * Math.PI / 180 * earthRadius * Math.cos(ignLat * Math.PI / 180);
+            const r = Math.round(25 - dy / cell_size);
+            const c = Math.round(25 + dx / cell_size);
+
+            if (r >= 0 && r < 50 && c >= 0 && c < 50) {
+                const currentSimTime = currentStepIndex * (parseInt(document.getElementById('step').value) || 3);
+                if (simulationData && simulationData.ignite_t[r][c] <= currentSimTime) {
+                    alert("Cannot place evacuee on a burning or burned cell.");
+                    return;
+                }
+
+                clearCitizenComplete();
+
+                citizenCell = [r, c];
+                citizenStatus = "EVACUATING";
+                rerouteCount = 0;
+                citizenStartStep = currentStepIndex;
+
+                const stepVal = parseInt(document.getElementById('step').value) || 3;
+                const currentSimTimeMin = currentStepIndex * stepVal;
+                const formattedTime = `[${Math.floor(currentSimTimeMin/60).toString().padStart(2, '0')}:${(currentSimTimeMin%60).toString().padStart(2, '0')}]`;
+                routingLogs = [`${formattedTime} Citizen placed at cell (${r}, ${c})`];
+
+                const citizenIcon = L.divIcon({
+                    html: '<div style="font-size: 24px; text-shadow: 0 0 3px black; cursor: pointer; user-select: none;">🏃</div>',
+                    className: 'citizen-div-icon',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
+                const cellCoords = getCellCoords(r, c);
+                citizenMarker = L.marker(cellCoords, { icon: citizenIcon }).addTo(map)
+                    .bindPopup(`<b>Evacuee</b><br>Cell: (${r}, ${c})<br>Status: EVACUATING`);
+
+                const path = findEvacuationRoute(r, c, currentSimTime);
+                if (path) {
+                    citizenPath = path;
+                    citizenOriginalPath = [...path];
+                    drawCitizenPath();
+                } else {
+                    citizenPath = [];
+                    citizenOriginalPath = [];
+                    citizenStatus = "TRAPPED";
+                    routingLogs.push(`${formattedTime} 🚨 Citizen trapped! No escape route available.`);
+                }
+
+                updateEvacueeUI();
+                toggleCitizenPlacement(false);
+            }
+        }
+
+        function getCellCoords(r, c) {
+            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
+            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
+            const cell_size = 30.0;
+            const c_ignite = 25;
+            const r_ignite = 25;
+            const x = (c - c_ignite) * cell_size;
+            const y = (r_ignite - r) * cell_size;
+            return xyToLatLon(x, y, ignLat, ignLon);
+        }
+
+        function drawCitizenPath() {
+            if (activePathPolyline) {
+                map.removeLayer(activePathPolyline);
+                activePathPolyline = null;
+            }
+            if (blockedPathPolyline) {
+                map.removeLayer(blockedPathPolyline);
+                blockedPathPolyline = null;
+            }
+
+            if (!citizenPath || citizenPath.length === 0) return;
+
+            const latLons = citizenPath.map(([r, c]) => getCellCoords(r, c));
+            const pathColor = (citizenStatus === "REROUTING") ? "#a855f7" : "#10b981"; // Purple vs Emerald
+
+            activePathPolyline = L.polyline(latLons, {
+                color: pathColor,
+                weight: 4,
+                opacity: 0.9
+            }).addTo(map);
+
+            if (blockedPathSegment && blockedPathSegment.length > 0) {
+                const blockedLatLons = blockedPathSegment.map(([r, c]) => getCellCoords(r, c));
+                blockedPathPolyline = L.polyline(blockedLatLons, {
+                    color: "#ef4444",
+                    weight: 4,
+                    dashArray: "5, 8",
+                    opacity: 0.85
+                }).addTo(map);
+            }
+        }
+
+        function clearCitizenLayers() {
+            if (citizenMarker) {
+                map.removeLayer(citizenMarker);
+                citizenMarker = null;
+            }
+            if (activePathPolyline) {
+                map.removeLayer(activePathPolyline);
+                activePathPolyline = null;
+            }
+            if (blockedPathPolyline) {
+                map.removeLayer(blockedPathPolyline);
+                blockedPathPolyline = null;
+            }
+        }
+
+        function clearCitizenComplete() {
+            clearCitizenLayers();
+            citizenCell = null;
+            citizenPath = [];
+            citizenOriginalPath = [];
+            citizenStatus = "NOT DEPLOYED";
+            rerouteCount = 0;
+            blockedPathSegment = null;
+            routingLogs = [];
+            citizenStartStep = 0;
+            updateEvacueeUI();
+        }
+
+        function updateEvacueeUI() {
+            const badge = document.getElementById('evacuee-status-badge');
+            if (badge) {
+                badge.innerText = citizenStatus;
+                const colors = {
+                    "NOT DEPLOYED": { bg: "var(--border-color)", color: "var(--text-muted)" },
+                    "EVACUATING": { bg: "var(--success-light)", color: "var(--success)" },
+                    "REROUTING": { bg: "#f3e8ff", color: "#9333ea" },
+                    "SAFE": { bg: "var(--primary-light)", color: "var(--primary)" },
+                    "TRAPPED": { bg: "var(--danger-light)", color: "var(--danger)" }
+                };
+                const c = colors[citizenStatus] || colors["NOT DEPLOYED"];
+                badge.style.backgroundColor = c.bg;
+                badge.style.color = c.color;
+            }
+
+            const posEl = document.getElementById('evacuee-pos');
+            if (posEl) {
+                posEl.innerText = citizenCell ? `(${citizenCell[0]}, ${citizenCell[1]})` : " - ";
+            }
+
+            const rerouteEl = document.getElementById('evacuee-reroutes');
+            if (rerouteEl) {
+                rerouteEl.innerText = rerouteCount;
+            }
+
+            const distEl = document.getElementById('evacuee-dist');
+            if (distEl) {
+                if (citizenPath && citizenStatus !== "SAFE" && citizenStatus !== "NOT DEPLOYED") {
+                    distEl.innerText = `${citizenPath.length} cells`;
+                } else if (citizenStatus === "SAFE") {
+                    distEl.innerText = "0 cells";
+                } else {
+                    distEl.innerText = " - ";
+                }
+            }
+
+            const logEl = document.getElementById('evacuee-log');
+            if (logEl) {
+                if (routingLogs.length > 0) {
+                    logEl.innerHTML = routingLogs.map(l => `<div>${l}</div>`).join('');
+                    logEl.scrollTop = logEl.scrollHeight;
+                } else {
+                    logEl.innerHTML = '<div style="color: var(--text-muted);">No active logs. Click "Select Evacuee Location" then click on the map.</div>';
+                }
+            }
+        }
+
+        function findEvacuationRoute(startR, startC, currentSimTime) {
+            if (!simulationData) return null;
+            const ignite_t = simulationData.ignite_t;
+            const fuel = simulationData.fuel;
+
+            const dist = Array.from({ length: GRID_SIZE }, () => new Array(GRID_SIZE).fill(Infinity));
+            const prev = Array.from({ length: GRID_SIZE }, () => new Array(GRID_SIZE).fill(null));
+            const visited = Array.from({ length: GRID_SIZE }, () => new Array(GRID_SIZE).fill(false));
+
+            dist[startR][startC] = 0;
+            const queue = [[startR, startC, 0]];
+
+            function getCellRiskScore(r, c) {
+                const fuel_load = fuel[r][c];
+                const humidity = parseFloat(document.getElementById('humidity').value) || 75.0;
+                const wind_speed = parseFloat(document.getElementById('wind_speed').value) || 3.5;
+                const veg_density = fuel_load;
+                const soil_moisture = 0.5;
+                const vpd = 1.0;
+
+                const dryness_factor = 1.0 - (humidity / 100.0);
+                const wind_factor = Math.min(1.0, wind_speed / 40.0);
+                const soil_dryness = 1.0 - soil_moisture;
+                const vpd_factor = Math.min(1.0, vpd / 4.0);
+
+                return (fuel_load * 0.25) + (dryness_factor * 0.20) + (wind_factor * 0.15) + (veg_density * 0.15) + (soil_dryness * 0.15) + (vpd_factor * 0.10);
+            }
+
+            function isActivelyBurning(r, c) {
+                const ig = ignite_t[r][c];
+                return ig <= currentSimTime && currentSimTime < ig + 15.0;
+            }
+
+            function getProximityPenalty(r, c) {
+                for (let dr = -2; dr <= 2; dr++) {
+                    for (let dc = -2; dc <= 2; dc++) {
+                        const nr = r + dr;
+                        const nc = c + dc;
+                        if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
+                            if (isActivelyBurning(nr, nc)) {
+                                return 20.0;
+                            }
+                        }
+                    }
+                }
+                return 0.0;
+            }
+
+            let endNode = null;
+
+            while (queue.length > 0) {
+                queue.sort((a, b) => a[2] - b[2]);
+                const [r, c, d] = queue.shift();
+
+                if (visited[r][c]) continue;
+                visited[r][c] = true;
+
+                if (r === 0 || r === GRID_SIZE - 1 || c === 0 || c === GRID_SIZE - 1) {
+                    if (ignite_t[r][c] > currentSimTime && getCellRiskScore(r, c) < 0.7) {
+                        endNode = [r, c];
+                        break;
+                    }
+                }
+
+                const directions = [
+                    [-1, -1], [-1, 0], [-1, 1],
+                    [0, -1],          [0, 1],
+                    [1, -1],  [1, 0],  [1, 1]
+                ];
+
+                for (const [dr, dc] of directions) {
+                    const nr = r + dr;
+                    const nc = c + dc;
+
+                    if (nr < 0 || nr >= GRID_SIZE || nc < 0 || nc >= GRID_SIZE) continue;
+                    if (ignite_t[nr][nc] <= currentSimTime) continue;
+                    if (visited[nr][nc]) continue;
+
+                    const moveDist = (dr !== 0 && dc !== 0) ? 1.4142 : 1.0;
+                    const offTrailPenalty = trailGrid[nr][nc] ? 0.0 : 15.0;
+                    const stepCost = moveDist + (fuel[nr][nc] * 8.0) + getProximityPenalty(nr, nc) + offTrailPenalty;
+                    const newDist = d + stepCost;
+
+                    if (newDist < dist[nr][nc]) {
+                        dist[nr][nc] = newDist;
+                        prev[nr][nc] = [r, c];
+                        queue.push([nr, nc, newDist]);
+                    }
+                }
+            }
+
+            if (!endNode) return null;
+
+            const path = [];
+            let curr = endNode;
+            while (curr) {
+                path.push(curr);
+                curr = prev[curr[0]][curr[1]];
+            }
+            path.reverse();
+            return path;
+        }
+
+        function simulateCitizenToStep(stepIdx) {
+            if (!citizenOriginalPath || citizenOriginalPath.length === 0) return;
+
+            if (stepIdx < citizenStartStep) {
+                citizenCell = [...citizenOriginalPath[0]];
+                citizenPath = [...citizenOriginalPath];
+                citizenStatus = "EVACUATING";
+                rerouteCount = 0;
+                blockedPathSegment = null;
+                const stepVal = parseInt(document.getElementById('step').value) || 3;
+                const currentSimTimeMin = citizenStartStep * stepVal;
+                const formattedTime = `[${Math.floor(currentSimTimeMin/60).toString().padStart(2, '0')}:${(currentSimTimeMin%60).toString().padStart(2, '0')}]`;
+                routingLogs = [`${formattedTime} Citizen placed at cell (${citizenOriginalPath[0][0]}, ${citizenOriginalPath[0][1]})`];
+                if (citizenMarker) {
+                    citizenMarker.setLatLng(getCellCoords(citizenCell[0], citizenCell[1]));
+                    citizenMarker.setPopupContent(`<b>Evacuee</b><br>Cell: (${citizenCell[0]}, ${citizenCell[1]})<br>Status: EVACUATING`);
+                }
+                drawCitizenPath();
+                updateEvacueeUI();
+                return;
+            }
+
+            let currentCell = [...citizenOriginalPath[0]];
+            let path = [...citizenOriginalPath];
+            let status = "EVACUATING";
+            let reroutes = 0;
+            let blockedSegment = null;
+            
+            const stepVal = parseInt(document.getElementById('step').value) || 3;
+            const initialTime = citizenStartStep * stepVal;
+            const formattedInitialTime = `[${Math.floor(initialTime/60).toString().padStart(2, '0')}:${(initialTime%60).toString().padStart(2, '0')}]`;
+            let logs = [`${formattedInitialTime} Citizen placed at cell (${citizenOriginalPath[0][0]}, ${citizenOriginalPath[0][1]})`];
+
+            for (let s = citizenStartStep + 1; s <= stepIdx; s++) {
+                const currentSimTime = s * stepVal;
+                const formattedTime = `[${Math.floor(currentSimTime/60).toString().padStart(2, '0')}:${(currentSimTime%60).toString().padStart(2, '0')}]`;
+
+                if (status === "SAFE" || status === "TRAPPED") {
+                    continue;
+                }
+
+                if (path.length > 1) {
+                    path.shift();
+                    currentCell = path[0];
+                } else {
+                    status = "SAFE";
+                    logs.push(`${formattedTime} Citizen reached safe boundary at (${currentCell[0]}, ${currentCell[1]})! 🏆`);
+                    continue;
+                }
+
+                if (currentCell[0] === 0 || currentCell[0] === GRID_SIZE - 1 || currentCell[1] === 0 || currentCell[1] === GRID_SIZE - 1) {
+                    status = "SAFE";
+                    logs.push(`${formattedTime} Citizen reached safe boundary at (${currentCell[0]}, ${currentCell[1]})! 🏆`);
+                    continue;
+                }
+
+                let pathBlocked = false;
+                let blockIdx = -1;
+                for (let i = 0; i < path.length; i++) {
+                    const [pr, pc] = path[i];
+                    if (simulationData.ignite_t[pr][pc] <= currentSimTime) {
+                        pathBlocked = true;
+                        blockIdx = i;
+                        break;
+                    }
+                }
+
+                if (pathBlocked) {
+                    blockedSegment = path.slice(blockIdx);
+                    const detour = findEvacuationRoute(currentCell[0], currentCell[1], currentSimTime);
+                    if (detour) {
+                        path = detour;
+                        reroutes++;
+                        status = "REROUTING";
+                        logs.push(`${formattedTime} ⚠️ Route blocked! Detour calculated.`);
+                    } else {
+                        status = "TRAPPED";
+                        logs.push(`${formattedTime} 🚨 Citizen trapped at (${currentCell[0]}, ${currentCell[1]})! Emergency suppression needed.`);
+                    }
+                }
+            }
+
+            citizenCell = currentCell;
+            citizenPath = path;
+            citizenStatus = status;
+            rerouteCount = reroutes;
+            blockedPathSegment = blockedSegment;
+            routingLogs = logs;
+
+            if (citizenMarker) {
+                citizenMarker.setLatLng(getCellCoords(citizenCell[0], citizenCell[1]));
+                citizenMarker.setPopupContent(`<b>Evacuee</b><br>Cell: (${citizenCell[0]}, ${citizenCell[1]})<br>Status: ${citizenStatus}`);
+            }
+
+            drawCitizenPath();
+            updateEvacueeUI();
         }
 
         function updateFirebreakList() {
