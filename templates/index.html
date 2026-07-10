@@ -2580,8 +2580,14 @@
 
             document.getElementById('wi-loading').style.display = 'block';
             document.getElementById('wi-results').style.display = 'none';
-            document.getElementById('wi-preview-toggle').checked = false;
-            clearScenarioPreview();
+            
+            const prevToggle = document.getElementById('wi-preview-toggle');
+            if (prevToggle) prevToggle.checked = false;
+            
+            if (scenarioPreviewActive && simulationData) {
+                scenarioPreviewActive = false;
+                drawGridAtStep(currentStepIndex);
+            }
 
             try {
                 const resp = await fetch('/fork-simulation', {
