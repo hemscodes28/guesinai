@@ -14,11 +14,13 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from database import init_db, SessionLocal, WeatherLog, AlertLog, SimulationSnapshot, User, hash_password, verify_password
+from database import init_db, SessionLocal, WeatherLog, AlertLog, SimulationSnapshot, User, hash_password, verify_password, SituationReport, FireSpreadSample
 from simulation import WildfireSimulation
-from input_processing import extract_hotspots_from_image, get_total_records, load_atto_record
+from input_processing import get_total_records, load_atto_record
 from ai_engine import calculate_evacuation_route, allocate_mitigation_resources
 from WildfirePrediction.fire_spread_model import FireSpreadSimulator, calculate_burn_area
+from ml_fire_model import ml_model
+from monte_carlo import monte_carlo_forecast, run_fork_simulation
 
 
 # Setup logging
@@ -525,84 +527,7 @@ async def generate_hotspot(req: Optional[HotspotRequest] = None):
 
     return hotspots
 
-@app.post("/upload-satellite-image")
-async def upload_satellite_image(file: UploadFile = File(...)):
-    """
-    Receives an uploaded satellite photo, scans for red/orange pixels to identify active fire hotspots,
-    and ignites those matching coordinates inside the digital twin grid.
-    """
-    # Verify file is an image
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Uploaded file must be an image."
-        )
 
-    # Save file temporarily
-    temp_filename = f"temp_{file.filename}"
-    try:
-        with open(temp_filename, "wb") as f:
-            f.write(await file.read())
-
-        # Extract hotspots using Pillow pixel analysis
-        hotspots = extract_hotspots_from_image(temp_filename, grid_size=sim.size)
-        
-        # Apply hotspots to digital twin
-        ignited_count = 0
-        db_alerts = []
-        db = SessionLocal()
-        
-        for r, c, confidence in hotspots:
-            cell = sim.grid[r][c]
-            if cell["fire_state"] == "unburned":
-                cell["fire_state"] = "burning"
-                cell["burn_duration"] = 0
-                ignited_count += 1
-                
-                # Log alert
-                alert = AlertLog(
-                    row=r,
-                    col=c,
-                    alert_type="burning",
-                    message=f"Computer Vision Satellite detection (Confidence: {int(confidence*100)}%)"
-                )
-                db.add(alert)
-                db_alerts.append({
-                    "row": r,
-                    "col": c,
-                    "alert_type": "burning",
-                    "message": alert.message,
-                    "timestamp": sim.simulation_step
-                })
-
-        if ignited_count > 0:
-            try:
-                db.commit()
-            except Exception as e:
-                logger.error(f"Error saving image upload alerts to SQLite: {e}")
-                db.rollback()
-            finally:
-                db.close()
-
-            # Broadcast updates to WebSockets
-            await broadcast_current_state(extra_alerts=db_alerts)
-
-    except Exception as e:
-        logger.error(f"Error processing uploaded satellite image: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to process satellite image: {str(e)}"
-        )
-    finally:
-        # Delete temporary file
-        if os.path.exists(temp_filename):
-            os.remove(temp_filename)
-
-    return {
-        "status": "success",
-        "ignited_count": ignited_count,
-        "detections": [{"row": h[0], "col": h[1], "confidence": h[2]} for h in hotspots]
-    }
 
 @app.post("/generate-weather", response_model=WeatherResponse)
 async def generate_weather():
@@ -744,30 +669,11 @@ async def run_wildfire_prediction(
     duration: Optional[int] = Form(240),
     step: Optional[int] = Form(3),
     latitude: Optional[float] = Form(-2.145),
-    longitude: Optional[float] = Form(-59.000),
-    file: Optional[UploadFile] = File(None)
+    longitude: Optional[float] = Form(-59.000)
 ):
     try:
-        # If an image was uploaded, extract hotspots to determine the ignition lat/lon
         ignited_lat = latitude
         ignited_lon = longitude
-        
-        if file is not None and file.filename != "":
-            temp_filename = f"temp_predict_{file.filename}"
-            with open(temp_filename, "wb") as f:
-                f.write(await file.read())
-            try:
-                # size = 50
-                hotspots = extract_hotspots_from_image(temp_filename, grid_size=50)
-                if hotspots:
-                    # Let's take the first hotspot
-                    row, col, conf = hotspots[0]
-                    # Map to the cell coordinate space of the twin:
-                    ignited_lat = -2.9 - (row / 49.0) * 1.2
-                    ignited_lon = -61.1 + (col / 49.0) * 1.2
-            finally:
-                if os.path.exists(temp_filename):
-                    os.remove(temp_filename)
         
         # Load weather dataset to fill in missing overrides
         from WildfirePrediction.fire_spread_model import load_weather, get_weather
@@ -1034,3 +940,270 @@ async def trigger_alert(req: TriggerAlertRequest):
     logger.info(f"Dispatching email alert — Level: {req.threat_level}, D-Factor: {req.d_factor:.2f}%")
     result = await alert_dispatcher.dispatch(req.threat_level, req.d_factor, req.lat, req.lon)
     return {"status": "triggered", "result": result}
+
+
+# ============================================================
+# NEW FEATURE ENDPOINTS
+# ============================================================
+
+# ── 1. ML Model Status ────────────────────────────────────────────────────────
+
+@app.get("/ml-model-status")
+def get_ml_model_status():
+    """Returns current ML fire spread model status, training sample count, and metadata."""
+    return ml_model.get_status()
+
+
+# ── 4. AQI / Smoke Plume Grid ─────────────────────────────────────────────────
+
+@app.get("/aqi-grid")
+def get_aqi_grid():
+    """
+    Returns the current Smoke/AQI overlay grid computed via Gaussian plume dispersion.
+    Each cell has: row, col, aqi (0-500), category, color.
+    """
+    return sim.get_aqi_grid()
+
+
+# ── 3. What-If Fork Simulation ────────────────────────────────────────────────
+
+class ForkRequest(BaseModel):
+    wind_speed: Optional[float] = None
+    wind_direction: Optional[float] = None
+    firebreak_cells: Optional[List[List[int]]] = None  # [[row, col], ...]
+    steps: int = 10
+
+
+@app.post("/fork-simulation")
+async def fork_simulation(req: ForkRequest):
+    """
+    Clones the current simulation grid, applies scenario modifications
+    (wind change, firebreaks), and runs `steps` ahead. Returns a comparison
+    between the live timeline and the forked scenario.
+    """
+    try:
+        fb_cells = [tuple(pair) for pair in (req.firebreak_cells or [])]
+        
+        # Run in thread pool to avoid blocking (deep copy + N steps can be slow)
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            None,
+            lambda: run_fork_simulation(
+                sim,
+                wind_speed_override=req.wind_speed,
+                wind_direction_override=req.wind_direction,
+                firebreak_cells=fb_cells,
+                steps=req.steps,
+            )
+        )
+        return {"status": "success", **result}
+    except Exception as e:
+        logger.error(f"Fork simulation error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Fork simulation failed: {str(e)}"
+        )
+
+
+# ── 5. LLM Situation Report ───────────────────────────────────────────────────
+
+def _build_situation_context() -> dict:
+    """Builds a structured context dict from the current simulation state."""
+    grid_size = sim.size
+    healthy = burning = burned = 0
+    top_risk_cells = []
+    
+    for r in range(grid_size):
+        for c in range(grid_size):
+            cell = sim.grid[r][c]
+            state = cell["fire_state"]
+            if state == "unburned":
+                healthy += 1
+                if cell["risk_score"] >= 0.75:
+                    top_risk_cells.append(cell)
+            elif state == "burning":
+                burning += 1
+            else:
+                burned += 1
+
+    top_risk_cells.sort(key=lambda x: x["risk_score"], reverse=True)
+    top_3 = top_risk_cells[:3]
+
+    total = grid_size * grid_size
+    d_factor = (burning + burned) / total * 100
+
+    sample_cell = sim.grid[grid_size // 2][grid_size // 2]
+    
+    return {
+        "step": sim.simulation_step,
+        "healthy": healthy,
+        "burning": burning,
+        "burned": burned,
+        "d_factor": round(d_factor, 2),
+        "wind_speed": round(sample_cell.get("wind_speed", 0), 1),
+        "wind_direction": round(sample_cell.get("wind_direction", 0), 1),
+        "temperature": round(sample_cell.get("temperature", 0), 1),
+        "humidity": round(sample_cell.get("humidity", 0), 1),
+        "top_risk_zones": [
+            {"row": c["row"], "col": c["col"], "risk": round(c["risk_score"], 3)}
+            for c in top_3
+        ],
+    }
+
+
+def _generate_template_report(ctx: dict) -> str:
+    """Generates a structured situation report using a template (no LLM required)."""
+    threat = "CRITICAL" if ctx["d_factor"] >= 40 else "HIGH" if ctx["d_factor"] >= 15 else "MODERATE" if ctx["d_factor"] >= 5 else "LOW"
+    wind_compass = {
+        (0, 22.5): "N", (22.5, 67.5): "NE", (67.5, 112.5): "E",
+        (112.5, 157.5): "SE", (157.5, 202.5): "S", (202.5, 247.5): "SW",
+        (247.5, 292.5): "W", (292.5, 337.5): "NW", (337.5, 360): "N"
+    }
+    wd = ctx["wind_direction"] % 360
+    compass = next((v for (lo, hi), v in wind_compass.items() if lo <= wd < hi), "N")
+    
+    risk_lines = ""
+    for z in ctx["top_risk_zones"]:
+        risk_lines += f"\n   • Grid [{z['row']},{z['col']}] — Risk Score: {z['risk']:.3f} (CRITICAL)"
+    if not risk_lines:
+        risk_lines = "\n   • No critical-risk zones identified."
+
+    return f"""━━━ GUESIN.AI TACTICAL SITUATION REPORT ━━━
+📍 Simulation Step: {ctx['step']}
+🚨 Threat Level: {threat}
+
+📊 FIRE STATUS SUMMARY
+   • Healthy Cells  : {ctx['healthy']:,} ({ctx['healthy']/2500*100:.1f}% of grid)
+   • Active Burning : {ctx['burning']:,} cells
+   • Burned Out     : {ctx['burned']:,} cells  
+   • Damage Factor  : {ctx['d_factor']:.2f}%
+
+🌬️ WEATHER CONDITIONS
+   • Wind: {ctx['wind_speed']} m/s from {compass} ({ctx['wind_direction']}°)
+   • Temperature: {ctx['temperature']}°C | Humidity: {ctx['humidity']}%
+
+⚠️ HIGH-RISK ZONES (Unburned, Imminent Threat)
+{risk_lines}
+
+🛡️ RECOMMENDED ACTIONS
+   {'• EVACUATE all personnel from high-risk zones immediately.' if threat == 'CRITICAL' else '• Monitor fire perimeter closely and prepare containment resources.' if threat == 'HIGH' else '• Maintain observation posts and verify suppression resource staging.'}
+   • Deploy AI-calculated evacuation routes via the dashboard.
+   • Position fire engines at critical perimeter cells.
+   {'• Activate smoke/AQI evacuation corridor assessment.' if ctx['burning'] > 5 else ''}
+
+⏱️ Generated at Step {ctx['step']} | Guesin.ai Digital Twin v2.0
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+
+
+async def _generate_llm_report(ctx: dict) -> tuple[str, str]:
+    """Tries to generate a Gemini LLM report. Returns (report_text, model_name)."""
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    if not api_key:
+        return _generate_template_report(ctx), "template"
+
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+
+        prompt = f"""You are an emergency wildfire management AI. Generate a concise tactical situation report for a wildfire digital twin.
+
+Current state:
+- Simulation step: {ctx['step']}
+- Healthy cells: {ctx['healthy']}, Burning: {ctx['burning']}, Burned: {ctx['burned']}
+- Damage Factor: {ctx['d_factor']:.2f}% (% of grid burned or burning)
+- Wind: {ctx['wind_speed']} m/s at {ctx['wind_direction']}°
+- Temperature: {ctx['temperature']}°C, Humidity: {ctx['humidity']}%
+- Top risk zones: {ctx['top_risk_zones']}
+
+Write a professional emergency situation report with: threat assessment, current fire status, key risks, and recommended actions. Use clear headers. Keep it under 300 words."""
+
+        response = model.generate_content(prompt)
+        return response.text, "gemini-1.5-flash"
+    except Exception as e:
+        logger.warning(f"Gemini API error: {e}. Falling back to template report.")
+        return _generate_template_report(ctx), "template"
+
+
+@app.get("/situation-report")
+async def get_situation_report():
+    """
+    Generates a human-readable tactical situation report from the current simulation state.
+    Uses Gemini LLM if GEMINI_API_KEY env variable is set, otherwise uses a rich template.
+    Report is cached in SQLite for audit trail.
+    """
+    try:
+        ctx = _build_situation_context()
+        report_text, model_name = await _generate_llm_report(ctx)
+
+        # Cache in SQLite
+        db = SessionLocal()
+        try:
+            db.add(SituationReport(
+                simulation_step=ctx["step"],
+                report_text=report_text,
+                model_used=model_name,
+                burning_count=ctx["burning"],
+                burned_count=ctx["burned"],
+                healthy_count=ctx["healthy"],
+            ))
+            db.commit()
+        except Exception as db_err:
+            logger.warning(f"Failed to cache situation report: {db_err}")
+            db.rollback()
+        finally:
+            db.close()
+
+        return {
+            "status": "success",
+            "report": report_text,
+            "model": model_name,
+            "context": ctx,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Situation report error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate situation report: {str(e)}"
+        )
+
+
+# ── 7. Monte Carlo Fire Forecast ──────────────────────────────────────────────
+
+@app.get("/fire-forecast")
+async def get_fire_forecast(
+    steps: int = 10,
+    trials: int = 100,
+):
+    """
+    Runs Monte Carlo stochastic rollouts to forecast fire probability per cell.
+    Returns a probability grid (0.0 - 1.0) for each of the 2500 cells.
+    
+    Query params:
+      steps  — steps ahead to forecast (default: 10, max: 50)
+      trials — number of stochastic trials (default: 100, max: 300)
+    """
+    # Guard bounds
+    steps  = max(1, min(50, steps))
+    trials = max(10, min(300, trials))
+
+    if sim.simulation_step == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Run at least one simulation step before requesting a forecast."
+        )
+
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            None,
+            lambda: monte_carlo_forecast(sim, steps_ahead=steps, trials=trials)
+        )
+        return {"status": "success", **result}
+    except Exception as e:
+        logger.error(f"Monte Carlo forecast error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Forecast failed: {str(e)}"
+        )

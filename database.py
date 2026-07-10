@@ -1,7 +1,7 @@
 import datetime
 import hashlib
 import os
-from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime, Boolean, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = "sqlite:///c:/Users/Hemkumar Ramesh/Desktop/Guesin/wildfire_twin.db"
@@ -65,6 +65,35 @@ class SimulationSnapshot(Base):
     burning_count = Column(Integer)
     burned_count = Column(Integer)
     active_fires = Column(String)  # JSON list of coordinates e.g. "[[24,15], [24,16]]"
+
+class FireSpreadSample(Base):
+    """Stores actual simulation spread outcomes for ML model retraining."""
+    __tablename__ = "fire_spread_samples"
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    step = Column(Integer)
+    fuel = Column(Float)
+    risk = Column(Float)
+    soil_dry = Column(Float)
+    wind_align = Column(Float)
+    wind_spd = Column(Float)
+    elev_diff = Column(Float)
+    rain_effect = Column(Float)
+    p_catch = Column(Float)   # 1.0 = caught fire, 0.0 = did not
+
+
+class SituationReport(Base):
+    """Caches AI-generated situation reports."""
+    __tablename__ = "situation_reports"
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    simulation_step = Column(Integer)
+    report_text = Column(Text)
+    model_used = Column(String, default="template")
+    burning_count = Column(Integer)
+    burned_count = Column(Integer)
+    healthy_count = Column(Integer)
+
 
 def init_db():
     Base.metadata.create_all(bind=engine)

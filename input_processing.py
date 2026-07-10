@@ -3,7 +3,6 @@ import math
 import random
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
-from PIL import Image
 
 # Path to the ATTO dataset in the workspace
 ATTO_CSV_PATH = "c:/Users/Hemkumar Ramesh/Desktop/Guesin/atto_2014.csv"
@@ -137,37 +136,3 @@ def load_atto_record(index: int) -> Dict:
         "hour": hour
     }
 
-def extract_hotspots_from_image(image_path: str, grid_size: int = 50) -> List[Tuple[int, int, float]]:
-    """
-    Analyzes an uploaded satellite photo using Pillow.
-    Resizes image to 50x50 to fit the grid and scans for red/orange fire pixels.
-    Returns a list of tuples containing (row, col, confidence_score) of detected fires.
-    """
-    hotspots = []
-    try:
-        with Image.open(image_path) as img:
-            # Convert to RGB if it isn't
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-                
-            # Resize image to match our grid size (50x50)
-            img_resized = img.resize((grid_size, grid_size), Image.Resampling.NEAREST)
-            
-            # Scan pixels
-            for r in range(grid_size):
-                for c in range(grid_size):
-                    red, green, blue = img_resized.getpixel((c, r)) # col is X, row is Y
-                    
-                    # Fire signature rules: High Red, low Green, very low Blue.
-                    # Red should dominate and stand out from background vegetation
-                    if red > 120 and green < 100 and blue < 90 and (red - green) > 30:
-                        # Higher redness = higher detection confidence
-                        redness = red - max(green, blue)
-                        confidence = 0.70 + (redness / 255.0) * 0.29
-                        confidence = round(min(0.99, max(0.70, confidence)), 2)
-                        hotspots.append((r, c, confidence))
-                        
-    except Exception as e:
-        print(f"Error analyzing satellite image: {e}")
-        
-    return hotspots

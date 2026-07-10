@@ -723,6 +723,139 @@
         .color-unburned { background-color: #10b981; }
         .color-burning { background-color: #ef4444; }
         .color-burned { background-color: #64748b; }
+
+        /* ── Nav Module Buttons ─────────────────────────────── */
+        .nav-modules { display: flex; align-items: center; gap: 0.5rem; }
+        .nav-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.45rem 0.9rem; border-radius: var(--radius-md);
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            border: 1px solid var(--border-color); background: var(--bg-main);
+            color: var(--text-muted); transition: all 0.2s;
+        }
+        .nav-btn-whatif  { border-color:#7c3aed44;color:#7c3aed;background:#f5f3ff; }
+        .nav-btn-whatif:hover { background:#ede9fe;border-color:#7c3aed; }
+        .nav-btn-sitrep  { border-color:#0369a144;color:#0369a1;background:#f0f9ff; }
+        .nav-btn-sitrep:hover { background:#e0f2fe;border-color:#0369a1; }
+        .nav-btn-forecast{ border-color:#b4530044;color:#b45300;background:#fff7ed; }
+        .nav-btn-forecast:hover { background:#ffedd5;border-color:#b45300; }
+
+        /* ── AQI Overlay ────────────────────────────────────── */
+        .aqi-toggle-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.38rem 0.9rem; border-radius: 9999px;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            border: 1px solid var(--border-color); background: white;
+            color: var(--text-muted); transition: all 0.3s;
+        }
+        .aqi-toggle-btn.active {
+            background: linear-gradient(90deg,#00e400 0%,#ffff00 30%,#ff7e00 60%,#ff0000 80%,#8f3f97 100%);
+            color: white; border-color: transparent; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+        .aqi-legend {
+            display: none; align-items: center; gap: 0.65rem;
+            margin-top: 0.5rem; padding: 0.5rem 1rem;
+            background: white; border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); flex-wrap: wrap; justify-content: center;
+        }
+        .aqi-legend.visible { display: flex; }
+        .aqi-badge { display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;font-weight:600; }
+        .aqi-dot { width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,0.15); }
+
+        /* ── Modal Overlay ──────────────────────────────────── */
+        .modal-overlay {
+            position:fixed;inset:0;background:rgba(0,0,0,0.5);
+            backdrop-filter:blur(4px);z-index:1000;
+            display:none;align-items:center;justify-content:center;
+        }
+        .modal-overlay.open { display:flex; }
+        .modal-card {
+            background:white;border-radius:var(--radius-lg);
+            box-shadow:0 25px 50px rgba(0,0,0,0.25);
+            width:90%;max-width:700px;max-height:88vh;
+            overflow:hidden;display:flex;flex-direction:column;
+            animation:slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .modal-header {
+            padding:1.2rem 1.75rem;border-bottom:1px solid var(--border-color);
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        .modal-header h3 {
+            font-family:var(--font-display);font-size:1.15rem;font-weight:700;
+            display:flex;align-items:center;gap:0.5rem;
+        }
+        .modal-body { padding:1.5rem;overflow-y:auto;flex:1; }
+        .modal-footer {
+            padding:0.9rem 1.75rem;border-top:1px solid var(--border-color);
+            display:flex;align-items:center;justify-content:flex-end;gap:0.75rem;
+        }
+        .btn-close-modal {
+            background:none;border:none;font-size:1.2rem;cursor:pointer;
+            color:rgba(255,255,255,0.8);width:32px;height:32px;
+            display:flex;align-items:center;justify-content:center;
+            border-radius:50%;transition:all 0.15s;
+        }
+        .btn-close-modal:hover { background:rgba(255,255,255,0.2); }
+
+        /* ── What-If Side Drawer ────────────────────────────── */
+        .side-drawer {
+            position:fixed;top:0;right:-460px;width:430px;height:100vh;
+            background:white;box-shadow:-8px 0 30px rgba(0,0,0,0.18);
+            z-index:999;transition:right 0.35s cubic-bezier(0.4,0,0.2,1);
+            display:flex;flex-direction:column;overflow:hidden;
+        }
+        .side-drawer.open { right:0; }
+        .drawer-header {
+            padding:1.1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.2);
+            display:flex;align-items:center;justify-content:space-between;
+            background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);color:white;
+        }
+        .drawer-header h3 { font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:white;display:flex;align-items:center;gap:0.5rem; }
+        .drawer-body { padding:1.25rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1.1rem; }
+        .drawer-footer { padding:0.9rem 1.25rem;border-top:1px solid var(--border-color);background:var(--bg-main); }
+        .drawer-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:998;display:none; }
+        .drawer-overlay.open { display:block; }
+        .comparison-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem; }
+        .compare-card { padding:1rem;border-radius:var(--radius-md);border:2px solid;text-align:center; }
+        .compare-card.original { border-color:var(--danger);background:var(--danger-light); }
+        .compare-card.forked   { border-color:var(--success);background:var(--success-light); }
+        .compare-card h4 { font-size:0.78rem;font-weight:700;text-transform:uppercase;margin-bottom:0.4rem; }
+        .compare-card .big-num { font-family:var(--font-display);font-size:1.9rem;font-weight:800; }
+        .saved-badge {
+            display:inline-flex;align-items:center;gap:0.4rem;
+            background:#dcfce7;color:#15803d;padding:0.35rem 1rem;
+            border-radius:9999px;font-weight:700;font-size:0.9rem;margin-top:0.75rem;
+        }
+
+        /* ── Situation Report ───────────────────────────────── */
+        .sitrep-text {
+            font-family:'Courier New',Courier,monospace;font-size:0.83rem;
+            line-height:1.75;white-space:pre-wrap;
+            background:#0f172a;color:#e2e8f0;
+            padding:1.5rem;border-radius:var(--radius-md);
+            max-height:55vh;overflow-y:auto;
+        }
+        .sitrep-meta { display:flex;align-items:center;gap:0.65rem;margin-bottom:1rem;flex-wrap:wrap; }
+        .meta-badge {
+            display:inline-flex;align-items:center;gap:0.3rem;
+            padding:0.22rem 0.65rem;border-radius:9999px;font-size:0.74rem;font-weight:600;
+        }
+
+        /* ── Monte Carlo Forecast ───────────────────────────── */
+        .forecast-stats-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem; }
+        .forecast-stat {
+            text-align:center;padding:1rem;
+            background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);
+        }
+        .forecast-stat .label { font-size:0.73rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:0.35rem; }
+        .forecast-stat .value { font-family:var(--font-display);font-size:1.6rem;font-weight:800; }
+        .prob-legend { display:flex;align-items:center;gap:0.5rem;margin-top:0.75rem;font-size:0.78rem;font-weight:600;color:var(--text-muted); }
+        .prob-gradient {
+            flex:1;height:12px;border-radius:6px;
+            background:linear-gradient(90deg,rgba(251,191,36,0.3) 0%,rgba(249,115,22,0.7) 50%,rgba(220,38,38,0.95) 100%);
+            border:1px solid var(--border-color);
+        }
     </style>
 </head>
 <body>
@@ -848,6 +981,18 @@
             <div class="header-logo" onclick="showPage('landing-page')">
                 <i class="fa-solid fa-fire-flame-curved"></i>
                 <h2>Guesin.ai Digital Twin</h2>
+            </div>
+            <!-- Module Buttons -->
+            <div class="nav-modules">
+                <button class="nav-btn nav-btn-whatif" onclick="openWhatIf()" title="What-If Scenario Engine">
+                    <i class="fa-solid fa-code-branch"></i> What-If
+                </button>
+                <button class="nav-btn nav-btn-sitrep" onclick="openSitrep()" title="AI Tactical Situation Report">
+                    <i class="fa-solid fa-file-shield"></i> Sitrep
+                </button>
+                <button class="nav-btn nav-btn-forecast" onclick="openForecast()" title="Monte Carlo Fire Forecast">
+                    <i class="fa-solid fa-chart-area"></i> Forecast
+                </button>
             </div>
             <div class="header-user">
                 <span><i class="fa-solid fa-user-shield"></i> operator@guesin.ai</span>
@@ -978,7 +1123,23 @@
                                 <span>Burned Area / Ash</span>
                             </div>
                         </div>
-                    </div>
+                        <!-- AQI Smoke/Air Quality Overlay Toggle -->
+                        <div style="margin-top:0.75rem;text-align:center;">
+                            <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;">
+                                <button class="aqi-toggle-btn" id="aqi-toggle-btn" onclick="toggleAQIOverlay()">
+                                    <i class="fa-solid fa-smog"></i> Smoke / AQI Overlay
+                                </button>
+                                <span style="font-size:0.75rem;color:var(--text-muted);" id="aqi-status-text">OFF</span>
+                            </div>
+                            <div class="aqi-legend" id="aqi-legend">
+                                <div class="aqi-badge"><div class="aqi-dot" style="background:#00e400;"></div>Good (0–50)</div>
+                                <div class="aqi-badge"><div class="aqi-dot" style="background:#ffff00;border-color:#ccc;"></div>Moderate</div>
+                                <div class="aqi-badge"><div class="aqi-dot" style="background:#ff7e00;"></div>Unhealthy-SG</div>
+                                <div class="aqi-badge"><div class="aqi-dot" style="background:#ff0000;"></div>Unhealthy</div>
+                                <div class="aqi-badge"><div class="aqi-dot" style="background:#8f3f97;"></div>Very Unhealthy</div>
+                                <div class="aqi-badge"><div class="aqi-dot" style="background:#7e0023;"></div>Hazardous</div>
+                            </div>
+                        </div>
 
                     <!-- Live Simulation Metrics -->
                     <div class="stats-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
@@ -1076,11 +1237,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Username</label>
-                                    <input type="email" id="smtp-user" class="form-control" value="sarveshbala27@gmail.com" style="margin-top:0.25rem; font-size:0.85rem;">
+                                    <input type="email" id="smtp-user" class="form-control" value="theguesin.ai@gmail.com" style="margin-top:0.25rem; font-size:0.85rem;">
                                 </div>
                                 <div class="form-group">
                                     <label style="font-size: 0.8rem; color: var(--text-muted);">App Password</label>
-                                    <input type="password" id="smtp-password" class="form-control" value="cyvrsvxeuqjfoxhb" style="margin-top:0.25rem; font-size:0.85rem;">
+                                    <input type="password" id="smtp-password" class="form-control" value="jtrnkorvcmqtvowc" style="margin-top:0.25rem; font-size:0.85rem;">
                                 </div>
                             </div>
                         </details>
@@ -1147,6 +1308,236 @@
         </footer>
     </div>
 
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- WHAT-IF SCENARIO ENGINE — Slide-in Right Drawer            -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <div class="drawer-overlay" id="whatif-overlay" onclick="closeWhatIf()"></div>
+    <div class="side-drawer" id="whatif-drawer">
+        <div class="drawer-header">
+            <h3><i class="fa-solid fa-code-branch"></i> What-If Scenario Engine</h3>
+            <button class="btn-close-modal" onclick="closeWhatIf()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-body">
+            <p style="font-size:0.83rem;color:var(--text-muted);line-height:1.55;margin:0;">Clone the current fire state and test different conditions without touching the live simulation.</p>
+
+            <!-- Wind override -->
+            <div>
+                <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;letter-spacing:0.05em;">Wind Override</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Speed (m/s)</label>
+                        <input type="number" id="wi-wind-speed" class="form-control" placeholder="Current" step="0.5" min="0" max="60">
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Direction (°)</label>
+                        <input type="number" id="wi-wind-dir" class="form-control" placeholder="0=North" step="5" min="0" max="360">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Firebreak mode -->
+            <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+                    <span style="font-weight:600;font-size:0.9rem;"><i class="fa-solid fa-tree" style="color:#16a34a;margin-right:0.3rem;"></i>Firebreak Mode</span>
+                    <label style="position:relative;display:inline-block;width:46px;height:24px;cursor:pointer;">
+                        <input type="checkbox" id="wi-firebreak-toggle" onchange="toggleFirebreakMode(this.checked)" style="opacity:0;width:0;height:0;position:absolute;">
+                        <span id="wi-fb-track" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border-color);border-radius:24px;transition:0.3s;">
+                            <span id="wi-fb-thumb" style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
+                        </span>
+                    </label>
+                </div>
+                <p style="font-size:0.77rem;color:var(--text-muted);line-height:1.4;">When ON — clicking any cell on the map adds it as a firebreak (clears fuel load in the scenario).</p>
+                <div id="wi-firebreaks-list" style="margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.3rem;min-height:20px;"></div>
+                <button id="wi-clear-fb" onclick="clearFirebreaks()" style="display:none;margin-top:0.5rem;font-size:0.77rem;padding:0.3rem 0.65rem;border:1px solid var(--danger);color:var(--danger);background:var(--danger-light);border-radius:var(--radius-md);cursor:pointer;">
+                    <i class="fa-solid fa-trash-can"></i> Clear All Firebreaks
+                </button>
+            </div>
+
+            <!-- Steps ahead -->
+            <div class="form-group" style="margin:0;">
+                <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Steps to Simulate Ahead</label>
+                <input type="number" id="wi-steps" class="form-control" value="10" min="1" max="30">
+            </div>
+
+            <!-- Loading state -->
+            <div id="wi-loading" style="display:none;text-align:center;padding:1rem;color:var(--primary);">
+                <div class="spinner" style="margin:0 auto 0.65rem;width:36px;height:36px;border-width:4px;"></div>
+                <p style="font-size:0.9rem;font-weight:600;">Running fork simulation…</p>
+            </div>
+
+            <!-- Results -->
+            <div id="wi-results" style="display:none;border-top:1px solid var(--border-color);padding-top:1rem;">
+                <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;">Scenario Results</p>
+                <p id="wi-scenario-desc" style="font-size:0.82rem;color:var(--text-main);margin-bottom:0.75rem;padding:0.6rem;background:var(--bg-main);border-radius:var(--radius-md);border-left:3px solid #7c3aed;"></p>
+                
+                <div style="background:#f5f3ff;border:1px solid #7c3aed33;border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;flex-direction:column;gap:0.15rem;">
+                        <span style="font-weight:700;font-size:0.82rem;color:#6d28d9;"><i class="fa-solid fa-eye"></i> Visual Preview</span>
+                        <span style="font-size:0.72rem;color:var(--text-muted);">Render sandbox grid on the active Leaflet map</span>
+                    </div>
+                    <label style="position:relative;display:inline-block;width:46px;height:24px;cursor:pointer;">
+                        <input type="checkbox" id="wi-preview-toggle" onchange="toggleScenarioPreview(this.checked)" style="opacity:0;width:0;height:0;position:absolute;">
+                        <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border-color);border-radius:24px;transition:0.3s;" id="wi-prev-track">
+                            <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);" id="wi-prev-thumb"></span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="compare-card original">
+                        <h4 style="color:var(--danger);">Live Timeline</h4>
+                        <div class="big-num" id="wi-orig-count" style="color:var(--danger);">—</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">cells burned/burning</div>
+                    </div>
+                    <div class="compare-card forked">
+                        <h4 style="color:var(--success);">With Scenario</h4>
+                        <div class="big-num" id="wi-fork-count" style="color:var(--success);">—</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">cells burned/burning</div>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:0.5rem;">
+                    <div class="saved-badge"><i class="fa-solid fa-shield-heart"></i> <span id="wi-saved-count">0</span> cells saved</div>
+                    <div id="wi-pct" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-primary" style="width:100%;background:linear-gradient(135deg,#7c3aed,#6d28d9);justify-content:center;" onclick="runWhatIfScenario()">
+                <i class="fa-solid fa-play"></i> Run Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- SITUATION REPORT MODAL                                      -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="sitrep-modal">
+        <div class="modal-card" style="max-width:780px;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#0369a1,#0284c7);">
+                <h3 style="color:white;"><i class="fa-solid fa-file-shield"></i> Tactical Situation Report</h3>
+                <button class="btn-close-modal" onclick="closeSitrep()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="sitrep-content">
+                    <div style="text-align:center;padding:2.5rem;color:var(--text-muted);">
+                        <div class="spinner" style="margin:0 auto 1rem;"></div>
+                        <p style="font-weight:600;">Generating tactical report…</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="sitrep-model-badge" style="font-size:0.75rem;color:var(--text-muted);margin-right:auto;"></span>
+                <button class="btn btn-outline" onclick="copySitrep()" style="font-size:0.85rem;"><i class="fa-solid fa-copy"></i> Copy</button>
+                <button class="btn btn-outline" onclick="exportSitrep()" style="font-size:0.85rem;border-color:var(--primary);color:var(--primary);"><i class="fa-solid fa-file-arrow-down"></i> Export Log</button>
+                <button class="btn btn-primary" style="background:linear-gradient(135deg,#0369a1,#0284c7);" onclick="loadSitrep()">
+                    <i class="fa-solid fa-rotate"></i> Regenerate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- MONTE CARLO FIRE FORECAST MODAL                             -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="forecast-modal">
+        <div class="modal-card" style="max-width:680px;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#b45300,#d97706);">
+                <h3 style="color:white;"><i class="fa-solid fa-chart-area"></i> Monte Carlo Fire Forecast</h3>
+                <button class="btn-close-modal" onclick="closeForecast()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Config row -->
+                <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:0.9rem;align-items:flex-end;margin-bottom:1.5rem;">
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Steps Ahead</label>
+                        <select id="fc-steps" class="form-control">
+                            <option value="5">5 steps</option>
+                            <option value="10" selected>10 steps</option>
+                            <option value="20">20 steps</option>
+                            <option value="50">50 steps</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Trials</label>
+                        <select id="fc-trials" class="form-control">
+                            <option value="50">50 (fast)</option>
+                            <option value="100" selected>100 (normal)</option>
+                            <option value="200">200 (precise)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" style="background:linear-gradient(135deg,#b45300,#d97706);" onclick="runForecast()">
+                            <i class="fa-solid fa-play"></i> Run
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="fc-loading" style="display:none;text-align:center;padding:2rem;color:var(--text-muted);">
+                    <div class="spinner" style="margin:0 auto 1rem;border-top-color:#b45300;"></div>
+                    <p style="font-weight:600;">Running Monte Carlo simulations…</p>
+                    <p style="font-size:0.83rem;margin-top:0.35rem;" id="fc-loading-msg">This may take a few seconds.</p>
+                </div>
+
+                <!-- Results -->
+                <div id="fc-results" style="display:none;">
+                    <div class="forecast-stats-grid">
+                        <div class="forecast-stat">
+                            <div class="label">High Risk Cells</div>
+                            <div class="value" id="fc-high-risk" style="color:var(--danger);">—</div>
+                            <div style="font-size:0.72rem;color:var(--text-muted);">&gt;70% probability</div>
+                        </div>
+                        <div class="forecast-stat">
+                            <div class="label">Moderate Risk</div>
+                            <div class="value" id="fc-mod-risk" style="color:var(--warning);">—</div>
+                            <div style="font-size:0.72rem;color:var(--text-muted);">30–70% probability</div>
+                        </div>
+                        <div class="forecast-stat">
+                            <div class="label">Expected New</div>
+                            <div class="value" id="fc-expected" style="color:var(--primary);">—</div>
+                            <div style="font-size:0.72rem;color:var(--text-muted);">cells catching fire</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dynamic slider filter -->
+                    <div style="background:#fff7ed;border:1px solid #b4530022;border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;">
+                            <span style="font-weight:700;font-size:0.83rem;color:#b45300;"><i class="fa-solid fa-filter"></i> Probability Filter Threshold</span>
+                            <span style="font-family:monospace;font-weight:700;font-size:0.9rem;color:#b45300;" id="fc-slider-value">5%</span>
+                        </div>
+                        <input type="range" id="fc-prob-slider" min="5" max="95" step="5" value="5" style="width:100%;accent-color:#b45300;cursor:pointer;" oninput="onForecastSliderInput(this.value)">
+                        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;">
+                            <span>Show all (&ge; 5%)</span><span>&ge; 50%</span><span>Severe threats (&ge; 95%)</span>
+                        </div>
+                    </div>
+
+                    <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem;">
+                        <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem;letter-spacing:0.05em;">Probability Heatmap Active on Map</div>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">Cells color-coded by fire probability — amber=low, orange=moderate, red=high risk.</p>
+                        <div class="prob-legend">
+                            <span>0%</span>
+                            <div class="prob-gradient"></div>
+                            <span>100%</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.71rem;color:var(--text-muted);margin-top:0.2rem;">
+                            <span>Safe</span><span>Moderate</span><span>High Risk</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline" style="width:100%;" onclick="clearForecastOverlay()">
+                        <i class="fa-solid fa-eraser"></i> Clear Heatmap from Map
+                    </button>
+                </div>
+
+                <!-- Initial state -->
+                <div id="fc-initial" style="text-align:center;padding:2rem;color:var(--text-muted);">
+                    <i class="fa-solid fa-chart-area" style="font-size:2.5rem;margin-bottom:1rem;opacity:0.25;"></i>
+                    <p style="font-weight:600;font-size:0.95rem;">Configure and run a forecast above</p>
+                    <p style="font-size:0.83rem;margin-top:0.35rem;">Requires at least 1 simulation step to be running first.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Javascript Logical Code -->
     <script>
@@ -1969,6 +2360,527 @@
                 togglePlay(); // Pause
             }
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // AQI / SMOKE PLUME OVERLAY
+        // ═══════════════════════════════════════════════════════════════
+
+        let aqiOverlayActive = false;
+        let aqiRectangles = [];
+        let aqiPollInterval = null;
+
+        function toggleAQIOverlay() {
+            aqiOverlayActive = !aqiOverlayActive;
+            const btn = document.getElementById('aqi-toggle-btn');
+            const statusText = document.getElementById('aqi-status-text');
+            const legend = document.getElementById('aqi-legend');
+
+            if (aqiOverlayActive) {
+                btn.classList.add('active');
+                statusText.textContent = 'ON — auto-refreshing';
+                legend.classList.add('visible');
+                fetchAndRenderAQI();
+                aqiPollInterval = setInterval(fetchAndRenderAQI, 6000);
+            } else {
+                btn.classList.remove('active');
+                statusText.textContent = 'OFF';
+                legend.classList.remove('visible');
+                clearAQILayer();
+                clearInterval(aqiPollInterval);
+                aqiPollInterval = null;
+            }
+        }
+
+        async function fetchAndRenderAQI() {
+            if (!map || !aqiOverlayActive) return;
+            try {
+                const resp = await fetch('/aqi-grid');
+                if (!resp.ok) return;
+                const data = await resp.json();
+                renderAQILayer(data);
+            } catch (err) {
+                console.warn('AQI fetch error:', err);
+            }
+        }
+
+        function renderAQILayer(aqiData) {
+            if (!map) return;
+            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
+            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
+            const cell_size = 30.0;
+            const r_ignite = 25, c_ignite = 25;
+
+            // Build AQI rect layer if not yet created
+            if (aqiRectangles.length === 0) {
+                for (let r = 0; r < GRID_SIZE; r++) {
+                    let row = [];
+                    for (let c = 0; c < GRID_SIZE; c++) {
+                        const x1 = (c - c_ignite) * cell_size - cell_size / 2;
+                        const y1 = (r_ignite - r) * cell_size - cell_size / 2;
+                        const x2 = (c - c_ignite) * cell_size + cell_size / 2;
+                        const y2 = (r_ignite - r) * cell_size + cell_size / 2;
+                        const p1 = xyToLatLon(x1, y1, ignLat, ignLon);
+                        const p2 = xyToLatLon(x2, y2, ignLat, ignLon);
+                        const bounds = [
+                            [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])],
+                            [Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])]
+                        ];
+                        const rect = L.rectangle(bounds, {
+                            color: 'transparent', weight: 0,
+                            fillColor: '#ff7e00', fillOpacity: 0,
+                            interactive: false
+                        }).addTo(map);
+                        row.push(rect);
+                    }
+                    aqiRectangles.push(row);
+                }
+            }
+
+            // Update opacity and color from live AQI data
+            for (const cell of aqiData) {
+                const { row: r, col: c, aqi, color } = cell;
+                if (aqiRectangles[r] && aqiRectangles[r][c]) {
+                    const opacity = aqi <= 8 ? 0 : Math.min(0.62, (aqi / 500) * 0.55 + 0.08);
+                    aqiRectangles[r][c].setStyle({ fillColor: color, fillOpacity: opacity });
+                }
+            }
+        }
+
+        function clearAQILayer() {
+            if (!map) return;
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (aqiRectangles[r] && aqiRectangles[r][c]) {
+                        map.removeLayer(aqiRectangles[r][c]);
+                    }
+                }
+            }
+            aqiRectangles = [];
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // WHAT-IF SCENARIO ENGINE
+        // ═══════════════════════════════════════════════════════════════
+
+        let firebreakCells = [];
+        let firebreakModeActive = false;
+
+        function openWhatIf() {
+            document.getElementById('whatif-drawer').classList.add('open');
+            document.getElementById('whatif-overlay').classList.add('open');
+        }
+
+        function closeWhatIf() {
+            document.getElementById('whatif-drawer').classList.remove('open');
+            document.getElementById('whatif-overlay').classList.remove('open');
+            if (firebreakModeActive) {
+                document.getElementById('wi-firebreak-toggle').checked = false;
+                toggleFirebreakMode(false);
+            }
+        }
+
+        function toggleFirebreakMode(enabled) {
+            firebreakModeActive = enabled;
+            const track = document.getElementById('wi-fb-track');
+            const thumb = document.getElementById('wi-fb-thumb');
+            if (enabled) {
+                track.style.background = '#7c3aed';
+                thumb.style.transform = 'translateX(22px)';
+                if (map) {
+                    document.getElementById('digital-twin-map').style.cursor = 'crosshair';
+                    map.on('click', addFirebreakFromMap);
+                }
+            } else {
+                track.style.background = 'var(--border-color)';
+                thumb.style.transform = 'translateX(0)';
+                if (map) {
+                    document.getElementById('digital-twin-map').style.cursor = '';
+                    map.off('click', addFirebreakFromMap);
+                }
+            }
+        }
+
+        function addFirebreakFromMap(e) {
+            if (!map || !firebreakModeActive) return;
+            const { lat, lng } = e.latlng;
+            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
+            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
+            const cell_size = 30.0;
+            const earthRadius = 6371000.0;
+            const dy = (lat - ignLat) * Math.PI / 180 * earthRadius;
+            const dx = (lng - ignLon) * Math.PI / 180 * earthRadius * Math.cos(ignLat * Math.PI / 180);
+            const r = Math.round(25 - dy / cell_size);
+            const c = Math.round(25 + dx / cell_size);
+            if (r >= 0 && r < 50 && c >= 0 && c < 50) {
+                if (!firebreakCells.some(([br, bc]) => br === r && bc === c)) {
+                    firebreakCells.push([r, c]);
+                    if (gridRectangles[r] && gridRectangles[r][c]) {
+                        gridRectangles[r][c].setStyle({ fillColor: '#7c3aed', fillOpacity: 0.7, color: '#6d28d9', weight: 2 });
+                    }
+                    updateFirebreakList();
+                }
+            }
+        }
+
+        function updateFirebreakList() {
+            const list = document.getElementById('wi-firebreaks-list');
+            const clearBtn = document.getElementById('wi-clear-fb');
+            list.innerHTML = '';
+            firebreakCells.forEach(([r, c]) => {
+                const chip = document.createElement('span');
+                chip.style.cssText = 'background:#ede9fe;color:#7c3aed;padding:0.18rem 0.5rem;border-radius:999px;font-size:0.74rem;font-weight:600;';
+                chip.textContent = `[${r},${c}]`;
+                list.appendChild(chip);
+            });
+            clearBtn.style.display = firebreakCells.length ? 'inline-block' : 'none';
+        }
+
+        function clearFirebreaks() {
+            if (map && gridRectangles.length > 0) {
+                firebreakCells.forEach(([r, c]) => {
+                    if (gridRectangles[r] && gridRectangles[r][c]) {
+                        gridRectangles[r][c].setStyle({
+                            fillColor: '#10b981', fillOpacity: 0.2,
+                            color: 'rgba(255,255,255,0.15)', weight: 0.5
+                        });
+                    }
+                });
+            }
+            firebreakCells = [];
+            updateFirebreakList();
+            document.getElementById('wi-results').style.display = 'none';
+        }
+
+        let scenarioActiveSnapshot = null;
+        let scenarioPreviewActive = false;
+        let scenarioRectangles = [];
+
+        async function runWhatIfScenario() {
+            const windSpeed = document.getElementById('wi-wind-speed').value;
+            const windDir = document.getElementById('wi-wind-dir').value;
+            const steps = parseInt(document.getElementById('wi-steps').value) || 10;
+
+            const payload = {
+                wind_speed: windSpeed !== '' ? parseFloat(windSpeed) : null,
+                wind_direction: windDir !== '' ? parseFloat(windDir) : null,
+                firebreak_cells: firebreakCells,
+                steps: steps
+            };
+
+            document.getElementById('wi-loading').style.display = 'block';
+            document.getElementById('wi-results').style.display = 'none';
+            document.getElementById('wi-preview-toggle').checked = false;
+            clearScenarioPreview();
+
+            try {
+                const resp = await fetch('/fork-simulation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await resp.json();
+
+                if (data.status === 'success') {
+                    scenarioActiveSnapshot = data.fork_snapshot;
+                    const comp = data.comparison;
+                    document.getElementById('wi-orig-count').textContent = comp.original_burned;
+                    document.getElementById('wi-fork-count').textContent = comp.fork_burned;
+                    document.getElementById('wi-saved-count').textContent = comp.saved_cells;
+                    document.getElementById('wi-pct').textContent = comp.pct_reduction + '% reduction in burned area vs live timeline';
+                    document.getElementById('wi-scenario-desc').textContent = `Scenario: ${data.scenario} • ${steps} steps`;
+                    document.getElementById('wi-results').style.display = 'block';
+                } else {
+                    alert('Fork simulation failed: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error('What-If error:', err);
+                alert('What-If scenario error: ' + err.message);
+            } finally {
+                document.getElementById('wi-loading').style.display = 'none';
+            }
+        }
+
+        function toggleScenarioPreview(checked) {
+            scenarioPreviewActive = checked;
+            if (checked) {
+                if (!scenarioActiveSnapshot) {
+                    alert('Please run a scenario simulation first.');
+                    document.getElementById('wi-preview-toggle').checked = false;
+                    return;
+                }
+                renderScenarioPreview();
+            } else {
+                clearScenarioPreview();
+            }
+        }
+
+        function renderScenarioPreview() {
+            if (!map || !scenarioActiveSnapshot) return;
+            clearScenarioPreview();
+
+            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
+            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
+            const cell_size = 30.0;
+            const r_ignite = 25, c_ignite = 25;
+
+            for (const cell of scenarioActiveSnapshot) {
+                const { row: r, col: c, fire_state } = cell;
+                if (fire_state === 'unburned') continue;
+
+                const x1 = (c - c_ignite) * cell_size - cell_size / 2;
+                const y1 = (r_ignite - r) * cell_size - cell_size / 2;
+                const x2 = (c - c_ignite) * cell_size + cell_size / 2;
+                const y2 = (r_ignite - r) * cell_size + cell_size / 2;
+                const p1 = xyToLatLon(x1, y1, ignLat, ignLon);
+                const p2 = xyToLatLon(x2, y2, ignLat, ignLon);
+                const bounds = [
+                    [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])],
+                    [Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])]
+                ];
+
+                const color = fire_state === 'burning' ? '#a78bfa' : '#4c1d95'; // distinct purple for scenario preview
+                const stateText = fire_state === 'burning' ? 'Scenario: Burning' : 'Scenario: Burned';
+
+                const rect = L.rectangle(bounds, {
+                    color: '#7c3aed',
+                    weight: 1.5,
+                    dashArray: '3, 4',
+                    fillColor: color,
+                    fillOpacity: 0.5,
+                    interactive: true
+                }).addTo(map);
+
+                rect.bindTooltip(`🔮 ${stateText} (${r}, ${c})`, { sticky: true });
+                scenarioRectangles.push(rect);
+            }
+        }
+
+        function clearScenarioPreview() {
+            scenarioRectangles.forEach(rect => {
+                if (map) map.removeLayer(rect);
+            });
+            scenarioRectangles = [];
+        }
+
+
+        // ═══════════════════════════════════════════════════════════════
+        // SITUATION REPORT (SITREP)
+        // ═══════════════════════════════════════════════════════════════
+
+        let lastSitrepText = '';
+
+        function openSitrep() {
+            document.getElementById('sitrep-modal').classList.add('open');
+            loadSitrep();
+        }
+
+        function closeSitrep() {
+            document.getElementById('sitrep-modal').classList.remove('open');
+        }
+
+        async function loadSitrep() {
+            const contentEl = document.getElementById('sitrep-content');
+            const modelBadge = document.getElementById('sitrep-model-badge');
+
+            contentEl.innerHTML = `
+                <div style="text-align:center;padding:2.5rem;color:var(--text-muted);">
+                    <div class="spinner" style="margin:0 auto 1rem;"></div>
+                    <p style="font-weight:600;">Generating tactical report…</p>
+                </div>`;
+
+            try {
+                const resp = await fetch('/situation-report');
+                const data = await resp.json();
+
+                if (data.status === 'success') {
+                    const ctx = data.context;
+                    lastSitrepText = data.report;
+                    const threat = ctx.d_factor >= 40 ? 'CRITICAL' : ctx.d_factor >= 15 ? 'HIGH' : ctx.d_factor >= 5 ? 'MODERATE' : 'LOW';
+                    const tColors = {
+                        CRITICAL: ['#fef2f2','#dc2626'],
+                        HIGH:     ['#fef2f2','#ef4444'],
+                        MODERATE: ['#fffbeb','#d97706'],
+                        LOW:      ['#f0fdf4','#16a34a']
+                    };
+                    const [tBg, tFg] = tColors[threat] || tColors.LOW;
+                    const modelIcon = data.model === 'template' ? '📋' : '🤖';
+                    modelBadge.textContent = `${modelIcon} ${data.model === 'template' ? 'Template report' : 'Gemini AI · ' + data.model}`;
+
+                    let riskRows = '';
+                    ctx.top_risk_zones.forEach(z => {
+                        riskRows += `<tr>
+                            <td style="padding:0.4rem;font-family:monospace;font-weight:700;color:var(--text-main);">Cell [${z.row},${z.col}]</td>
+                            <td style="padding:0.4rem;text-align:right;"><span style="color:#dc2626;background:#fef2f2;padding:0.1rem 0.4rem;border-radius:4px;font-size:0.75rem;font-weight:700;">${(z.risk * 100).toFixed(0)}% THREAT</span></td>
+                        </tr>`;
+                    });
+
+                    contentEl.innerHTML = `
+                        <div class="sitrep-meta">
+                            <div class="meta-badge" style="background:${tBg};color:${tFg};">🚨 ${threat} THREAT</div>
+                            <div class="meta-badge" style="background:var(--bg-main);color:var(--text-muted);border:1px solid var(--border-color);">📍 Step ${ctx.step}</div>
+                            <div class="meta-badge" style="background:var(--bg-main);color:var(--text-muted);border:1px solid var(--border-color);">🔥 ${ctx.burning} burning</div>
+                            <div class="meta-badge" style="background:var(--bg-main);color:var(--text-muted);border:1px solid var(--border-color);">📉 D-Factor: ${ctx.d_factor}%</div>
+                        </div>
+                        
+                        <div class="sitrep-text">${escapeHtml(data.report)}</div>
+
+                        <div style="margin-top:1.25rem;border-top:1px solid var(--border-color);padding-top:1rem;">
+                            <span style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;display:block;margin-bottom:0.6rem;">Zone Analysis (Imminent Risk Vector)</span>
+                            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+                                <tbody>
+                                    ${riskRows || '<tr><td colspan="2" style="color:var(--text-muted);font-style:italic;">No immediate risk zones identified.</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                } else {
+                    contentEl.innerHTML = `<div style="color:var(--danger);padding:1rem;">Failed to generate report. Try again.</div>`;
+                }
+            } catch (err) {
+                console.error('Sitrep error:', err);
+                contentEl.innerHTML = `<div style="color:var(--danger);padding:1rem;">Error: ${err.message}</div>`;
+            }
+        }
+
+        function escapeHtml(text) {
+            return (text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function copySitrep() {
+            if (!lastSitrepText) return;
+            navigator.clipboard.writeText(lastSitrepText)
+                .then(() => alert('Report copied to clipboard!'))
+                .catch(() => alert('Copy failed.'));
+        }
+
+        function exportSitrep() {
+            if (!lastSitrepText) return;
+            const blob = new Blob([lastSitrepText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Guesin_Sitrep_Step_${simulationData ? simulationData.step : 0}_${Date.now()}.txt`;
+            link.click();
+        }
+
+
+        // ═══════════════════════════════════════════════════════════════
+        // MONTE CARLO FIRE FORECAST
+        // ═══════════════════════════════════════════════════════════════
+
+        let forecastRectangles = [];
+        let forecastActiveGrid = [];
+        let forecastSliderVal = 0.05;
+
+        function openForecast() {
+            document.getElementById('forecast-modal').classList.add('open');
+        }
+
+        function closeForecast() {
+            document.getElementById('forecast-modal').classList.remove('open');
+        }
+
+        async function runForecast() {
+            const steps = document.getElementById('fc-steps').value;
+            const trials = document.getElementById('fc-trials').value;
+
+            document.getElementById('fc-loading').style.display = 'block';
+            document.getElementById('fc-results').style.display = 'none';
+            document.getElementById('fc-initial').style.display = 'none';
+            document.getElementById('fc-loading-msg').textContent = `Running ${trials} trials × ${steps} steps…`;
+
+            try {
+                const resp = await fetch(`/fire-forecast?steps=${steps}&trials=${trials}`);
+                const data = await resp.json();
+
+                if (data.status === 'success') {
+                    forecastActiveGrid = data.probability_grid;
+                    document.getElementById('fc-high-risk').textContent = data.high_risk_count;
+                    document.getElementById('fc-mod-risk').textContent = data.moderate_risk_count;
+                    document.getElementById('fc-expected').textContent = data.expected_new_cells;
+                    document.getElementById('fc-results').style.display = 'block';
+                    
+                    // Reset filter slider
+                    document.getElementById('fc-prob-slider').value = 5;
+                    document.getElementById('fc-slider-value').textContent = '5%';
+                    forecastSliderVal = 0.05;
+
+                    renderForecastOverlay(forecastActiveGrid);
+                } else {
+                    alert('Forecast failed: ' + (data.detail || 'Unknown error'));
+                    document.getElementById('fc-initial').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Forecast error:', err);
+                const msg = err.message || 'Unknown error';
+                if (msg.includes('400')) {
+                    alert('Please run at least 1 simulation step first, then try the forecast.');
+                } else {
+                    alert('Forecast error: ' + msg);
+                }
+                document.getElementById('fc-initial').style.display = 'block';
+            } finally {
+                document.getElementById('fc-loading').style.display = 'none';
+            }
+        }
+
+        function onForecastSliderInput(value) {
+            const pct = parseInt(value);
+            document.getElementById('fc-slider-value').textContent = `${pct}%`;
+            forecastSliderVal = pct / 100.0;
+            if (forecastActiveGrid.length > 0) {
+                renderForecastOverlay(forecastActiveGrid);
+            }
+        }
+
+        function renderForecastOverlay(probGrid) {
+            if (!map) return;
+            clearForecastOverlay();
+
+            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
+            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
+            const cell_size = 30.0;
+            const r_ignite = 25, c_ignite = 25;
+
+            for (const cell of probGrid) {
+                const { row: r, col: c, probability, already_burning } = cell;
+                if (already_burning || probability < forecastSliderVal) continue;
+
+                const x1 = (c - c_ignite) * cell_size - cell_size / 2;
+                const y1 = (r_ignite - r) * cell_size - cell_size / 2;
+                const x2 = (c - c_ignite) * cell_size + cell_size / 2;
+                const y2 = (r_ignite - r) * cell_size + cell_size / 2;
+                const p1 = xyToLatLon(x1, y1, ignLat, ignLon);
+                const p2 = xyToLatLon(x2, y2, ignLat, ignLon);
+                const bounds = [
+                    [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])],
+                    [Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])]
+                ];
+
+                const fillColor = probability < 0.30 ? '#fbbf24' : probability < 0.70 ? '#f97316' : '#dc2626';
+                const fillOpacity = Math.min(0.78, probability * 0.7 + 0.08);
+
+                const rect = L.rectangle(bounds, {
+                    color: 'transparent', weight: 0,
+                    fillColor: fillColor, fillOpacity: fillOpacity,
+                    interactive: true
+                }).addTo(map);
+
+                rect.bindTooltip(`🔥 Forecast: ${(probability * 100).toFixed(0)}% chance of fire`, { sticky: true });
+                forecastRectangles.push(rect);
+            }
+        }
+
+        function clearForecastOverlay() {
+            if (!map) return;
+            for (const rect of forecastRectangles) {
+                map.removeLayer(rect);
+            }
+            forecastRectangles = [];
+        }
+
     </script>
 </body>
 </html>
