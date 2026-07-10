@@ -737,8 +737,8 @@
         .nav-btn-whatif:hover { background:#ede9fe;border-color:#7c3aed; }
         .nav-btn-sitrep  { border-color:#0369a144;color:#0369a1;background:#f0f9ff; }
         .nav-btn-sitrep:hover { background:#e0f2fe;border-color:#0369a1; }
-        .nav-btn-forecast{ border-color:#b4530044;color:#b45300;background:#fff7ed; }
-        .nav-btn-forecast:hover { background:#ffedd5;border-color:#b45300; }
+        .nav-btn-reforestation{ border-color:#16a34a44;color:#16a34a;background:#f0fdf4; }
+        .nav-btn-reforestation:hover { background:#dcfce7;border-color:#16a34a; }
 
         /* ── AQI Overlay ────────────────────────────────────── */
         .aqi-toggle-btn {
@@ -990,8 +990,8 @@
                 <button class="nav-btn nav-btn-sitrep" onclick="openSitrep()" title="AI Tactical Situation Report">
                     <i class="fa-solid fa-file-shield"></i> Sitrep
                 </button>
-                <button class="nav-btn nav-btn-forecast" onclick="openForecast()" title="Monte Carlo Fire Forecast">
-                    <i class="fa-solid fa-chart-area"></i> Forecast
+                <button class="nav-btn nav-btn-reforestation" onclick="openReforestation()" title="Reforestation & Agri-Doctor Diagnostic Reports">
+                    <i class="fa-solid fa-seedling"></i> Reforestation
                 </button>
             </div>
             <div class="header-user">
@@ -1434,103 +1434,101 @@
     </div>
 
     <!-- ════════════════════════════════════════════════════════════ -->
-    <!-- MONTE CARLO FIRE FORECAST MODAL                             -->
+    <!-- REFORESTATION & AGRI-DOCTOR DIAGNOSTIC REPORTS MODAL         -->
     <!-- ════════════════════════════════════════════════════════════ -->
-    <div class="modal-overlay" id="forecast-modal">
-        <div class="modal-card" style="max-width:680px;">
-            <div class="modal-header" style="background:linear-gradient(135deg,#b45300,#d97706);">
-                <h3 style="color:white;"><i class="fa-solid fa-chart-area"></i> Monte Carlo Fire Forecast</h3>
-                <button class="btn-close-modal" onclick="closeForecast()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-overlay" id="reforestation-modal">
+        <div class="modal-card" style="max-width:760px; max-height:85vh; display:flex; flex-direction:column;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#15803d,#16a34a);">
+                <h3 style="color:white;"><i class="fa-solid fa-seedling"></i> Reforestation & Agri-Doctor</h3>
+                <button class="btn-close-modal" onclick="closeReforestation()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="modal-body">
-                <!-- Config row -->
-                <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:0.9rem;align-items:flex-end;margin-bottom:1.5rem;">
-                    <div class="form-group" style="margin:0;">
-                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Steps Ahead</label>
-                        <select id="fc-steps" class="form-control">
-                            <option value="5">5 steps</option>
-                            <option value="10" selected>10 steps</option>
-                            <option value="20">20 steps</option>
-                            <option value="50">50 steps</option>
-                        </select>
+            
+            <div class="modal-body" style="overflow-y:auto; padding:1.5rem; flex:1;">
+                <!-- Loading State -->
+                <div id="ref-loading" style="text-align:center;padding:2rem;color:var(--text-muted);">
+                    <div class="spinner" style="margin:0 auto 1rem;border-top-color:#16a34a;"></div>
+                    <p style="font-weight:600;">Analyzing soil health & damaged zones...</p>
+                </div>
+
+                <!-- Empty State (No Damage) -->
+                <div id="ref-empty" style="display:none;text-align:center;padding:3rem;color:var(--text-muted);">
+                    <i class="fa-solid fa-heart-circle-check" style="font-size:3rem;color:#16a34a;margin-bottom:1rem;opacity:0.8;"></i>
+                    <p style="font-weight:700;font-size:1.1rem;color:var(--text-main);">Forest is 100% Healthy!</p>
+                    <p style="font-size:0.85rem;margin-top:0.4rem;">No damaged zones detected. Run at least 1 simulation step with burning fires to calculate reforestation priorities.</p>
+                </div>
+
+                <!-- Results State -->
+                <div id="ref-results" style="display:none;">
+                    <!-- Overview Stats -->
+                    <div class="forecast-stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1.25rem;">
+                        <div class="forecast-stat" style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
+                            <div class="label" style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">Damaged Cells</div>
+                            <div class="value" id="ref-cell-count" style="font-size:1.8rem; font-weight:800; color:#16a34a;">0</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">classified as burned</div>
+                        </div>
+                        <div class="forecast-stat" style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
+                            <div class="label" style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">Destroyed Area</div>
+                            <div class="value" id="ref-area-count" style="font-size:1.05rem; font-weight:800; color:#16a34a; padding:0.4rem 0;">0 ha</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">estimated land cover</div>
+                        </div>
+                        <div class="forecast-stat" style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
+                            <div class="label" style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">Recovery Urgency</div>
+                            <div class="value" id="ref-urgency" style="font-size:1.15rem; font-weight:800; color:#dc2626; padding:0.45rem 0;">LOW</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">priority urgency rank</div>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin:0;">
-                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Trials</label>
-                        <select id="fc-trials" class="form-control">
-                            <option value="50">50 (fast)</option>
-                            <option value="100" selected>100 (normal)</option>
-                            <option value="200">200 (precise)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary" style="background:linear-gradient(135deg,#b45300,#d97706);" onclick="runForecast()">
-                            <i class="fa-solid fa-play"></i> Run
+
+                    <!-- Map Highlight Control -->
+                    <div style="text-align:center; margin-bottom:1.5rem;">
+                        <button class="btn btn-outline" id="ref-map-highlight-btn" onclick="toggleReforestationOverlay()" style="border-color:#16a34a; color:#16a34a; width:100%; font-weight:700;">
+                            <i class="fa-solid fa-eye"></i> Highlight Planting Zones on Map
                         </button>
                     </div>
-                </div>
 
-                <!-- Loading -->
-                <div id="fc-loading" style="display:none;text-align:center;padding:2rem;color:var(--text-muted);">
-                    <div class="spinner" style="margin:0 auto 1rem;border-top-color:#b45300;"></div>
-                    <p style="font-weight:600;">Running Monte Carlo simulations…</p>
-                    <p style="font-size:0.83rem;margin-top:0.35rem;" id="fc-loading-msg">This may take a few seconds.</p>
-                </div>
-
-                <!-- Results -->
-                <div id="fc-results" style="display:none;">
-                    <div class="forecast-stats-grid">
-                        <div class="forecast-stat">
-                            <div class="label">High Risk Cells</div>
-                            <div class="value" id="fc-high-risk" style="color:var(--danger);">—</div>
-                            <div style="font-size:0.72rem;color:var(--text-muted);">&gt;70% probability</div>
-                        </div>
-                        <div class="forecast-stat">
-                            <div class="label">Moderate Risk</div>
-                            <div class="value" id="fc-mod-risk" style="color:var(--warning);">—</div>
-                            <div style="font-size:0.72rem;color:var(--text-muted);">30–70% probability</div>
-                        </div>
-                        <div class="forecast-stat">
-                            <div class="label">Expected New</div>
-                            <div class="value" id="fc-expected" style="color:var(--primary);">—</div>
-                            <div style="font-size:0.72rem;color:var(--text-muted);">cells catching fire</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Dynamic slider filter -->
-                    <div style="background:#fff7ed;border:1px solid #b4530022;border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;">
-                            <span style="font-weight:700;font-size:0.83rem;color:#b45300;"><i class="fa-solid fa-filter"></i> Probability Filter Threshold</span>
-                            <span style="font-family:monospace;font-weight:700;font-size:0.9rem;color:#b45300;" id="fc-slider-value">5%</span>
-                        </div>
-                        <input type="range" id="fc-prob-slider" min="5" max="95" step="5" value="5" style="width:100%;accent-color:#b45300;cursor:pointer;" oninput="onForecastSliderInput(this.value)">
-                        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;">
-                            <span>Show all (&ge; 5%)</span><span>&ge; 50%</span><span>Severe threats (&ge; 95%)</span>
+                    <!-- Agri-Doctor Section -->
+                    <div style="border:1px solid #16a34a33; border-radius:var(--radius-lg); background:#f0fdf455; padding:1.25rem; margin-bottom:1.5rem; box-shadow:var(--shadow-sm); text-align:left;">
+                        <h4 style="color:#15803d; font-size:1rem; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem; border-bottom:1px solid #16a34a22; padding-bottom:0.5rem;">
+                            <i class="fa-solid fa-user-doctor"></i> Agri-Doctor Intelligent Diagnosis
+                        </h4>
+                        
+                        <div style="display:flex; flex-direction:column; gap:1rem;">
+                            <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-soil-diag">
+                                <strong>🩺 Soil Status:</strong> Loading soil diagnostic metrics...
+                            </div>
+                            <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-crop-rec">
+                                <strong>🌱 Replanting Recommendation:</strong> Loading plant recipes...
+                            </div>
+                            <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-schedule">
+                                <strong>⏱️ Restoration Timeline:</strong> Loading phased schedule...
+                            </div>
                         </div>
                     </div>
 
-                    <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem;">
-                        <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem;letter-spacing:0.05em;">Probability Heatmap Active on Map</div>
-                        <p style="font-size:0.82rem;color:var(--text-muted);">Cells color-coded by fire probability — amber=low, orange=moderate, red=high risk.</p>
-                        <div class="prob-legend">
-                            <span>0%</span>
-                            <div class="prob-gradient"></div>
-                            <span>100%</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;font-size:0.71rem;color:var(--text-muted);margin-top:0.2rem;">
-                            <span>Safe</span><span>Moderate</span><span>High Risk</span>
+                    <!-- Priority Zone Table -->
+                    <div style="margin-top:1.5rem; text-align:left;">
+                        <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-main); margin-bottom:0.6rem;"><i class="fa-solid fa-list-ol"></i> Planting Priority Coordinates</h4>
+                        <div style="overflow-x:auto; border:1px solid var(--border-color); border-radius:var(--radius-md); max-height:220px; overflow-y:auto;">
+                            <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.82rem;">
+                                <thead style="background:var(--bg-main); border-bottom:1px solid var(--border-color); position:sticky; top:0;">
+                                    <tr>
+                                        <th style="padding:0.6rem;">Cell (X, Y)</th>
+                                        <th style="padding:0.6rem;">Lat / Lon</th>
+                                        <th style="padding:0.6rem; text-align:center;">Orig Density</th>
+                                        <th style="padding:0.6rem; text-align:center;">Priority Score</th>
+                                        <th style="padding:0.6rem;">Rank</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ref-table-body">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <button class="btn btn-outline" style="width:100%;" onclick="clearForecastOverlay()">
-                        <i class="fa-solid fa-eraser"></i> Clear Heatmap from Map
-                    </button>
                 </div>
-
-                <!-- Initial state -->
-                <div id="fc-initial" style="text-align:center;padding:2rem;color:var(--text-muted);">
-                    <i class="fa-solid fa-chart-area" style="font-size:2.5rem;margin-bottom:1rem;opacity:0.25;"></i>
-                    <p style="font-weight:600;font-size:0.95rem;">Configure and run a forecast above</p>
-                    <p style="font-size:0.83rem;margin-top:0.35rem;">Requires at least 1 simulation step to be running first.</p>
-                </div>
+            </div>
+            
+            <div class="modal-footer" style="padding:1rem; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="closeReforestation()">Dismiss</button>
             </div>
         </div>
     </div>
@@ -2777,118 +2775,224 @@
 
 
         // ═══════════════════════════════════════════════════════════════
-        // MONTE CARLO FIRE FORECAST
+        // REFORESTATION & AGRI-DOCTOR DIAGNOSTICS
         // ═══════════════════════════════════════════════════════════════
 
-        let forecastRectangles = [];
-        let forecastActiveGrid = [];
-        let forecastSliderVal = 0.05;
+        let reforestationOverlayActive = false;
+        let reforestationActiveScores = [];
 
-        function openForecast() {
-            document.getElementById('forecast-modal').classList.add('open');
+        function openReforestation() {
+            document.getElementById('reforestation-modal').classList.add('open');
+            loadReforestationReport();
         }
 
-        function closeForecast() {
-            document.getElementById('forecast-modal').classList.remove('open');
+        function closeReforestation() {
+            document.getElementById('reforestation-modal').classList.remove('open');
+            if (reforestationOverlayActive) {
+                toggleReforestationOverlay();
+            }
         }
 
-        async function runForecast() {
-            const steps = document.getElementById('fc-steps').value;
-            const trials = document.getElementById('fc-trials').value;
+        async function loadReforestationReport() {
+            const loading = document.getElementById('ref-loading');
+            const results = document.getElementById('ref-results');
+            const empty = document.getElementById('ref-empty');
 
-            document.getElementById('fc-loading').style.display = 'block';
-            document.getElementById('fc-results').style.display = 'none';
-            document.getElementById('fc-initial').style.display = 'none';
-            document.getElementById('fc-loading-msg').textContent = `Running ${trials} trials × ${steps} steps…`;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            empty.style.display = 'none';
 
             try {
-                const resp = await fetch(`/fire-forecast?steps=${steps}&trials=${trials}`);
+                const resp = await fetch('/recovery-scores');
                 const data = await resp.json();
 
-                if (data.status === 'success') {
-                    forecastActiveGrid = data.probability_grid;
-                    document.getElementById('fc-high-risk').textContent = data.high_risk_count;
-                    document.getElementById('fc-mod-risk').textContent = data.moderate_risk_count;
-                    document.getElementById('fc-expected').textContent = data.expected_new_cells;
-                    document.getElementById('fc-results').style.display = 'block';
+                if (data && data.length > 0) {
+                    reforestationActiveScores = data;
                     
-                    // Reset filter slider
-                    document.getElementById('fc-prob-slider').value = 5;
-                    document.getElementById('fc-slider-value').textContent = '5%';
-                    forecastSliderVal = 0.05;
+                    // 1. Calculate stats
+                    const totalCells = data.length;
+                    const destroyedArea = totalCells * 900; // 30x30m cells = 900m2
+                    const destroyedHectares = (destroyedArea / 10000).toFixed(2);
+                    
+                    const sumScores = data.reduce((acc, curr) => acc + curr.recovery_score, 0);
+                    const avgScore = sumScores / totalCells;
+                    
+                    let urgency = "LOW";
+                    let urgencyColor = "var(--success)";
+                    if (avgScore >= 0.7) {
+                        urgency = "CRITICAL / IMMEDIATE ACTION";
+                        urgencyColor = "#dc2626";
+                    } else if (avgScore >= 0.45) {
+                        urgency = "HIGH";
+                        urgencyColor = "#d97706";
+                    } else if (avgScore >= 0.25) {
+                        urgency = "MODERATE";
+                        urgencyColor = "#2563eb";
+                    }
 
-                    renderForecastOverlay(forecastActiveGrid);
+                    document.getElementById('ref-cell-count').textContent = totalCells;
+                    document.getElementById('ref-area-count').textContent = `${destroyedHectares} ha (${destroyedArea.toLocaleString()} m²)`;
+                    document.getElementById('ref-urgency').textContent = urgency;
+                    document.getElementById('ref-urgency').style.color = urgencyColor;
+
+                    // 2. Agri-Doctor Diagnosis & Soil Analytics
+                    let soilMoistureAvg = 0.5;
+                    if (simulationData && simulationData.soil && simulationData.soil.length > 0) {
+                        // Gather average moisture from burned coordinate zones
+                        let totalMoisture = 0;
+                        let count = 0;
+                        data.forEach(item => {
+                            if (simulationData.soil[item.row] && simulationData.soil[item.row][item.col] !== undefined) {
+                                totalMoisture += simulationData.soil[item.row][item.col];
+                                count++;
+                            }
+                        });
+                        if (count > 0) {
+                            soilMoistureAvg = totalMoisture / count;
+                        }
+                    }
+
+                    let diagnosisHtml = "";
+                    let cropRecommendation = "";
+                    let scheduleSteps = "";
+
+                    if (soilMoistureAvg < 0.28) {
+                        // Dry/Arid
+                        diagnosisHtml = `<strong>🩺 Soil Status: SEVERE DEHYDRATION & ASH-DRIFT RISK</strong><br>
+                                         Average soil moisture in burned sectors is extremely low (${(soilMoistureAvg * 100).toFixed(0)}%). High ambient heat has baked the topsoil. Direct seed planting will fail due to root desiccation.`;
+                        cropRecommendation = `<strong>🌱 Drought-Resistant Pioneer & Soil binder species:</strong><br>
+                                              • <em>Inga edulis</em> (Guaba - nitrogen-fixing legume that survives in dry ash)<br>
+                                              • <em>Vetiveria zizanioides</em> (Vetiver Grass - binds loose dry soil, preventing slope erosion)<br>
+                                              • <em>Schizolobium parahyba</em> (Guapuruvu - fast canopy restorer).`;
+                        scheduleSteps = `• <strong>Phase 1 (Immediate):</strong> Apply mulch or organic crop residue to trap morning condensation.<br>
+                                         • <strong>Phase 2 (Month 1):</strong> Hydrate soil beds manually or queue planting schedule for the monsoon rain pattern.<br>
+                                         • <strong>Phase 3 (Month 2):</strong> Spot-plant nitrogen-fixing legumes to prime the soil chemical structure.`;
+                    } else if (soilMoistureAvg > 0.65) {
+                        // Saturated/Wet mud
+                        diagnosisHtml = `<strong>🩺 Soil Status: HYDRO-SATURATED / HIGH NUTRIENT LEACHING RISK</strong><br>
+                                         Average soil moisture in burned sectors is very high (${(soilMoistureAvg * 100).toFixed(0)}%). Ash is rich in water-soluble potassium but susceptible to heavy mudslides and rain erosion.`;
+                        cropRecommendation = `<strong>🌱 Hydro-Tolerant Native Climax & Runoff Control:</strong><br>
+                                              • <em>Cecropia peltata</em> (Embauba - rapidly absorbs surplus water, shades weeds)<br>
+                                              • <em>Bertholletia excelsa</em> (Brazil Nut - deep root structure anchors unstable wet soil)<br>
+                                              • Cover grass mixes (Clover / Rye) to instantly stabilize the mud grid.`;
+                        scheduleSteps = `• <strong>Phase 1 (Immediate):</strong> Aerial seed-bombing of cover grasses to lock the soil texture.<br>
+                                         • <strong>Phase 2 (Weeks 2-4):</strong> Plant fast-growing pioneer saplings (Cecropia) to suck up excess water.<br>
+                                         • <strong>Phase 3 (Month 2):</strong> Reintroduce climax hardwood species in secure slope zones.`;
+                    } else {
+                        // Normal/Optimal
+                        diagnosisHtml = `<strong>🩺 Soil Status: BALANCED LOAM / OPTIMAL REGENERATION CONDITIONS</strong><br>
+                                         Average soil moisture is in the optimal range (${(soilMoistureAvg * 100).toFixed(0)}%). Ash provides a rich compost bed of minerals (potassium/phosphorus). Peak planting window.`;
+                        cropRecommendation = `<strong>🌱 High-Diversity Forest Canopy & Pioneer mix:</strong><br>
+                                              • <em>Swietenia macrophylla</em> (Big-leaf Mahogany - primary canopy building block)<br>
+                                              • <em>Cecropia</em> & Wild Guava shrubs (attracts birds that carry wild seeds)<br>
+                                              • Local legume cover plants (nitrogen fixers).`;
+                        scheduleSteps = `• <strong>Phase 1 (Weeks 1-2):</strong> Hand-plant primary hardwood species (Mahogany) in 3m grid arrays.<br>
+                                         • <strong>Phase 2 (Month 1):</strong> Broadcast pioneer seeds to fill intermediate spaces.<br>
+                                         • <strong>Phase 3 (Month 3):</strong> Introduce earthworms and compost cultures to enhance biome health.`;
+                    }
+
+                    document.getElementById('ref-soil-diag').innerHTML = diagnosisHtml;
+                    document.getElementById('ref-crop-rec').innerHTML = cropRecommendation;
+                    document.getElementById('ref-schedule').innerHTML = scheduleSteps;
+
+                    // 3. Build coordinates table
+                    const tableBody = document.getElementById('ref-table-body');
+                    tableBody.innerHTML = "";
+                    
+                    const sorted = [...data].sort((a, b) => b.recovery_score - a.recovery_score);
+                    const displayLimit = 15;
+                    const slice = sorted.slice(0, displayLimit);
+
+                    slice.forEach(item => {
+                        const score = item.recovery_score;
+                        let priorityBadge = "";
+                        if (score >= 0.70) {
+                            priorityBadge = `<span class="dept-badge" style="background:#fee2e2;color:#dc2626;">CRITICAL (CR-1)</span>`;
+                        } else if (score >= 0.45) {
+                            priorityBadge = `<span class="dept-badge" style="background:#ffedd5;color:#d97706;">HIGH (CR-2)</span>`;
+                        } else {
+                            priorityBadge = `<span class="dept-badge" style="background:#f0fdf4;color:#16a34a;">MODERATE (CR-3)</span>`;
+                        }
+
+                        const rowHtml = `
+                            <tr style="border-bottom:1px solid var(--border-color);">
+                                <td style="padding:0.6rem;font-family:monospace;font-weight:700;">(${item.row}, ${item.col})</td>
+                                <td style="padding:0.6rem;font-family:monospace;font-size:0.8rem;color:var(--text-muted);">${item.latitude.toFixed(5)}, ${item.longitude.toFixed(5)}</td>
+                                <td style="padding:0.6rem;text-align:center;font-family:monospace;">${(item.original_vegetation_density * 100).toFixed(0)}%</td>
+                                <td style="padding:0.6rem;text-align:center;font-family:monospace;font-weight:700;color:#16a34a;">${(score * 100).toFixed(0)}%</td>
+                                <td style="padding:0.6rem;">${priorityBadge}</td>
+                            </tr>
+                        `;
+                        tableBody.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+
+                    if (sorted.length > displayLimit) {
+                        const extraHtml = `
+                            <tr>
+                                <td colspan="5" style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:0.6rem;">
+                                    Showing top ${displayLimit} of ${sorted.length} damaged cells. Use map highlight to view all.
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.insertAdjacentHTML('beforeend', extraHtml);
+                    }
+
+                    results.style.display = 'block';
                 } else {
-                    alert('Forecast failed: ' + (data.detail || 'Unknown error'));
-                    document.getElementById('fc-initial').style.display = 'block';
+                    empty.style.display = 'block';
                 }
             } catch (err) {
-                console.error('Forecast error:', err);
-                const msg = err.message || 'Unknown error';
-                if (msg.includes('400')) {
-                    alert('Please run at least 1 simulation step first, then try the forecast.');
-                } else {
-                    alert('Forecast error: ' + msg);
-                }
-                document.getElementById('fc-initial').style.display = 'block';
+                console.error("Reforestation report error:", err);
+                empty.style.display = 'block';
             } finally {
-                document.getElementById('fc-loading').style.display = 'none';
+                loading.style.display = 'none';
             }
         }
 
-        function onForecastSliderInput(value) {
-            const pct = parseInt(value);
-            document.getElementById('fc-slider-value').textContent = `${pct}%`;
-            forecastSliderVal = pct / 100.0;
-            if (forecastActiveGrid.length > 0) {
-                renderForecastOverlay(forecastActiveGrid);
+        function toggleReforestationOverlay() {
+            reforestationOverlayActive = !reforestationOverlayActive;
+            const btn = document.getElementById('ref-map-highlight-btn');
+            
+            if (reforestationOverlayActive) {
+                btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> Remove Reforestation Highlight`;
+                btn.style.background = '#15803d';
+                btn.style.color = 'white';
+                renderReforestationOverlay();
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-eye"></i> Highlight Planting Zones on Map`;
+                btn.style.background = 'white';
+                btn.style.color = '#15803d';
+                clearReforestationOverlay();
+                if (simulationData) {
+                    drawGridAtStep(currentStepIndex);
+                }
             }
         }
 
-        function renderForecastOverlay(probGrid) {
-            if (!map) return;
-            clearForecastOverlay();
+        function renderReforestationOverlay() {
+            if (!map || reforestationActiveScores.length === 0) return;
 
-            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
-            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
-            const cell_size = 30.0;
-            const r_ignite = 25, c_ignite = 25;
+            for (const cell of reforestationActiveScores) {
+                const { row: r, col: c, recovery_score } = cell;
+                const rect = gridRectangles[r] ? gridRectangles[r][c] : null;
+                if (!rect) continue;
 
-            for (const cell of probGrid) {
-                const { row: r, col: c, probability, already_burning } = cell;
-                if (already_burning || probability < forecastSliderVal) continue;
+                const color = recovery_score >= 0.70 ? '#065f46' : recovery_score >= 0.45 ? '#059669' : '#34d399'; 
+                const opacity = 0.75;
+                const urgencyStr = recovery_score >= 0.70 ? 'CRITICAL' : recovery_score >= 0.45 ? 'HIGH' : 'MODERATE';
 
-                const x1 = (c - c_ignite) * cell_size - cell_size / 2;
-                const y1 = (r_ignite - r) * cell_size - cell_size / 2;
-                const x2 = (c - c_ignite) * cell_size + cell_size / 2;
-                const y2 = (r_ignite - r) * cell_size + cell_size / 2;
-                const p1 = xyToLatLon(x1, y1, ignLat, ignLon);
-                const p2 = xyToLatLon(x2, y2, ignLat, ignLon);
-                const bounds = [
-                    [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])],
-                    [Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])]
-                ];
-
-                const fillColor = probability < 0.30 ? '#fbbf24' : probability < 0.70 ? '#f97316' : '#dc2626';
-                const fillOpacity = Math.min(0.78, probability * 0.7 + 0.08);
-
-                const rect = L.rectangle(bounds, {
-                    color: 'transparent', weight: 0,
-                    fillColor: fillColor, fillOpacity: fillOpacity,
-                    interactive: true
-                }).addTo(map);
-
-                rect.bindTooltip(`🔥 Forecast: ${(probability * 100).toFixed(0)}% chance of fire`, { sticky: true });
-                forecastRectangles.push(rect);
+                rect.setStyle({
+                    color: '#047857',
+                    weight: 1.5,
+                    fillColor: color,
+                    fillOpacity: opacity
+                });
+                rect.setTooltipContent(`🌿 <b>Planting Priority Zone</b> (${r}, ${c})<br>Reforestation Priority: ${(recovery_score * 100).toFixed(0)}%<br>Urgency: <b>${urgencyStr}</b>`);
             }
         }
 
-        function clearForecastOverlay() {
-            if (!map) return;
-            for (const rect of forecastRectangles) {
-                map.removeLayer(rect);
-            }
-            forecastRectangles = [];
+        function clearReforestationOverlay() {
+            // Overwritten during toggleReforestationOverlay
         }
 
         // Smooth Map Pan Operations
