@@ -1080,10 +1080,17 @@
                 </div>
 
                 <div class="digital-twin-container">
-                    <!-- Leaflet Map Player -->
-                    <div class="grid-player-card" style="width: 100%;">
-                        <div class="grid-canvas-container" style="padding: 0; width: 100%;">
+                        <div class="grid-canvas-container" style="padding: 0; width: 100%; position: relative;">
                             <div id="digital-twin-map" style="width: 100%; height: 500px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); z-index: 1;"></div>
+                            
+                            <!-- Floating Map Pan Controls -->
+                            <div class="map-pan-controls" style="position: absolute; bottom: 20px; right: 20px; z-index: 1000; display: grid; grid-template-areas: '. up .' 'left home right' '. down .'; gap: 6px; background: rgba(255,255,255,0.85); padding: 8px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); backdrop-filter: blur(4px);">
+                                <button type="button" onclick="panMap(0, -80)" class="pan-btn" style="grid-area: up; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Up"><i class="fa-solid fa-chevron-up"></i></button>
+                                <button type="button" onclick="panMap(-80, 0)" class="pan-btn" style="grid-area: left; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Left"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button type="button" onclick="panMap(0, 0, true)" class="pan-btn" style="grid-area: home; width:32px; height:32px; border-radius:50%; border:1px solid var(--primary-light); background:#f0fdfa; color:var(--primary); cursor:pointer; font-size:0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#ccfbf1'" onmouseout="this.style.background='#f0fdfa'" title="Recenter to Ignition"><i class="fa-solid fa-house-chimney"></i></button>
+                                <button type="button" onclick="panMap(80, 0)" class="pan-btn" style="grid-area: right; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Right"><i class="fa-solid fa-chevron-right"></i></button>
+                                <button type="button" onclick="panMap(0, 80)" class="pan-btn" style="grid-area: down; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Down"><i class="fa-solid fa-chevron-down"></i></button>
+                            </div>
                         </div>
                         
                         <!-- Playback Controls -->
@@ -2879,6 +2886,18 @@
                 map.removeLayer(rect);
             }
             forecastRectangles = [];
+        }
+
+        // Smooth Map Pan Operations
+        function panMap(dx, dy, recenter = false) {
+            if (!map) return;
+            if (recenter) {
+                const lat = parseFloat(document.getElementById('latitude').value) || -2.145;
+                const lon = parseFloat(document.getElementById('longitude').value) || -59.000;
+                map.setView([lat, lon], 12, { animate: true, duration: 0.5 });
+            } else {
+                map.panBy([dx, dy], { animate: true, duration: 0.3 });
+            }
         }
 
     </script>
