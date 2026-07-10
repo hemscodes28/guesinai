@@ -1378,18 +1378,7 @@
                 <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;">Scenario Results</p>
                 <p id="wi-scenario-desc" style="font-size:0.82rem;color:var(--text-main);margin-bottom:0.75rem;padding:0.6rem;background:var(--bg-main);border-radius:var(--radius-md);border-left:3px solid #7c3aed;"></p>
                 
-                <div style="background:#f5f3ff;border:1px solid #7c3aed33;border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;">
-                    <div style="display:flex;flex-direction:column;gap:0.15rem;">
-                        <span style="font-weight:700;font-size:0.82rem;color:#6d28d9;"><i class="fa-solid fa-eye"></i> Visual Preview</span>
-                        <span style="font-size:0.72rem;color:var(--text-muted);">Render sandbox grid on the active Leaflet map</span>
-                    </div>
-                    <label style="position:relative;display:inline-block;width:46px;height:24px;cursor:pointer;">
-                        <input type="checkbox" id="wi-preview-toggle" onchange="toggleScenarioPreview(this.checked)" style="opacity:0;width:0;height:0;position:absolute;">
-                        <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border-color);border-radius:24px;transition:0.3s;" id="wi-prev-track">
-                            <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);" id="wi-prev-thumb"></span>
-                        </span>
-                    </label>
-                </div>
+                
 
                 <div class="comparison-grid">
                     <div class="compare-card original">
@@ -1880,7 +1869,8 @@
         // Draw grid at specific step index
         function drawGridAtStep(stepIdx) {
             if (scenarioPreviewActive) {
-                document.getElementById('wi-preview-toggle').checked = false;
+                const prevToggle = document.getElementById('wi-preview-toggle');
+                if (prevToggle) prevToggle.checked = false;
                 scenarioPreviewActive = false;
             }
             if (!simulationData || gridRectangles.length === 0) return;
