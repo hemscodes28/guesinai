@@ -1879,6 +1879,10 @@
 
         // Draw grid at specific step index
         function drawGridAtStep(stepIdx) {
+            if (scenarioPreviewActive) {
+                document.getElementById('wi-preview-toggle').checked = false;
+                scenarioPreviewActive = false;
+            }
             if (!simulationData || gridRectangles.length === 0) return;
             
             const stepVal = parseInt(document.getElementById('step').value);
@@ -2617,56 +2621,59 @@
                 }
                 renderScenarioPreview();
             } else {
-                clearScenarioPreview();
+                if (simulationData) {
+                    drawGridAtStep(currentStepIndex);
+                } else {
+                    for (let r = 0; r < GRID_SIZE; r++) {
+                        for (let c = 0; c < GRID_SIZE; c++) {
+                            if (gridRectangles[r] && gridRectangles[r][c]) {
+                                gridRectangles[r][c].setStyle({
+                                    fillColor: '#10b981', fillOpacity: 0.2,
+                                    color: 'rgba(255, 255, 255, 0.15)', weight: 0.5
+                                });
+                            }
+                        }
+                    }
+                }
             }
         }
 
         function renderScenarioPreview() {
             if (!map || !scenarioActiveSnapshot) return;
-            clearScenarioPreview();
-
-            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
-            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
-            const cell_size = 30.0;
-            const r_ignite = 25, c_ignite = 25;
 
             for (const cell of scenarioActiveSnapshot) {
                 const { row: r, col: c, fire_state } = cell;
-                if (fire_state === 'unburned') continue;
+                const rect = gridRectangles[r] ? gridRectangles[r][c] : null;
+                if (!rect) continue;
 
-                const x1 = (c - c_ignite) * cell_size - cell_size / 2;
-                const y1 = (r_ignite - r) * cell_size - cell_size / 2;
-                const x2 = (c - c_ignite) * cell_size + cell_size / 2;
-                const y2 = (r_ignite - r) * cell_size + cell_size / 2;
-                const p1 = xyToLatLon(x1, y1, ignLat, ignLon);
-                const p2 = xyToLatLon(x2, y2, ignLat, ignLon);
-                const bounds = [
-                    [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])],
-                    [Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])]
-                ];
+                let color = '#10b981'; // default green
+                let opacity = 0.2;
+                let stateStr = "Scenario: Unburned";
 
-                const color = fire_state === 'burning' ? '#a78bfa' : '#4c1d95'; // distinct purple for scenario preview
-                const stateText = fire_state === 'burning' ? 'Scenario: Burning' : 'Scenario: Burned';
+                const isFirebreak = firebreakCells.some(([fbr, fbc]) => fbr === r && fbc === c);
 
-                const rect = L.rectangle(bounds, {
-                    color: '#7c3aed',
-                    weight: 1.5,
-                    dashArray: '3, 4',
+                if (isFirebreak) {
+                    color = '#7c3aed'; // Purple firebreak
+                    opacity = 0.7;
+                    stateStr = "Scenario: Firebreak (Cleared)";
+                } else if (fire_state === 'burning') {
+                    color = '#a78bfa'; // Light purple for scenario burning
+                    opacity = 0.8;
+                    stateStr = "Scenario: Burning (What-If)";
+                } else if (fire_state === 'burned') {
+                    color = '#4c1d95'; // Dark purple for scenario burned
+                    opacity = 0.65;
+                    stateStr = "Scenario: Burned (What-If)";
+                }
+
+                rect.setStyle({
+                    color: isFirebreak ? '#7c3aed' : 'rgba(255, 255, 255, 0.15)',
+                    weight: isFirebreak ? 2.0 : 0.5,
                     fillColor: color,
-                    fillOpacity: 0.5,
-                    interactive: true
-                }).addTo(map);
-
-                rect.bindTooltip(`🔮 ${stateText} (${r}, ${c})`, { sticky: true });
-                scenarioRectangles.push(rect);
+                    fillOpacity: opacity
+                });
+                rect.setTooltipContent(`Cell: (${r}, ${c})<br>State: <b>${stateStr}</b>`);
             }
-        }
-
-        function clearScenarioPreview() {
-            scenarioRectangles.forEach(rect => {
-                if (map) map.removeLayer(rect);
-            });
-            scenarioRectangles = [];
         }
 
 
