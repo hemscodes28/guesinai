@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,19 @@
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Leaflet Map CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    
+    <!-- Leaflet Map CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -23,29 +28,29 @@
             --border-color: #e2e8f0;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            
+
             --primary: #0f766e;
             --primary-hover: #115e59;
             --primary-light: #f0fdfa;
-            
+
             --success: #10b981;
             --success-light: #ecfdf5;
-            
+
             --danger: #ef4444;
             --danger-light: #fef2f2;
-            
+
             --warning: #f59e0b;
             --warning-light: #fef3c7;
-            
+
             --dark-gray: #475569;
             --burned: #64748b;
-            
+
             --radius-lg: 12px;
             --radius-md: 8px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
-            
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
             --font-body: 'Inter', sans-serif;
             --font-display: 'Outfit', sans-serif;
         }
@@ -74,15 +79,22 @@
             flex-grow: 1;
             width: 100%;
         }
-        
+
         .page-view.active {
             display: flex;
             animation: fadeIn 0.4s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* --- LANDING VIEW STYLES --- */
@@ -404,7 +416,8 @@
             min-height: 240px;
         }
 
-        .upload-area:hover, .upload-area.dragover {
+        .upload-area:hover,
+        .upload-area.dragover {
             border-color: var(--primary);
             background-color: var(--primary-light);
         }
@@ -571,11 +584,30 @@
             justify-content: center;
         }
 
-        .stat-icon-blue { background-color: var(--primary-light); color: var(--primary); }
-        .stat-icon-green { background-color: var(--success-light); color: var(--success); }
-        .stat-icon-red { background-color: var(--danger-light); color: var(--danger); }
-        .stat-icon-orange { background-color: var(--warning-light); color: var(--warning); }
-        .stat-icon i { font-size: 1.25rem; color: inherit; }
+        .stat-icon-blue {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stat-icon-green {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+
+        .stat-icon-red {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .stat-icon-orange {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .stat-icon i {
+            font-size: 1.25rem;
+            color: inherit;
+        }
 
         .stat-info h4 {
             font-size: 0.85rem;
@@ -674,8 +706,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-overlay p {
@@ -717,147 +754,422 @@
             width: 16px;
             height: 16px;
             border-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .color-unburned { background-color: #10b981; }
-        .color-burning { background-color: #ef4444; }
-        .color-burned { background-color: #64748b; }
+        .color-unburned {
+            background-color: #10b981;
+        }
+
+        .color-burning {
+            background-color: #ef4444;
+        }
+
+        .color-burned {
+            background-color: #64748b;
+        }
 
         /* ── Nav Module Buttons ─────────────────────────────── */
-        .nav-modules { display: flex; align-items: center; gap: 0.5rem; }
-        .nav-btn {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.45rem 0.9rem; border-radius: var(--radius-md);
-            font-size: 0.82rem; font-weight: 600; cursor: pointer;
-            border: 1px solid var(--border-color); background: var(--bg-main);
-            color: var(--text-muted); transition: all 0.2s;
+        .nav-modules {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .nav-btn-whatif  { border-color:#7c3aed44;color:#7c3aed;background:#f5f3ff; }
-        .nav-btn-whatif:hover { background:#ede9fe;border-color:#7c3aed; }
-        .nav-btn-sitrep  { border-color:#0369a144;color:#0369a1;background:#f0f9ff; }
-        .nav-btn-sitrep:hover { background:#e0f2fe;border-color:#0369a1; }
-        .nav-btn-reforestation{ border-color:#16a34a44;color:#16a34a;background:#f0fdf4; }
-        .nav-btn-reforestation:hover { background:#dcfce7;border-color:#16a34a; }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-md);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .nav-btn-whatif {
+            border-color: #7c3aed44;
+            color: #7c3aed;
+            background: #f5f3ff;
+        }
+
+        .nav-btn-whatif:hover {
+            background: #ede9fe;
+            border-color: #7c3aed;
+        }
+
+        .nav-btn-sitrep {
+            border-color: #0369a144;
+            color: #0369a1;
+            background: #f0f9ff;
+        }
+
+        .nav-btn-sitrep:hover {
+            background: #e0f2fe;
+            border-color: #0369a1;
+        }
+
+        .nav-btn-reforestation {
+            border-color: #16a34a44;
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        .nav-btn-reforestation:hover {
+            background: #dcfce7;
+            border-color: #16a34a;
+        }
 
         /* ── AQI Overlay ────────────────────────────────────── */
         .aqi-toggle-btn {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.38rem 0.9rem; border-radius: 9999px;
-            font-size: 0.8rem; font-weight: 600; cursor: pointer;
-            border: 1px solid var(--border-color); background: white;
-            color: var(--text-muted); transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.38rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-muted);
+            transition: all 0.3s;
         }
+
         .aqi-toggle-btn.active {
-            background: linear-gradient(90deg,#00e400 0%,#ffff00 30%,#ff7e00 60%,#ff0000 80%,#8f3f97 100%);
-            color: white; border-color: transparent; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+            background: linear-gradient(90deg, #00e400 0%, #ffff00 30%, #ff7e00 60%, #ff0000 80%, #8f3f97 100%);
+            color: white;
+            border-color: transparent;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
         }
+
         .aqi-legend {
-            display: none; align-items: center; gap: 0.65rem;
-            margin-top: 0.5rem; padding: 0.5rem 1rem;
-            background: white; border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); flex-wrap: wrap; justify-content: center;
+            display: none;
+            align-items: center;
+            gap: 0.65rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        .aqi-legend.visible { display: flex; }
-        .aqi-badge { display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;font-weight:600; }
-        .aqi-dot { width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,0.15); }
+
+        .aqi-legend.visible {
+            display: flex;
+        }
+
+        .aqi-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .aqi-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
 
         /* ── Modal Overlay ──────────────────────────────────── */
         .modal-overlay {
-            position:fixed;inset:0;background:rgba(0,0,0,0.5);
-            backdrop-filter:blur(4px);z-index:1000;
-            display:none;align-items:center;justify-content:center;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
-        .modal-overlay.open { display:flex; }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
         .modal-card {
-            background:white;border-radius:var(--radius-lg);
-            box-shadow:0 25px 50px rgba(0,0,0,0.25);
-            width:90%;max-width:700px;max-height:88vh;
-            overflow:hidden;display:flex;flex-direction:column;
-            animation:slideUp 0.3s ease;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 700px;
+            max-height: 88vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
         }
-        @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
         .modal-header {
-            padding:1.2rem 1.75rem;border-bottom:1px solid var(--border-color);
-            display:flex;align-items:center;justify-content:space-between;
+            padding: 1.2rem 1.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+
         .modal-header h3 {
-            font-family:var(--font-display);font-size:1.15rem;font-weight:700;
-            display:flex;align-items:center;gap:0.5rem;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .modal-body { padding:1.5rem;overflow-y:auto;flex:1; }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
         .modal-footer {
-            padding:0.9rem 1.75rem;border-top:1px solid var(--border-color);
-            display:flex;align-items:center;justify-content:flex-end;gap:0.75rem;
+            padding: 0.9rem 1.75rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
         }
+
         .btn-close-modal {
-            background:none;border:none;font-size:1.2rem;cursor:pointer;
-            color:rgba(255,255,255,0.8);width:32px;height:32px;
-            display:flex;align-items:center;justify-content:center;
-            border-radius:50%;transition:all 0.15s;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.8);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.15s;
         }
-        .btn-close-modal:hover { background:rgba(255,255,255,0.2); }
+
+        .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
         /* ── What-If Side Drawer ────────────────────────────── */
         .side-drawer {
-            position:fixed;top:0;right:-460px;width:430px;height:100vh;
-            background:white;box-shadow:-8px 0 30px rgba(0,0,0,0.18);
-            z-index:999;transition:right 0.35s cubic-bezier(0.4,0,0.2,1);
-            display:flex;flex-direction:column;overflow:hidden;
+            position: fixed;
+            top: 0;
+            right: -460px;
+            width: 430px;
+            height: 100vh;
+            background: white;
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.18);
+            z-index: 999;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        .side-drawer.open { right:0; }
+
+        .side-drawer.open {
+            right: 0;
+        }
+
         .drawer-header {
-            padding:1.1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.2);
-            display:flex;align-items:center;justify-content:space-between;
-            background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);color:white;
+            padding: 1.1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
         }
-        .drawer-header h3 { font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:white;display:flex;align-items:center;gap:0.5rem; }
-        .drawer-body { padding:1.25rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1.1rem; }
-        .drawer-footer { padding:0.9rem 1.25rem;border-top:1px solid var(--border-color);background:var(--bg-main); }
-        .drawer-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:998;display:none; }
-        .drawer-overlay.open { display:block; }
-        .comparison-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem; }
-        .compare-card { padding:1rem;border-radius:var(--radius-md);border:2px solid;text-align:center; }
-        .compare-card.original { border-color:var(--danger);background:var(--danger-light); }
-        .compare-card.forked   { border-color:var(--success);background:var(--success-light); }
-        .compare-card h4 { font-size:0.78rem;font-weight:700;text-transform:uppercase;margin-bottom:0.4rem; }
-        .compare-card .big-num { font-family:var(--font-display);font-size:1.9rem;font-weight:800; }
+
+        .drawer-header h3 {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .drawer-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+        }
+
+        .drawer-footer {
+            padding: 0.9rem 1.25rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-main);
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 998;
+            display: none;
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .compare-card {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 2px solid;
+            text-align: center;
+        }
+
+        .compare-card.original {
+            border-color: var(--danger);
+            background: var(--danger-light);
+        }
+
+        .compare-card.forked {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+
+        .compare-card h4 {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .compare-card .big-num {
+            font-family: var(--font-display);
+            font-size: 1.9rem;
+            font-weight: 800;
+        }
+
         .saved-badge {
-            display:inline-flex;align-items:center;gap:0.4rem;
-            background:#dcfce7;color:#15803d;padding:0.35rem 1rem;
-            border-radius:9999px;font-weight:700;font-size:0.9rem;margin-top:0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #dcfce7;
+            color: #15803d;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
         }
 
         /* ── Situation Report ───────────────────────────────── */
         .sitrep-text {
-            font-family:'Courier New',Courier,monospace;font-size:0.83rem;
-            line-height:1.75;white-space:pre-wrap;
-            background:#0f172a;color:#e2e8f0;
-            padding:1.5rem;border-radius:var(--radius-md);
-            max-height:55vh;overflow-y:auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.83rem;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            max-height: 55vh;
+            overflow-y: auto;
         }
-        .sitrep-meta { display:flex;align-items:center;gap:0.65rem;margin-bottom:1rem;flex-wrap:wrap; }
+
+        .sitrep-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
         .meta-badge {
-            display:inline-flex;align-items:center;gap:0.3rem;
-            padding:0.22rem 0.65rem;border-radius:9999px;font-size:0.74rem;font-weight:600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.22rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.74rem;
+            font-weight: 600;
         }
 
         /* ── Monte Carlo Forecast ───────────────────────────── */
-        .forecast-stats-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem; }
-        .forecast-stat {
-            text-align:center;padding:1rem;
-            background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);
+        .forecast-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.25rem;
         }
-        .forecast-stat .label { font-size:0.73rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:0.35rem; }
-        .forecast-stat .value { font-family:var(--font-display);font-size:1.6rem;font-weight:800; }
-        .prob-legend { display:flex;align-items:center;gap:0.5rem;margin-top:0.75rem;font-size:0.78rem;font-weight:600;color:var(--text-muted); }
+
+        .forecast-stat {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        .forecast-stat .label {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+        }
+
+        .forecast-stat .value {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .prob-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
         .prob-gradient {
-            flex:1;height:12px;border-radius:6px;
-            background:linear-gradient(90deg,rgba(251,191,36,0.3) 0%,rgba(249,115,22,0.7) 50%,rgba(220,38,38,0.95) 100%);
-            border:1px solid var(--border-color);
+            flex: 1;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.3) 0%, rgba(249, 115, 22, 0.7) 50%, rgba(220, 38, 38, 0.95) 100%);
+            border: 1px solid var(--border-color);
         }
     </style>
 </head>
+
 <body>
 
     <!-- ========================================== -->
@@ -872,7 +1184,8 @@
                 Wildfire Simulation <span>Digital Twin</span>
             </h1>
             <p class="landing-subtitle">
-                Model, predict, and visualize forest fire propagation patterns in real-time. Integrate live meteorological feeds with satellite imagery to simulate burn fronts and compute safety indices.
+                Model, predict, and visualize forest fire propagation patterns in real-time. Integrate live
+                meteorological feeds with satellite imagery to simulate burn fronts and compute safety indices.
             </p>
             <button class="btn btn-primary" onclick="showPage('login-page')">
                 Access Digital Twin Engine <i class="fa-solid fa-arrow-right"></i>
@@ -882,17 +1195,20 @@
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-wind"></i></div>
                     <h3>Weather Modeling</h3>
-                    <p>Integrates dynamic weather profiles (wind direction, wind velocity, humidity, temperature) to predict propagation direction.</p>
+                    <p>Integrates dynamic weather profiles (wind direction, wind velocity, humidity, temperature) to
+                        predict propagation direction.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-border-all"></i></div>
                     <h3>Cellular Twin Grid</h3>
-                    <p>Accurate cellular automata engine processing coordinate grids for fire front boundaries and fuel density layers.</p>
+                    <p>Accurate cellular automata engine processing coordinate grids for fire front boundaries and fuel
+                        density layers.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
                     <h3>Analytics Report</h3>
-                    <p>Auto-generates fire arrival maps, centroid trajectories, spread radius reports, and active wildfire growth curves.</p>
+                    <p>Auto-generates fire arrival maps, centroid trajectories, spread radius reports, and active
+                        wildfire growth curves.</p>
                 </div>
             </div>
         </div>
@@ -915,17 +1231,20 @@
                 <form id="login-form" onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" class="form-control" placeholder="operator@guesin.ai" required value="operator@guesin.ai">
+                        <input type="text" id="username" class="form-control" placeholder="operator@guesin.ai" required
+                            value="operator@guesin.ai">
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control" placeholder="••••••••" required value="password123!">
+                        <input type="password" id="password" class="form-control" placeholder="••••••••" required
+                            value="password123!">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">
                         Sign In <i class="fa-solid fa-sign-in-alt"></i>
                     </button>
                     <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
-                        Don't have an account? <a href="#" onclick="showPage('signup-page'); return false;" style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign Up</a>
+                        Don't have an account? <a href="#" onclick="showPage('signup-page'); return false;"
+                            style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign Up</a>
                     </p>
                 </form>
             </div>
@@ -942,28 +1261,37 @@
         <div class="login-wrapper">
             <div class="login-card">
                 <div class="login-logo">
-                    <i class="fa-solid fa-user-plus" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
+                    <i class="fa-solid fa-user-plus"
+                        style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
                     <h2>Sign Up</h2>
                     <p>Create a secure account for the digital twin simulator</p>
                 </div>
                 <form id="signup-form" onsubmit="handleSignup(event)">
                     <div class="form-group">
                         <label for="reg-username">Username</label>
-                        <input type="text" id="reg-username" class="form-control" placeholder="operator@guesin.ai" required>
+                        <input type="text" id="reg-username" class="form-control" placeholder="operator@guesin.ai"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="reg-password">Password</label>
-                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required oninput="validatePasswordRequirements(this.value)">
-                        <div class="password-requirements" style="margin-top: 0.75rem; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.35rem; text-align: left;">
-                            <div id="req-length" class="req-item" style="display: flex; align-items: center; gap: 0.35rem; color: var(--danger); font-weight: 500;"><i class="fa-solid fa-circle-xmark"></i> At least 6 characters</div>
-                            <div id="req-symbol" class="req-item" style="display: flex; align-items: center; gap: 0.35rem; color: var(--danger); font-weight: 500;"><i class="fa-solid fa-circle-xmark"></i> At least 1 special symbol</div>
+                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required
+                            oninput="validatePasswordRequirements(this.value)">
+                        <div class="password-requirements"
+                            style="margin-top: 0.75rem; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.35rem; text-align: left;">
+                            <div id="req-length" class="req-item"
+                                style="display: flex; align-items: center; gap: 0.35rem; color: var(--danger); font-weight: 500;">
+                                <i class="fa-solid fa-circle-xmark"></i> At least 6 characters</div>
+                            <div id="req-symbol" class="req-item"
+                                style="display: flex; align-items: center; gap: 0.35rem; color: var(--danger); font-weight: 500;">
+                                <i class="fa-solid fa-circle-xmark"></i> At least 1 special symbol</div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">
                         Create Account <i class="fa-solid fa-user-plus"></i>
                     </button>
                     <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
-                        Already have an account? <a href="#" onclick="showPage('login-page'); return false;" style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign In</a>
+                        Already have an account? <a href="#" onclick="showPage('login-page'); return false;"
+                            style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign In</a>
                     </p>
                 </form>
             </div>
@@ -990,7 +1318,8 @@
                 <button class="nav-btn nav-btn-sitrep" onclick="openSitrep()" title="AI Tactical Situation Report">
                     <i class="fa-solid fa-file-shield"></i> Sitrep
                 </button>
-                <button class="nav-btn nav-btn-reforestation" onclick="openReforestation()" title="Reforestation & Agri-Doctor Diagnostic Reports">
+                <button class="nav-btn nav-btn-reforestation" onclick="openReforestation()"
+                    title="Reforestation & Agri-Doctor Diagnostic Reports">
                     <i class="fa-solid fa-seedling"></i> Reforestation
                 </button>
             </div>
@@ -1002,360 +1331,445 @@
             </div>
         </header>
 
-                    <form id="prediction-form" onsubmit="runSimulation(event)">
-                <!-- Controls Grid -->
-                <div class="control-grid">
-                    <!-- Parameters Card -->
-                    <div class="card" style="box-shadow: var(--shadow-md); border-top: 4px solid var(--primary);">
+        <form id="prediction-form" onsubmit="runSimulation(event)">
+            <!-- Controls Grid -->
+            <div class="control-grid">
+                <!-- Parameters Card -->
+                <div class="card" style="box-shadow: var(--shadow-md); border-top: 4px solid var(--primary);">
+                    <div class="card-title" style="border: none; padding-bottom: 0.5rem;">
+                        <i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Environmental Conditions
+                    </div>
+                    <div class="parameters-form"
+                        style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;">
+                        <div class="form-group">
+                            <label for="temp" style="font-weight: 600; font-size: 0.85rem;">Temperature (°C)</label>
+                            <input type="number" step="0.1" id="temp" name="temp" class="form-control" value="28.0"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="humidity" style="font-weight: 600; font-size: 0.85rem;">Relative Humidity
+                                (%)</label>
+                            <input type="number" step="0.1" id="humidity" name="humidity" class="form-control"
+                                value="75.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="wind_speed" style="font-weight: 600; font-size: 0.85rem;">Wind Speed
+                                (m/s)</label>
+                            <input type="number" step="0.1" id="wind_speed" name="wind_speed" class="form-control"
+                                value="3.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="wind_direction" style="font-weight: 600; font-size: 0.85rem;">Wind Direction
+                                (°)</label>
+                            <input type="number" step="1" id="wind_direction" name="wind_direction" class="form-control"
+                                value="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration" style="font-weight: 600; font-size: 0.85rem;">Duration
+                                (minutes)</label>
+                            <input type="number" step="1" id="duration" name="duration" class="form-control" value="240"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="step" style="font-weight: 600; font-size: 0.85rem;">Time Step (minutes)</label>
+                            <input type="number" step="1" id="step" name="step" class="form-control" value="3" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Location Settings Card -->
+                <div class="card"
+                    style="display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md); border-top: 4px solid var(--warning);">
+                    <div>
                         <div class="card-title" style="border: none; padding-bottom: 0.5rem;">
-                            <i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Environmental Conditions
+                            <i class="fa-solid fa-location-crosshairs" style="color: var(--warning);"></i> Target
+                            Location Settings
                         </div>
-                        <div class="parameters-form" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;">
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                            Specify the precise GPS coordinates for the cellular automata wildfire ignition point inside
+                            the Amazon rainforest.
+                        </p>
+                        <div class="parameters-form"
+                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;">
                             <div class="form-group">
-                                <label for="temp" style="font-weight: 600; font-size: 0.85rem;">Temperature (°C)</label>
-                                <input type="number" step="0.1" id="temp" name="temp" class="form-control" value="28.0" required>
+                                <label for="latitude"
+                                    style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Ignition
+                                    Latitude</label>
+                                <input type="number" step="0.000001" id="latitude" name="latitude" class="form-control"
+                                    value="-2.145" required style="border-color: var(--border-color);"
+                                    oninput="updateMapCenterFromInput()">
                             </div>
                             <div class="form-group">
-                                <label for="humidity" style="font-weight: 600; font-size: 0.85rem;">Relative Humidity (%)</label>
-                                <input type="number" step="0.1" id="humidity" name="humidity" class="form-control" value="75.0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="wind_speed" style="font-weight: 600; font-size: 0.85rem;">Wind Speed (m/s)</label>
-                                <input type="number" step="0.1" id="wind_speed" name="wind_speed" class="form-control" value="3.5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="wind_direction" style="font-weight: 600; font-size: 0.85rem;">Wind Direction (°)</label>
-                                <input type="number" step="1" id="wind_direction" name="wind_direction" class="form-control" value="120" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="duration" style="font-weight: 600; font-size: 0.85rem;">Duration (minutes)</label>
-                                <input type="number" step="1" id="duration" name="duration" class="form-control" value="240" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="step" style="font-weight: 600; font-size: 0.85rem;">Time Step (minutes)</label>
-                                <input type="number" step="1" id="step" name="step" class="form-control" value="3" required>
+                                <label for="longitude"
+                                    style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Ignition
+                                    Longitude</label>
+                                <input type="number" step="0.000001" id="longitude" name="longitude"
+                                    class="form-control" value="-59.000" required
+                                    style="border-color: var(--border-color);" oninput="updateMapCenterFromInput()">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Target Location Settings Card -->
-                    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md); border-top: 4px solid var(--warning);">
+                    <div style="margin-top: auto; padding-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary btn-block"
+                            style="padding: 0.9rem; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, var(--primary) 0%, #0d9488 100%);">
+                            Execute Digital Twin Simulation <i class="fa-solid fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Digital Twin Screen (Canvas player + Stats) -->
+        <div class="digital-twin-section card" style="position: relative;">
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="spinner"></div>
+                <p>Executing continuous wildfire spread model on AWS cluster...</p>
+            </div>
+
+            <div class="card-title">
+                <i class="fa-solid fa-clone"></i> Wildfire Prediction Digital Twin Grid
+            </div>
+
+            <div class="digital-twin-container">
+                <div class="grid-canvas-container" style="padding: 0; width: 100%; position: relative;">
+                    <div id="digital-twin-map"
+                        style="width: 100%; height: 500px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); z-index: 1;">
+                    </div>
+
+                    <!-- Floating Map Pan Controls -->
+                    <div class="map-pan-controls"
+                        style="position: absolute; bottom: 20px; right: 20px; z-index: 1000; display: grid; grid-template-areas: '. up .' 'left home right' '. down .'; gap: 6px; background: rgba(255,255,255,0.85); padding: 8px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); backdrop-filter: blur(4px);">
+                        <button type="button" onclick="panMap(0, -80)" class="pan-btn"
+                            style="grid-area: up; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;"
+                            onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'"
+                            title="Pan Up"><i class="fa-solid fa-chevron-up"></i></button>
+                        <button type="button" onclick="panMap(-80, 0)" class="pan-btn"
+                            style="grid-area: left; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;"
+                            onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'"
+                            title="Pan Left"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button type="button" onclick="panMap(0, 0, true)" class="pan-btn"
+                            style="grid-area: home; width:32px; height:32px; border-radius:50%; border:1px solid var(--primary-light); background:#f0fdfa; color:var(--primary); cursor:pointer; font-size:0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;"
+                            onmouseover="this.style.background='#ccfbf1'" onmouseout="this.style.background='#f0fdfa'"
+                            title="Recenter to Ignition"><i class="fa-solid fa-house-chimney"></i></button>
+                        <button type="button" onclick="panMap(80, 0)" class="pan-btn"
+                            style="grid-area: right; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;"
+                            onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'"
+                            title="Pan Right"><i class="fa-solid fa-chevron-right"></i></button>
+                        <button type="button" onclick="panMap(0, 80)" class="pan-btn"
+                            style="grid-area: down; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;"
+                            onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'"
+                            title="Pan Down"><i class="fa-solid fa-chevron-down"></i></button>
+                    </div>
+                </div>
+
+                <!-- Playback Controls -->
+                <div class="player-controls" style="flex-wrap: wrap; gap: 1rem;">
+                    <div class="playback-buttons">
+                        <button class="btn-icon" onclick="resetPlayer()"><i
+                                class="fa-solid fa-backward-step"></i></button>
+                        <button class="btn-icon" id="play-btn" onclick="togglePlay()"><i
+                                class="fa-solid fa-play"></i></button>
+                        <button class="btn-icon" onclick="stepForward()"><i
+                                class="fa-solid fa-forward-step"></i></button>
+                    </div>
+                    <div class="playback-time" id="playback-time-label">0h 00m</div>
+                    <div class="slider-container">
+                        <span>Timeline:</span>
+                        <input type="range" id="timeline-slider" min="0" max="0" value="0"
+                            oninput="onTimelineSliderChange(this.value)">
+                    </div>
+                    <div class="speed-container"
+                        style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 500;">
+                        <span>Speed:</span>
+                        <select id="playback-speed" class="form-control"
+                            style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;"
+                            onchange="onPlaybackSpeedChange(this.value)">
+                            <option value="1500">Real-time (1.5s/step)</option>
+                            <option value="800">Slow (0.8s/step)</option>
+                            <option value="300" selected>Medium (0.3s/step)</option>
+                            <option value="100">Fast (0.1s/step)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="legend-container">
+                    <div class="legend-item">
+                        <div class="legend-color color-unburned"></div>
+                        <span>Unburned Vegetation</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color color-burning"></div>
+                        <span>Active Fire Front</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color color-burned"></div>
+                        <span>Burned Area / Ash</span>
+                    </div>
+                </div>
+                <!-- AQI Smoke/Air Quality Overlay Toggle -->
+                <div style="margin-top:0.75rem;text-align:center;">
+                    <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;">
+                        <button class="aqi-toggle-btn" id="aqi-toggle-btn" onclick="toggleAQIOverlay()">
+                            <i class="fa-solid fa-smog"></i> Smoke / AQI Overlay
+                        </button>
+                        <span style="font-size:0.75rem;color:var(--text-muted);" id="aqi-status-text">OFF</span>
+                    </div>
+                    <div class="aqi-legend" id="aqi-legend">
+                        <div class="aqi-badge">
+                            <div class="aqi-dot" style="background:#00e400;"></div>Good (0–50)
+                        </div>
+                        <div class="aqi-badge">
+                            <div class="aqi-dot" style="background:#ffff00;border-color:#ccc;"></div>Moderate
+                        </div>
+                        <div class="aqi-badge">
+                            <div class="aqi-dot" style="background:#ff7e00;"></div>Unhealthy-SG
+                        </div>
+                        <div class="aqi-badge">
+                            <div class="aqi-dot" style="background:#ff0000;"></div>Unhealthy
+                        </div>
+                        <div class="aqi-badge">
+                            <div class="aqi-dot" style="background:#8f3f97;"></div>Very Unhealthy
+                        </div>
+                        <div class="aqi-badge">
+                            <div class="aqi-dot" style="background:#7e0023;"></div>Hazardous
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Simulation Metrics -->
+                <div class="stats-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- 8-Directional Propagation Panel -->
+                    <div class="directional-panel"
+                        style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm);">
+                        <div class="card-title"
+                            style="border:none; padding:0; margin-bottom:1rem; font-size:1.05rem; font-weight: 700;">
+                            <i class="fa-solid fa-compass" style="color: var(--primary);"></i> 8-Directional Propagation
+                        </div>
+                        <div id="directional-grid" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div class="dir-loader"
+                                style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 1rem;">
+                                Start simulation to track directional coordinates
+                            </div>
+                        </div>
+                        <div
+                            style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.25rem;">
+                            <div
+                                style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
+                                Active Fire Center (Centroid):</div>
+                            <div id="live-centroid-coords"
+                                style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--primary);">
+                                Lat: -, Lon: -</div>
+                        </div>
+                    </div>
+
+                    <!-- Hazard Rating Alert Agent Panel -->
+                    <div class="alert-panel"
+                        style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="card-title"
+                            style="border:none; padding:0; margin-bottom:0.5rem; font-size:1.05rem; font-weight: 700;">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Hazard Rating Agent
+                        </div>
+                        <div id="hazard-agent-content" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div
+                                style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">DAMAGE
+                                    FACTOR:</span>
+                                <span id="dfactor-value"
+                                    style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--text-main);">0.00%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">THREAT
+                                    LEVEL:</span>
+                                <span id="threat-badge" class="badge"
+                                    style="background-color: var(--success-light); color: var(--success); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; text-transform: uppercase;">GOOD</span>
+                            </div>
+                            <div id="threat-message"
+                                style="margin-top: 0.5rem; background: var(--bg-main); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; border-left: 4px solid var(--success);">
+                                Active fire spread is minimal. Threat is low.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- ========================================== -->
+        <!-- EMAIL ALERT COMMAND CENTER                  -->
+        <!-- ========================================== -->
+        <div class="card" style="margin-top: 2rem; border-top: 3px solid var(--primary);">
+            <div class="card-title" style="display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-bell-exclamation"></i> Email Alert Command Center</span>
+                <span id="alert-master-status-badge"
+                    style="font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 20px; background: var(--bg-main); color: var(--text-muted); border: 1px solid var(--border-color);">ALERTS
+                    OFF</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem 0 0.5rem;">
+
+                <!-- LEFT: Configuration Panel -->
+                <div>
+                    <p
+                        style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">
+                        Configuration</p>
+
+                    <!-- Enable Toggle -->
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
                         <div>
-                            <div class="card-title" style="border: none; padding-bottom: 0.5rem;">
-                                <i class="fa-solid fa-location-crosshairs" style="color: var(--warning);"></i> Target Location Settings
+                            <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-main);">Auto Email Alerts
                             </div>
-                            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-                                Specify the precise GPS coordinates for the cellular automata wildfire ignition point inside the Amazon rainforest.
-                            </p>
-                            <div class="parameters-form" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;">
-                                <div class="form-group">
-                                    <label for="latitude" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Ignition Latitude</label>
-                                    <input type="number" step="0.000001" id="latitude" name="latitude" class="form-control" value="-2.145" required style="border-color: var(--border-color);" oninput="updateMapCenterFromInput()">
-                                </div>
-                                <div class="form-group">
-                                    <label for="longitude" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Ignition Longitude</label>
-                                    <input type="number" step="0.000001" id="longitude" name="longitude" class="form-control" value="-59.000" required style="border-color: var(--border-color);" oninput="updateMapCenterFromInput()">
-                                </div>
-                            </div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">Trigger emails when threat
+                                threshold is crossed</div>
                         </div>
-                        
-                        <div style="margin-top: auto; padding-top: 1.5rem;">
-                            <button type="submit" class="btn btn-primary btn-block" style="padding: 0.9rem; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, var(--primary) 0%, #0d9488 100%);">
-                                Execute Digital Twin Simulation <i class="fa-solid fa-play"></i>
-                            </button>
-                        </div>
+                        <label
+                            style="position: relative; display: inline-block; width: 46px; height: 24px; cursor: pointer;">
+                            <input type="checkbox" id="alert-enabled-toggle" onchange="onAlertToggle(this.checked)"
+                                style="opacity:0; width:0; height:0; position:absolute;">
+                            <span
+                                style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background: var(--border-color); border-radius: 24px; transition: 0.3s;"
+                                id="toggle-track">
+                                <span
+                                    style="position:absolute; content:''; height:18px; width:18px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.3s;"
+                                    id="toggle-thumb"></span>
+                            </span>
+                        </label>
                     </div>
-                </div>
-            </form>
 
-            <!-- Digital Twin Screen (Canvas player + Stats) -->
-            <div class="digital-twin-section card" style="position: relative;">
-                <div class="loading-overlay" id="loading-overlay">
-                    <div class="spinner"></div>
-                    <p>Executing continuous wildfire spread model on AWS cluster...</p>
-                </div>
+                    <!-- Threshold -->
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Alert Threshold
+                            Level</label>
+                        <select id="alert-threshold" class="form-control" style="margin-top: 0.35rem;"
+                            onchange="saveAlertConfig()">
+                            <option value="BAD">BAD — D-Factor ≥ 5%</option>
+                            <option value="HIGH" selected>HIGH — D-Factor ≥ 15%</option>
+                            <option value="EXTREMELY HIGH">EXTREMELY HIGH — D-Factor ≥ 40%</option>
+                        </select>
+                    </div>
 
-                <div class="card-title">
-                    <i class="fa-solid fa-clone"></i> Wildfire Prediction Digital Twin Grid
-                </div>
-
-                <div class="digital-twin-container">
-                        <div class="grid-canvas-container" style="padding: 0; width: 100%; position: relative;">
-                            <div id="digital-twin-map" style="width: 100%; height: 500px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); z-index: 1;"></div>
-                            
-                            <!-- Floating Map Pan Controls -->
-                            <div class="map-pan-controls" style="position: absolute; bottom: 20px; right: 20px; z-index: 1000; display: grid; grid-template-areas: '. up .' 'left home right' '. down .'; gap: 6px; background: rgba(255,255,255,0.85); padding: 8px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); backdrop-filter: blur(4px);">
-                                <button type="button" onclick="panMap(0, -80)" class="pan-btn" style="grid-area: up; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Up"><i class="fa-solid fa-chevron-up"></i></button>
-                                <button type="button" onclick="panMap(-80, 0)" class="pan-btn" style="grid-area: left; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Left"><i class="fa-solid fa-chevron-left"></i></button>
-                                <button type="button" onclick="panMap(0, 0, true)" class="pan-btn" style="grid-area: home; width:32px; height:32px; border-radius:50%; border:1px solid var(--primary-light); background:#f0fdfa; color:var(--primary); cursor:pointer; font-size:0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#ccfbf1'" onmouseout="this.style.background='#f0fdfa'" title="Recenter to Ignition"><i class="fa-solid fa-house-chimney"></i></button>
-                                <button type="button" onclick="panMap(80, 0)" class="pan-btn" style="grid-area: right; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Right"><i class="fa-solid fa-chevron-right"></i></button>
-                                <button type="button" onclick="panMap(0, 80)" class="pan-btn" style="grid-area: down; width:32px; height:32px; border-radius:50%; border:1px solid #ddd; background:white; cursor:pointer; color:var(--text-main); font-size:0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; transition: all 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Pan Down"><i class="fa-solid fa-chevron-down"></i></button>
+                    <!-- SMTP Section -->
+                    <details
+                        style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+                        <summary
+                            style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); cursor: pointer;">SMTP
+                            Credentials</summary>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.85rem;">
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Host</label>
+                                <input type="text" id="smtp-host" class="form-control" value="smtp.gmail.com"
+                                    style="margin-top:0.25rem; font-size:0.85rem;">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Port</label>
+                                <input type="number" id="smtp-port" class="form-control" value="587"
+                                    style="margin-top:0.25rem; font-size:0.85rem;">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Username</label>
+                                <input type="email" id="smtp-user" class="form-control" value="theguesin.ai@gmail.com"
+                                    style="margin-top:0.25rem; font-size:0.85rem;">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; color: var(--text-muted);">App Password</label>
+                                <input type="password" id="smtp-password" class="form-control" value="jtrnkorvcmqtvowc"
+                                    style="margin-top:0.25rem; font-size:0.85rem;">
                             </div>
                         </div>
-                        
-                        <!-- Playback Controls -->
-                        <div class="player-controls" style="flex-wrap: wrap; gap: 1rem;">
-                            <div class="playback-buttons">
-                                <button class="btn-icon" onclick="resetPlayer()"><i class="fa-solid fa-backward-step"></i></button>
-                                <button class="btn-icon" id="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play"></i></button>
-                                <button class="btn-icon" onclick="stepForward()"><i class="fa-solid fa-forward-step"></i></button>
-                            </div>
-                            <div class="playback-time" id="playback-time-label">0h 00m</div>
-                            <div class="slider-container">
-                                <span>Timeline:</span>
-                                <input type="range" id="timeline-slider" min="0" max="0" value="0" oninput="onTimelineSliderChange(this.value)">
-                            </div>
-                            <div class="speed-container" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 500;">
-                                <span>Speed:</span>
-                                <select id="playback-speed" class="form-control" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;" onchange="onPlaybackSpeedChange(this.value)">
-                                    <option value="1500">Real-time (1.5s/step)</option>
-                                    <option value="800">Slow (0.8s/step)</option>
-                                    <option value="300" selected>Medium (0.3s/step)</option>
-                                    <option value="100">Fast (0.1s/step)</option>
-                                </select>
-                            </div>
-                        </div>
+                    </details>
 
-                        <div class="legend-container">
-                            <div class="legend-item">
-                                <div class="legend-color color-unburned"></div>
-                                <span>Unburned Vegetation</span>
+                    <!-- Recipients -->
+                    <div style="margin-bottom: 1rem;">
+                        <label
+                            style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Recipient
+                            Emails</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i
+                                        class="fa-solid fa-fire" style="color: var(--danger);"></i> Fire Dept</span>
+                                <input type="email" id="email-fire" class="form-control" value="sarveshbala27@gmail.com"
+                                    style="font-size:0.83rem; flex:1;">
                             </div>
-                            <div class="legend-item">
-                                <div class="legend-color color-burning"></div>
-                                <span>Active Fire Front</span>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i
+                                        class="fa-solid fa-truck-medical" style="color: var(--warning);"></i>
+                                    Ambulance</span>
+                                <input type="email" id="email-ambulance" class="form-control"
+                                    value="barathrithish7@gmail.com" style="font-size:0.83rem; flex:1;">
                             </div>
-                            <div class="legend-item">
-                                <div class="legend-color color-burned"></div>
-                                <span>Burned Area / Ash</span>
-                            </div>
-                        </div>
-                        <!-- AQI Smoke/Air Quality Overlay Toggle -->
-                        <div style="margin-top:0.75rem;text-align:center;">
-                            <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;">
-                                <button class="aqi-toggle-btn" id="aqi-toggle-btn" onclick="toggleAQIOverlay()">
-                                    <i class="fa-solid fa-smog"></i> Smoke / AQI Overlay
-                                </button>
-                                <span style="font-size:0.75rem;color:var(--text-muted);" id="aqi-status-text">OFF</span>
-                            </div>
-                            <div class="aqi-legend" id="aqi-legend">
-                                <div class="aqi-badge"><div class="aqi-dot" style="background:#00e400;"></div>Good (0–50)</div>
-                                <div class="aqi-badge"><div class="aqi-dot" style="background:#ffff00;border-color:#ccc;"></div>Moderate</div>
-                                <div class="aqi-badge"><div class="aqi-dot" style="background:#ff7e00;"></div>Unhealthy-SG</div>
-                                <div class="aqi-badge"><div class="aqi-dot" style="background:#ff0000;"></div>Unhealthy</div>
-                                <div class="aqi-badge"><div class="aqi-dot" style="background:#8f3f97;"></div>Very Unhealthy</div>
-                                <div class="aqi-badge"><div class="aqi-dot" style="background:#7e0023;"></div>Hazardous</div>
-                            </div>
-                        </div>
-
-                    <!-- Live Simulation Metrics -->
-                    <div class="stats-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <!-- 8-Directional Propagation Panel -->
-                        <div class="directional-panel" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm);">
-                            <div class="card-title" style="border:none; padding:0; margin-bottom:1rem; font-size:1.05rem; font-weight: 700;">
-                                <i class="fa-solid fa-compass" style="color: var(--primary);"></i> 8-Directional Propagation
-                            </div>
-                            <div id="directional-grid" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                <div class="dir-loader" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 1rem;">
-                                    Start simulation to track directional coordinates
-                                </div>
-                            </div>
-                            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.25rem;">
-                                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Active Fire Center (Centroid):</div>
-                                <div id="live-centroid-coords" style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--primary);">Lat: -, Lon: -</div>
-                            </div>
-                        </div>
-
-                        <!-- Hazard Rating Alert Agent Panel -->
-                        <div class="alert-panel" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div class="card-title" style="border:none; padding:0; margin-bottom:0.5rem; font-size:1.05rem; font-weight: 700;">
-                                <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Hazard Rating Agent
-                            </div>
-                            <div id="hazard-agent-content" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
-                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">DAMAGE FACTOR:</span>
-                                    <span id="dfactor-value" style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--text-main);">0.00%</span>
-                                </div>
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">THREAT LEVEL:</span>
-                                    <span id="threat-badge" class="badge" style="background-color: var(--success-light); color: var(--success); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; text-transform: uppercase;">GOOD</span>
-                                </div>
-                                <div id="threat-message" style="margin-top: 0.5rem; background: var(--bg-main); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; border-left: 4px solid var(--success);">
-                                    Active fire spread is minimal. Threat is low.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Evacuee Tracking & Dynamic Rerouting Panel -->
-                        <div class="evac-panel" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-card); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div class="card-title" style="border:none; padding:0; margin-bottom:0.5rem; font-size:1.05rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
-                                <span><i class="fa-solid fa-person-running" style="color: var(--primary);"></i> Evacuee Routing Agent</span>
-                                <span id="evac-status-badge" class="badge" style="background-color: var(--bg-main); color: var(--text-muted); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--border-color);">OFFLINE</span>
-                            </div>
-                            
-                            <div id="evac-controls" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.25rem;">
-                                <button type="button" class="btn btn-outline" id="place-evac-btn" onclick="toggleCitizenPlacement()" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; font-weight: 600; border-color: var(--primary); color: var(--primary); transition: all 0.2s;">
-                                    <i class="fa-solid fa-map-pin"></i> Select Evacuee Location
-                                </button>
-                                <div id="evac-placement-instructions" style="display: none; font-size: 0.78rem; text-align: center; color: #7c3aed; background: #f5f3ff; border: 1px dashed #c084fc; padding: 0.4rem; border-radius: 6px; font-weight: 600; animation: pulse 1.5s infinite;">
-                                    Click anywhere on the map to place the citizen
-                                </div>
-                            </div>
-                            
-                            <div id="evac-agent-content" style="display: flex; flex-direction: column; gap: 0.6rem;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.6rem;">
-                                    <div style="display: flex; flex-direction: column;">
-                                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">CURRENT CELL</span>
-                                        <span id="evac-cell-value" style="font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main);">-</span>
-                                    </div>
-                                    <div style="display: flex; flex-direction: column;">
-                                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">REROUTES</span>
-                                        <span id="evac-reroutes-value" style="font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main);">0</span>
-                                    </div>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.6rem;">
-                                    <div style="display: flex; flex-direction: column;">
-                                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">DISTANCE</span>
-                                        <span id="evac-distance-value" style="font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main);">-</span>
-                                    </div>
-                                    <div style="display: flex; flex-direction: column;">
-                                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">EST. SAFETY ETA</span>
-                                        <span id="evac-eta-value" style="font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main);">-</span>
-                                    </div>
-                                </div>
-                                
-                                <div style="display: flex; flex-direction: column; gap: 0.35rem;">
-                                    <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Real-Time Tracking Logs:</span>
-                                    <div id="evac-logs" style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.5rem; height: 100px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: var(--dark-gray); display: flex; flex-direction: column; gap: 0.25rem; scrollbar-width: thin;">
-                                        <div style="color: var(--text-muted); font-style: italic;">No citizen deployed.</div>
-                                    </div>
-                                </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i
+                                        class="fa-solid fa-people-carry-box" style="color: var(--success);"></i>
+                                    Rescue</span>
+                                <input type="email" id="email-rescue" class="form-control"
+                                    value="sarveshbala27@gmail.com" style="font-size:0.83rem; flex:1;">
                             </div>
                         </div>
                     </div>
+
+                    <button class="btn btn-primary" onclick="saveAlertConfig()" style="width: 100%;">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Configuration
+                    </button>
+                </div>
+
+                <!-- RIGHT: Status Panel -->
+                <div>
+                    <p
+                        style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">
+                        Dispatch Status</p>
+
+                    <!-- Last alert info -->
+                    <div id="alert-last-dispatch"
+                        style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem; min-height: 60px;">
+                        <div style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">No alerts
+                            dispatched yet. Alerts will auto-trigger when the simulation crosses your configured
+                            threshold.</div>
+                    </div>
+
+                    <!-- Per-recipient badges -->
+                    <div id="alert-recipient-statuses"
+                        style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.25rem;">
+                        <div class="alert-dept-row" id="status-fire"
+                            style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
+                            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i
+                                    class="fa-solid fa-fire"
+                                    style="color: var(--danger); margin-right: 0.4rem;"></i>Fire Department</span>
+                            <span class="dept-badge"
+                                style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
+                        </div>
+                        <div class="alert-dept-row" id="status-ambulance"
+                            style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
+                            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i
+                                    class="fa-solid fa-truck-medical"
+                                    style="color: var(--warning); margin-right: 0.4rem;"></i>Ambulance</span>
+                            <span class="dept-badge"
+                                style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
+                        </div>
+                        <div class="alert-dept-row" id="status-rescue"
+                            style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
+                            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i
+                                    class="fa-solid fa-people-carry-box"
+                                    style="color: var(--success); margin-right: 0.4rem;"></i>Rescue Team</span>
+                            <span class="dept-badge"
+                                style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
+                        </div>
+                    </div>
+
+                    <!-- Manual test button -->
+                    <button class="btn" onclick="triggerTestAlert()"
+                        style="width: 100%; background: transparent; border: 2px solid var(--primary); color: var(--primary); font-weight: 700; padding: 0.75rem; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; font-size: 0.9rem;"
+                        onmouseover="this.style.background='var(--primary)';this.style.color='white';"
+                        onmouseout="this.style.background='transparent';this.style.color='var(--primary)';">
+                        <i class="fa-solid fa-paper-plane"></i> Send Test Alert Now
+                    </button>
                 </div>
             </div>
-
-
-
-            <!-- ========================================== -->
-            <!-- EMAIL ALERT COMMAND CENTER                  -->
-            <!-- ========================================== -->
-            <div class="card" style="margin-top: 2rem; border-top: 3px solid var(--primary);">
-                <div class="card-title" style="display: flex; align-items: center; justify-content: space-between;">
-                    <span><i class="fa-solid fa-bell-exclamation"></i> Email Alert Command Center</span>
-                    <span id="alert-master-status-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 20px; background: var(--bg-main); color: var(--text-muted); border: 1px solid var(--border-color);">ALERTS OFF</span>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem 0 0.5rem;">
-
-                    <!-- LEFT: Configuration Panel -->
-                    <div>
-                        <p style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Configuration</p>
-
-                        <!-- Enable Toggle -->
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-main);">Auto Email Alerts</div>
-                                <div style="font-size: 0.78rem; color: var(--text-muted);">Trigger emails when threat threshold is crossed</div>
-                            </div>
-                            <label style="position: relative; display: inline-block; width: 46px; height: 24px; cursor: pointer;">
-                                <input type="checkbox" id="alert-enabled-toggle" onchange="onAlertToggle(this.checked)" style="opacity:0; width:0; height:0; position:absolute;">
-                                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background: var(--border-color); border-radius: 24px; transition: 0.3s;" id="toggle-track">
-                                    <span style="position:absolute; content:''; height:18px; width:18px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.3s;" id="toggle-thumb"></span>
-                                </span>
-                            </label>
-                        </div>
-
-                        <!-- Threshold -->
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Alert Threshold Level</label>
-                            <select id="alert-threshold" class="form-control" style="margin-top: 0.35rem;" onchange="saveAlertConfig()">
-                                <option value="BAD">BAD — D-Factor ≥ 5%</option>
-                                <option value="HIGH" selected>HIGH — D-Factor ≥ 15%</option>
-                                <option value="EXTREMELY HIGH">EXTREMELY HIGH — D-Factor ≥ 40%</option>
-                            </select>
-                        </div>
-
-                        <!-- SMTP Section -->
-                        <details style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
-                            <summary style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); cursor: pointer;">SMTP Credentials</summary>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.85rem;">
-                                <div class="form-group">
-                                    <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Host</label>
-                                    <input type="text" id="smtp-host" class="form-control" value="smtp.gmail.com" style="margin-top:0.25rem; font-size:0.85rem;">
-                                </div>
-                                <div class="form-group">
-                                    <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Port</label>
-                                    <input type="number" id="smtp-port" class="form-control" value="587" style="margin-top:0.25rem; font-size:0.85rem;">
-                                </div>
-                                <div class="form-group">
-                                    <label style="font-size: 0.8rem; color: var(--text-muted);">SMTP Username</label>
-                                    <input type="email" id="smtp-user" class="form-control" value="theguesin.ai@gmail.com" style="margin-top:0.25rem; font-size:0.85rem;">
-                                </div>
-                                <div class="form-group">
-                                    <label style="font-size: 0.8rem; color: var(--text-muted);">App Password</label>
-                                    <input type="password" id="smtp-password" class="form-control" value="jtrnkorvcmqtvowc" style="margin-top:0.25rem; font-size:0.85rem;">
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- Recipients -->
-                        <div style="margin-bottom: 1rem;">
-                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Recipient Emails</label>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-fire" style="color: var(--danger);"></i> Fire Dept</span>
-                                    <input type="email" id="email-fire" class="form-control" value="sarveshbala27@gmail.com" style="font-size:0.83rem; flex:1;">
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-truck-medical" style="color: var(--warning);"></i> Ambulance</span>
-                                    <input type="email" id="email-ambulance" class="form-control" value="barathrithish7@gmail.com" style="font-size:0.83rem; flex:1;">
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="width: 90px; font-size: 0.78rem; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-people-carry-box" style="color: var(--success);"></i> Rescue</span>
-                                    <input type="email" id="email-rescue" class="form-control" value="sarveshbala27@gmail.com" style="font-size:0.83rem; flex:1;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary" onclick="saveAlertConfig()" style="width: 100%;">
-                            <i class="fa-solid fa-floppy-disk"></i> Save Configuration
-                        </button>
-                    </div>
-
-                    <!-- RIGHT: Status Panel -->
-                    <div>
-                        <p style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Dispatch Status</p>
-
-                        <!-- Last alert info -->
-                        <div id="alert-last-dispatch" style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem; min-height: 60px;">
-                            <div style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">No alerts dispatched yet. Alerts will auto-trigger when the simulation crosses your configured threshold.</div>
-                        </div>
-
-                        <!-- Per-recipient badges -->
-                        <div id="alert-recipient-statuses" style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.25rem;">
-                            <div class="alert-dept-row" id="status-fire" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
-                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-fire" style="color: var(--danger); margin-right: 0.4rem;"></i>Fire Department</span>
-                                <span class="dept-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
-                            </div>
-                            <div class="alert-dept-row" id="status-ambulance" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
-                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-truck-medical" style="color: var(--warning); margin-right: 0.4rem;"></i>Ambulance</span>
-                                <span class="dept-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
-                            </div>
-                            <div class="alert-dept-row" id="status-rescue" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem;">
-                                <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-people-carry-box" style="color: var(--success); margin-right: 0.4rem;"></i>Rescue Team</span>
-                                <span class="dept-badge" style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 20px; background: var(--border-color); color: var(--text-muted);">STANDBY</span>
-                            </div>
-                        </div>
-
-                        <!-- Manual test button -->
-                        <button class="btn" onclick="triggerTestAlert()" style="width: 100%; background: transparent; border: 2px solid var(--primary); color: var(--primary); font-weight: 700; padding: 0.75rem; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; font-size: 0.9rem;" onmouseover="this.style.background='var(--primary)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--primary)';">
-                            <i class="fa-solid fa-paper-plane"></i> Send Test Alert Now
-                        </button>
-                    </div>
-                </div>
-            </div>
+        </div>
 
         <footer>
             Guesin.ai &copy; 2026. All rights reserved.
@@ -1373,44 +1787,60 @@
             <button class="btn-close-modal" onclick="closeWhatIf()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-body">
-            <p style="font-size:0.83rem;color:var(--text-muted);line-height:1.55;margin:0;">Clone the current fire state and test different conditions without touching the live simulation.</p>
+            <p style="font-size:0.83rem;color:var(--text-muted);line-height:1.55;margin:0;">Clone the current fire state
+                and test different conditions without touching the live simulation.</p>
 
             <!-- Wind override -->
             <div>
-                <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;letter-spacing:0.05em;">Wind Override</p>
+                <p
+                    style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;letter-spacing:0.05em;">
+                    Wind Override</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
                     <div class="form-group" style="margin:0;">
-                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Speed (m/s)</label>
-                        <input type="number" id="wi-wind-speed" class="form-control" placeholder="Current" step="0.5" min="0" max="60">
+                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Speed
+                            (m/s)</label>
+                        <input type="number" id="wi-wind-speed" class="form-control" placeholder="Current" step="0.5"
+                            min="0" max="60">
                     </div>
                     <div class="form-group" style="margin:0;">
-                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Direction (°)</label>
-                        <input type="number" id="wi-wind-dir" class="form-control" placeholder="0=North" step="5" min="0" max="360">
+                        <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Direction
+                            (°)</label>
+                        <input type="number" id="wi-wind-dir" class="form-control" placeholder="0=North" step="5"
+                            min="0" max="360">
                     </div>
                 </div>
             </div>
 
             <!-- Firebreak mode -->
-            <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;">
+            <div
+                style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1rem;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
-                    <span style="font-weight:600;font-size:0.9rem;"><i class="fa-solid fa-tree" style="color:#16a34a;margin-right:0.3rem;"></i>Firebreak Mode</span>
+                    <span style="font-weight:600;font-size:0.9rem;"><i class="fa-solid fa-tree"
+                            style="color:#16a34a;margin-right:0.3rem;"></i>Firebreak Mode</span>
                     <label style="position:relative;display:inline-block;width:46px;height:24px;cursor:pointer;">
-                        <input type="checkbox" id="wi-firebreak-toggle" onchange="toggleFirebreakMode(this.checked)" style="opacity:0;width:0;height:0;position:absolute;">
-                        <span id="wi-fb-track" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border-color);border-radius:24px;transition:0.3s;">
-                            <span id="wi-fb-thumb" style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
+                        <input type="checkbox" id="wi-firebreak-toggle" onchange="toggleFirebreakMode(this.checked)"
+                            style="opacity:0;width:0;height:0;position:absolute;">
+                        <span id="wi-fb-track"
+                            style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border-color);border-radius:24px;transition:0.3s;">
+                            <span id="wi-fb-thumb"
+                                style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
                         </span>
                     </label>
                 </div>
-                <p style="font-size:0.77rem;color:var(--text-muted);line-height:1.4;">When ON — clicking any cell on the map adds it as a firebreak (clears fuel load in the scenario).</p>
-                <div id="wi-firebreaks-list" style="margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.3rem;min-height:20px;"></div>
-                <button id="wi-clear-fb" onclick="clearFirebreaks()" style="display:none;margin-top:0.5rem;font-size:0.77rem;padding:0.3rem 0.65rem;border:1px solid var(--danger);color:var(--danger);background:var(--danger-light);border-radius:var(--radius-md);cursor:pointer;">
+                <p style="font-size:0.77rem;color:var(--text-muted);line-height:1.4;">When ON — clicking any cell on the
+                    map adds it as a firebreak (clears fuel load in the scenario).</p>
+                <div id="wi-firebreaks-list"
+                    style="margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.3rem;min-height:20px;"></div>
+                <button id="wi-clear-fb" onclick="clearFirebreaks()"
+                    style="display:none;margin-top:0.5rem;font-size:0.77rem;padding:0.3rem 0.65rem;border:1px solid var(--danger);color:var(--danger);background:var(--danger-light);border-radius:var(--radius-md);cursor:pointer;">
                     <i class="fa-solid fa-trash-can"></i> Clear All Firebreaks
                 </button>
             </div>
 
             <!-- Steps ahead -->
             <div class="form-group" style="margin:0;">
-                <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Steps to Simulate Ahead</label>
+                <label style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;display:block;">Steps to Simulate
+                    Ahead</label>
                 <input type="number" id="wi-steps" class="form-control" value="10" min="1" max="30">
             </div>
 
@@ -1422,31 +1852,40 @@
 
             <!-- Results -->
             <div id="wi-results" style="display:none;border-top:1px solid var(--border-color);padding-top:1rem;">
-                <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;">Scenario Results</p>
-                <p id="wi-scenario-desc" style="font-size:0.82rem;color:var(--text-main);margin-bottom:0.75rem;padding:0.6rem;background:var(--bg-main);border-radius:var(--radius-md);border-left:3px solid #7c3aed;"></p>
-                
-                
+                <p
+                    style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.65rem;">
+                    Scenario Results</p>
+                <p id="wi-scenario-desc"
+                    style="font-size:0.82rem;color:var(--text-main);margin-bottom:0.75rem;padding:0.6rem;background:var(--bg-main);border-radius:var(--radius-md);border-left:3px solid #7c3aed;">
+                </p>
+
+
 
                 <div class="comparison-grid">
                     <div class="compare-card original">
                         <h4 style="color:var(--danger);">Live Timeline</h4>
                         <div class="big-num" id="wi-orig-count" style="color:var(--danger);">—</div>
-                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">cells burned/burning</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">cells burned/burning
+                        </div>
                     </div>
                     <div class="compare-card forked">
                         <h4 style="color:var(--success);">With Scenario</h4>
                         <div class="big-num" id="wi-fork-count" style="color:var(--success);">—</div>
-                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">cells burned/burning</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">cells burned/burning
+                        </div>
                     </div>
                 </div>
                 <div style="text-align:center;margin-top:0.5rem;">
-                    <div class="saved-badge"><i class="fa-solid fa-shield-heart"></i> <span id="wi-saved-count">0</span> cells saved</div>
+                    <div class="saved-badge"><i class="fa-solid fa-shield-heart"></i> <span id="wi-saved-count">0</span>
+                        cells saved</div>
                     <div id="wi-pct" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem;"></div>
                 </div>
             </div>
         </div>
         <div class="drawer-footer">
-            <button class="btn btn-primary" style="width:100%;background:linear-gradient(135deg,#7c3aed,#6d28d9);justify-content:center;" onclick="runWhatIfScenario()">
+            <button class="btn btn-primary"
+                style="width:100%;background:linear-gradient(135deg,#7c3aed,#6d28d9);justify-content:center;"
+                onclick="runWhatIfScenario()">
                 <i class="fa-solid fa-play"></i> Run Scenario
             </button>
         </div>
@@ -1470,10 +1909,15 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <span id="sitrep-model-badge" style="font-size:0.75rem;color:var(--text-muted);margin-right:auto;"></span>
-                <button class="btn btn-outline" onclick="copySitrep()" style="font-size:0.85rem;"><i class="fa-solid fa-copy"></i> Copy</button>
-                <button class="btn btn-outline" onclick="exportSitrep()" style="font-size:0.85rem;border-color:var(--primary);color:var(--primary);"><i class="fa-solid fa-file-arrow-down"></i> Export Log</button>
-                <button class="btn btn-primary" style="background:linear-gradient(135deg,#0369a1,#0284c7);" onclick="loadSitrep()">
+                <span id="sitrep-model-badge"
+                    style="font-size:0.75rem;color:var(--text-muted);margin-right:auto;"></span>
+                <button class="btn btn-outline" onclick="copySitrep()" style="font-size:0.85rem;"><i
+                        class="fa-solid fa-copy"></i> Copy</button>
+                <button class="btn btn-outline" onclick="exportSitrep()"
+                    style="font-size:0.85rem;border-color:var(--primary);color:var(--primary);"><i
+                        class="fa-solid fa-file-arrow-down"></i> Export Log</button>
+                <button class="btn btn-primary" style="background:linear-gradient(135deg,#0369a1,#0284c7);"
+                    onclick="loadSitrep()">
                     <i class="fa-solid fa-rotate"></i> Regenerate
                 </button>
             </div>
@@ -1487,9 +1931,10 @@
         <div class="modal-card" style="max-width:760px; max-height:85vh; display:flex; flex-direction:column;">
             <div class="modal-header" style="background:linear-gradient(135deg,#15803d,#16a34a);">
                 <h3 style="color:white;"><i class="fa-solid fa-seedling"></i> Reforestation & Agri-Doctor</h3>
-                <button class="btn-close-modal" onclick="closeReforestation()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="btn-close-modal" onclick="closeReforestation()"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
-            
+
             <div class="modal-body" style="overflow-y:auto; padding:1.5rem; flex:1;">
                 <!-- Loading State -->
                 <div id="ref-loading" style="text-align:center;padding:2rem;color:var(--text-muted);">
@@ -1499,47 +1944,70 @@
 
                 <!-- Empty State (No Damage) -->
                 <div id="ref-empty" style="display:none;text-align:center;padding:3rem;color:var(--text-muted);">
-                    <i class="fa-solid fa-heart-circle-check" style="font-size:3rem;color:#16a34a;margin-bottom:1rem;opacity:0.8;"></i>
+                    <i class="fa-solid fa-heart-circle-check"
+                        style="font-size:3rem;color:#16a34a;margin-bottom:1rem;opacity:0.8;"></i>
                     <p style="font-weight:700;font-size:1.1rem;color:var(--text-main);">Forest is 100% Healthy!</p>
-                    <p style="font-size:0.85rem;margin-top:0.4rem;">No damaged zones detected. Run at least 1 simulation step with burning fires to calculate reforestation priorities.</p>
+                    <p style="font-size:0.85rem;margin-top:0.4rem;">No damaged zones detected. Run at least 1 simulation
+                        step with burning fires to calculate reforestation priorities.</p>
                 </div>
 
                 <!-- Results State -->
                 <div id="ref-results" style="display:none;">
                     <!-- Overview Stats -->
-                    <div class="forecast-stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1.25rem;">
-                        <div class="forecast-stat" style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
-                            <div class="label" style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">Damaged Cells</div>
-                            <div class="value" id="ref-cell-count" style="font-size:1.8rem; font-weight:800; color:#16a34a;">0</div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">classified as burned</div>
+                    <div class="forecast-stats-grid"
+                        style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1.25rem;">
+                        <div class="forecast-stat"
+                            style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
+                            <div class="label"
+                                style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">
+                                Damaged Cells</div>
+                            <div class="value" id="ref-cell-count"
+                                style="font-size:1.8rem; font-weight:800; color:#16a34a;">0</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">classified as
+                                burned</div>
                         </div>
-                        <div class="forecast-stat" style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
-                            <div class="label" style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">Destroyed Area</div>
-                            <div class="value" id="ref-area-count" style="font-size:1.05rem; font-weight:800; color:#16a34a; padding:0.4rem 0;">0 ha</div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">estimated land cover</div>
+                        <div class="forecast-stat"
+                            style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
+                            <div class="label"
+                                style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">
+                                Destroyed Area</div>
+                            <div class="value" id="ref-area-count"
+                                style="font-size:1.05rem; font-weight:800; color:#16a34a; padding:0.4rem 0;">0 ha</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">estimated land
+                                cover</div>
                         </div>
-                        <div class="forecast-stat" style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
-                            <div class="label" style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">Recovery Urgency</div>
-                            <div class="value" id="ref-urgency" style="font-size:1.15rem; font-weight:800; color:#dc2626; padding:0.45rem 0;">LOW</div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">priority urgency rank</div>
+                        <div class="forecast-stat"
+                            style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
+                            <div class="label"
+                                style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">
+                                Recovery Urgency</div>
+                            <div class="value" id="ref-urgency"
+                                style="font-size:1.15rem; font-weight:800; color:#dc2626; padding:0.45rem 0;">LOW</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">priority urgency
+                                rank</div>
                         </div>
                     </div>
 
                     <!-- Map Highlight Control -->
                     <div style="text-align:center; margin-bottom:1.5rem;">
-                        <button class="btn btn-outline" id="ref-map-highlight-btn" onclick="toggleReforestationOverlay()" style="border-color:#16a34a; color:#16a34a; width:100%; font-weight:700;">
+                        <button class="btn btn-outline" id="ref-map-highlight-btn"
+                            onclick="toggleReforestationOverlay()"
+                            style="border-color:#16a34a; color:#16a34a; width:100%; font-weight:700;">
                             <i class="fa-solid fa-eye"></i> Highlight Planting Zones on Map
                         </button>
                     </div>
 
                     <!-- Agri-Doctor Section -->
-                    <div style="border:1px solid #16a34a33; border-radius:var(--radius-lg); background:#f0fdf455; padding:1.25rem; margin-bottom:1.5rem; box-shadow:var(--shadow-sm); text-align:left;">
-                        <h4 style="color:#15803d; font-size:1rem; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem; border-bottom:1px solid #16a34a22; padding-bottom:0.5rem;">
+                    <div
+                        style="border:1px solid #16a34a33; border-radius:var(--radius-lg); background:#f0fdf455; padding:1.25rem; margin-bottom:1.5rem; box-shadow:var(--shadow-sm); text-align:left;">
+                        <h4
+                            style="color:#15803d; font-size:1rem; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem; border-bottom:1px solid #16a34a22; padding-bottom:0.5rem;">
                             <i class="fa-solid fa-user-doctor"></i> Agri-Doctor Intelligent Diagnosis
                         </h4>
-                        
+
                         <div style="display:flex; flex-direction:column; gap:1rem;">
-                            <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-soil-diag">
+                            <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;"
+                                id="ref-soil-diag">
                                 <strong>🩺 Soil Status:</strong> Loading soil diagnostic metrics...
                             </div>
                             <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-crop-rec">
@@ -1553,10 +2021,13 @@
 
                     <!-- Priority Zone Table -->
                     <div style="margin-top:1.5rem; text-align:left;">
-                        <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-main); margin-bottom:0.6rem;"><i class="fa-solid fa-list-ol"></i> Planting Priority Coordinates</h4>
-                        <div style="overflow-x:auto; border:1px solid var(--border-color); border-radius:var(--radius-md); max-height:220px; overflow-y:auto;">
+                        <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-main); margin-bottom:0.6rem;"><i
+                                class="fa-solid fa-list-ol"></i> Planting Priority Coordinates</h4>
+                        <div
+                            style="overflow-x:auto; border:1px solid var(--border-color); border-radius:var(--radius-md); max-height:220px; overflow-y:auto;">
                             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.82rem;">
-                                <thead style="background:var(--bg-main); border-bottom:1px solid var(--border-color); position:sticky; top:0;">
+                                <thead
+                                    style="background:var(--bg-main); border-bottom:1px solid var(--border-color); position:sticky; top:0;">
                                     <tr>
                                         <th style="padding:0.6rem;">Cell (X, Y)</th>
                                         <th style="padding:0.6rem;">Lat / Lon</th>
@@ -1573,8 +2044,9 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="modal-footer" style="padding:1rem; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end;">
+
+            <div class="modal-footer"
+                style="padding:1rem; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end;">
                 <button class="btn btn-outline" onclick="closeReforestation()">Dismiss</button>
             </div>
         </div>
@@ -1588,16 +2060,16 @@
                 view.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
-            
+
         }
 
         // Real sign-in action
         async function handleLogin(event) {
             event.preventDefault();
-            
+
             const usernameInput = document.getElementById('username').value;
             const passwordInput = document.getElementById('password').value;
-            
+
             try {
                 const response = await fetch('/signin', {
                     method: 'POST',
@@ -1609,9 +2081,9 @@
                         password: passwordInput
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok && data.status === 'success') {
                     // Update header username display
                     document.querySelector('.header-user span').innerHTML = `<i class="fa-solid fa-user-shield"></i> ${usernameInput}`;
@@ -1629,19 +2101,19 @@
         // Real sign-up action
         async function handleSignup(event) {
             event.preventDefault();
-            
+
             const usernameInput = document.getElementById('reg-username').value;
             const passwordInput = document.getElementById('reg-password').value;
-            
+
             // Front-end requirement checks
             const hasLength = passwordInput.length >= 6;
             const hasSymbol = /[!@#$%^&*(),.?":{}|<>_+\-=\[\]\\/;']/.test(passwordInput);
-            
+
             if (!hasLength || !hasSymbol) {
                 alert('Sign Up Failed: Password does not meet all security requirements.');
                 return;
             }
-            
+
             try {
                 const response = await fetch('/signup', {
                     method: 'POST',
@@ -1653,16 +2125,16 @@
                         password: passwordInput
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok && data.status === 'success') {
                     alert('Account created successfully! Please sign in.');
                     // Autofill username in sign in form
                     document.getElementById('username').value = usernameInput;
                     document.getElementById('password').value = passwordInput;
                     showPage('login-page');
-                    
+
                     // Clear signup form
                     document.getElementById('signup-form').reset();
                     validatePasswordRequirements('');
@@ -1679,7 +2151,7 @@
         function validatePasswordRequirements(password) {
             const reqLength = document.getElementById('req-length');
             const reqSymbol = document.getElementById('req-symbol');
-            
+
             // Check length (>= 6)
             if (password.length >= 6) {
                 reqLength.style.color = 'var(--success)';
@@ -1688,7 +2160,7 @@
                 reqLength.style.color = 'var(--danger)';
                 reqLength.querySelector('i').className = 'fa-solid fa-circle-xmark';
             }
-            
+
             // Check special symbol
             const hasSymbol = /[!@#$%^&*(),.?":{}|<>_+\-=\[\]\\/;']/.test(password);
             if (hasSymbol) {
@@ -1716,503 +2188,12 @@
         let centroidPolyline = null;
         let ignitionMarker = null;
 
-        // Evacuee Tracking State
-        let citizenCell = null;
-        let citizenStartCell = null;
-        let citizenPath = [];
-        let citizenOriginalPath = [];
-        let citizenStatus = "OFFLINE"; // OFFLINE, EVACUATING, REROUTING, SAFE, TRAPPED
-        let citizenPlacedMode = false;
-        let citizenMarker = null;
-        let citizenPathLayer = null;
-        let citizenBlockedPathLayer = null;
-        let rerouteCount = 0;
-        let routingLogs = [];
-
-        // Frontend Dijkstra Pathfinding Engine
-        function findEvacuationRoute(startR, startC, currentSimTime) {
-            if (!simulationData) return null;
-            
-            const grid_size = GRID_SIZE;
-            
-            const queue = [{
-                cost: 0.0,
-                r: startR,
-                c: startC,
-                path: [[startR, startC]]
-            }];
-            
-            const visited = Array.from({ length: grid_size }, () => Array(grid_size).fill(Infinity));
-            visited[startR][startC] = 0.0;
-            
-            while (queue.length > 0) {
-                let minIdx = 0;
-                for (let i = 1; i < queue.length; i++) {
-                    if (queue[i].cost < queue[minIdx].cost) {
-                        minIdx = i;
-                    }
-                }
-                const curr = queue.splice(minIdx, 1)[0];
-                const r = curr.r;
-                const c = curr.c;
-                const cost = curr.cost;
-                const path = curr.path;
-                
-                if (cost > visited[r][c]) continue;
-                
-                const isBoundary = (r === 0 || r === grid_size - 1 || c === 0 || c === grid_size - 1);
-                if (isBoundary) {
-                    const igTime = simulationData.ignite_t[r][c];
-                    if (igTime > currentSimTime) {
-                        return path;
-                    }
-                }
-                
-                for (let dr = -1; dr <= 1; dr++) {
-                    for (let dc = -1; dc <= 1; dc++) {
-                        if (dr === 0 && dc === 0) continue;
-                        
-                        const nr = r + dr;
-                        const nc = c + dc;
-                        
-                        if (nr >= 0 && nr < grid_size && nc >= 0 && nc < grid_size) {
-                            const igTime = simulationData.ignite_t[nr][nc];
-                            if (igTime <= currentSimTime) {
-                                continue;
-                            }
-                            
-                            const moveDist = (dr !== 0 && dc !== 0) ? 1.414 : 1.0;
-                            const fVal = simulationData.fuel[nr][nc];
-                            const fuelPenalty = fVal * 8.0;
-                            
-                            let fireProximityPenalty = 0.0;
-                            for (let tr = -2; tr <= 2; tr++) {
-                                for (let tc = -2; tc <= 2; tc++) {
-                                    const pr = nr + tr;
-                                    const pc = nc + tc;
-                                    if (pr >= 0 && pr < grid_size && pc >= 0 && pc < grid_size) {
-                                        const pIgTime = simulationData.ignite_t[pr][pc];
-                                        if (pIgTime <= currentSimTime && currentSimTime < pIgTime + 15.0) {
-                                            const dist = Math.max(Math.abs(tr), Math.abs(tc));
-                                            fireProximityPenalty += (dist === 1) ? 15.0 : 7.0;
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            const stepCost = moveDist * (1.0 + fuelPenalty + fireProximityPenalty);
-                            const newCost = cost + stepCost;
-                            
-                            if (newCost < visited[nr][nc]) {
-                                visited[nr][nc] = newCost;
-                                queue.push({
-                                    cost: newCost,
-                                    r: nr,
-                                    c: nc,
-                                    path: [...path, [nr, nc]]
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            
-            return null;
-        }
-
-        // Citizen Placement & Rerouting helpers
-        function logEvacMessage(msg) {
-            const timeLabel = document.getElementById('playback-time-label') ? document.getElementById('playback-time-label').innerText : "0h 00m";
-            const logBox = document.getElementById('evac-logs');
-            if (!logBox) return;
-            if (routingLogs.length === 0) {
-                logBox.innerHTML = '';
-            }
-            const logText = `[${timeLabel}] ${msg}`;
-            routingLogs.push(logText);
-            
-            const logItem = document.createElement('div');
-            logItem.innerText = logText;
-            if (msg.includes('🚨')) logItem.style.color = '#ef4444';
-            else if (msg.includes('⚠️')) logItem.style.color = '#7c3aed';
-            else if (msg.includes('✅')) logItem.style.color = '#10b981';
-            else if (msg.includes('🏃')) logItem.style.color = '#7c3aed';
-            logBox.appendChild(logItem);
-            logBox.scrollTop = logBox.scrollHeight;
-        }
-
-        function toggleCitizenPlacement() {
-            if (!simulationData) {
-                alert("Please run a wildfire simulation prediction first!");
-                return;
-            }
-            
-            const btn = document.getElementById('place-evac-btn');
-            const instructions = document.getElementById('evac-placement-instructions');
-            if (!btn || !instructions) return;
-            
-            if (citizenPlacedMode) {
-                citizenPlacedMode = false;
-                btn.classList.remove('active');
-                btn.style.borderColor = 'var(--primary)';
-                btn.style.background = '';
-                btn.style.color = 'var(--primary)';
-                instructions.style.display = 'none';
-                document.getElementById('digital-twin-map').style.cursor = '';
-                map.off('click', placeCitizenFromMap);
-            } else {
-                if (firebreakModeActive) {
-                    toggleFirebreakMode(false);
-                }
-                citizenPlacedMode = true;
-                btn.classList.add('active');
-                btn.style.background = 'var(--primary)';
-                btn.style.color = 'white';
-                instructions.style.display = 'block';
-                document.getElementById('digital-twin-map').style.cursor = 'crosshair';
-                map.on('click', placeCitizenFromMap);
-            }
-        }
-
-        function placeCitizenFromMap(e) {
-            if (!map || !citizenPlacedMode) return;
-            const { lat, lng } = e.latlng;
-            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
-            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
-            const cell_size = 30.0;
-            const earthRadius = 6371000.0;
-            
-            const dy = (lat - ignLat) * Math.PI / 180 * earthRadius;
-            const dx = (lng - ignLon) * Math.PI / 180 * earthRadius * Math.cos(ignLat * Math.PI / 180);
-            
-            const r_ignite = 25;
-            const c_ignite = 25;
-            
-            const c = Math.round(c_ignite + dx / cell_size);
-            const r = Math.round(r_ignite - dy / cell_size);
-            
-            if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) {
-                alert("Clicked point is outside the simulation grid boundary.");
-                return;
-            }
-            
-            const stepVal = parseInt(document.getElementById('step').value) || 3;
-            const currentSimTime = currentStepIndex * stepVal;
-            const igTime = simulationData.ignite_t[r][c];
-            if (igTime <= currentSimTime) {
-                alert("Cannot place evacuee in an active fire or burned area!");
-                return;
-            }
-            
-            deployCitizenAt(r, c, currentStepIndex);
-            toggleCitizenPlacement();
-        }
-
-        function deployCitizenAt(r, c, stepIdx) {
-            clearCitizenLayers();
-            
-            citizenCell = {r: r, c: c};
-            citizenStartCell = {r: r, c: c};
-            rerouteCount = 0;
-            routingLogs = [];
-            
-            const logBox = document.getElementById('evac-logs');
-            if (logBox) logBox.innerHTML = '';
-            
-            const stepVal = parseInt(document.getElementById('step').value) || 3;
-            const currentSimTime = stepIdx * stepVal;
-            
-            const path = findEvacuationRoute(r, c, currentSimTime);
-            if (!path) {
-                citizenStatus = "TRAPPED";
-                updateEvacUI();
-                logEvacMessage(`🚨 Citizen deployed at (${r}, ${c}) but is TRAPPED immediately!`);
-                renderCitizenMarker(r, c, true);
-                return;
-            }
-            
-            citizenPath = path;
-            citizenOriginalPath = [...path];
-            citizenStatus = "EVACUATING";
-            
-            updateEvacUI();
-            logEvacMessage(`🏃 Citizen deployed at (${r}, ${c})`);
-            logEvacMessage(`🔍 Safe route calculated. Distance: ${path.length} cells.`);
-            
-            renderCitizenMarker(r, c, false);
-            drawCitizenPath();
-        }
-
-        function renderCitizenMarker(r, c, isTrapped) {
-            if (citizenMarker) {
-                map.removeLayer(citizenMarker);
-                citizenMarker = null;
-            }
-            
-            const cell_size = 30.0;
-            const r_ignite = 25;
-            const c_ignite = 25;
-            const x = (c - c_ignite) * cell_size;
-            const y = (r_ignite - r) * cell_size;
-            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
-            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
-            const coords = xyToLatLon(x, y, ignLat, ignLon);
-            
-            const iconHtml = `<div style="font-size: 24px; text-align: center; line-height: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); animation: bounce 1s infinite alternate;">${isTrapped ? '😭' : '🏃'}</div>`;
-            const citizenIcon = L.divIcon({
-                html: iconHtml,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12],
-                className: 'citizen-div-icon'
-            });
-            
-            citizenMarker = L.marker(coords, {icon: citizenIcon}).addTo(map);
-            citizenMarker.bindTooltip(`Citizen at (${r}, ${c})<br>Status: ${citizenStatus}`, { permanent: false, sticky: true });
-        }
-
-        function gridPathToLatLons(path) {
-            const cell_size = 30.0;
-            const r_ignite = 25;
-            const c_ignite = 25;
-            const ignLat = simulationData ? simulationData.ignition_lat : -2.145;
-            const ignLon = simulationData ? simulationData.ignition_lon : -59.000;
-            
-            return path.map(pt => {
-                const r = pt[0];
-                const c = pt[1];
-                const x = (c - c_ignite) * cell_size;
-                const y = (r_ignite - r) * cell_size;
-                return xyToLatLon(x, y, ignLat, ignLon);
-            });
-        }
-
-        function drawCitizenPath() {
-            if (citizenPathLayer) {
-                map.removeLayer(citizenPathLayer);
-                citizenPathLayer = null;
-            }
-            if (citizenBlockedPathLayer) {
-                map.removeLayer(citizenBlockedPathLayer);
-                citizenBlockedPathLayer = null;
-            }
-            
-            if (citizenPath.length > 0) {
-                const latlons = gridPathToLatLons(citizenPath);
-                const pathColor = (citizenStatus === "REROUTING") ? "#7c3aed" : "#10b981";
-                citizenPathLayer = L.polyline(latlons, {
-                    color: pathColor,
-                    weight: 4,
-                    opacity: 0.9,
-                    className: 'evac-path-line'
-                }).addTo(map);
-            }
-            
-            if (citizenOriginalPath.length > 0 && rerouteCount > 0 && citizenCell) {
-                const currentIdx = citizenOriginalPath.findIndex(pt => pt[0] === citizenCell.r && pt[1] === citizenCell.c);
-                if (currentIdx !== -1) {
-                    const blockedSegment = citizenOriginalPath.slice(currentIdx);
-                    if (blockedSegment.length > 1) {
-                        const blockedLatlons = gridPathToLatLons(blockedSegment);
-                        citizenBlockedPathLayer = L.polyline(blockedLatlons, {
-                            color: "#ef4444",
-                            weight: 3,
-                            dashArray: "5, 10",
-                            opacity: 0.7
-                        }).addTo(map);
-                    }
-                }
-            }
-        }
-
-        function clearCitizenLayers() {
-            if (citizenMarker) {
-                map.removeLayer(citizenMarker);
-                citizenMarker = null;
-            }
-            if (citizenPathLayer) {
-                map.removeLayer(citizenPathLayer);
-                citizenPathLayer = null;
-            }
-            if (citizenBlockedPathLayer) {
-                map.removeLayer(citizenBlockedPathLayer);
-                citizenBlockedPathLayer = null;
-            }
-        }
-
-        function updateEvacUI() {
-            const badge = document.getElementById('evac-status-badge');
-            if (!badge) return;
-            badge.innerText = citizenStatus;
-            
-            badge.style.border = '1px solid';
-            if (citizenStatus === 'OFFLINE') {
-                badge.style.backgroundColor = 'var(--bg-main)';
-                badge.style.color = 'var(--text-muted)';
-                badge.style.borderColor = 'var(--border-color)';
-            } else if (citizenStatus === 'EVACUATING') {
-                badge.style.backgroundColor = 'var(--success-light)';
-                badge.style.color = 'var(--success)';
-                badge.style.borderColor = 'var(--success)';
-            } else if (citizenStatus === 'REROUTING') {
-                badge.style.backgroundColor = '#f5f3ff';
-                badge.style.color = '#7c3aed';
-                badge.style.borderColor = '#c084fc';
-            } else if (citizenStatus === 'SAFE') {
-                badge.style.backgroundColor = 'var(--success-light)';
-                badge.style.color = 'var(--success)';
-                badge.style.borderColor = 'var(--success)';
-            } else if (citizenStatus === 'TRAPPED') {
-                badge.style.backgroundColor = 'var(--danger-light)';
-                badge.style.color = 'var(--danger)';
-                badge.style.borderColor = 'var(--danger)';
-            }
-            
-            if (citizenCell) {
-                document.getElementById('evac-cell-value').innerText = `(${citizenCell.r}, ${citizenCell.c})`;
-            } else {
-                document.getElementById('evac-cell-value').innerText = '-';
-            }
-            
-            document.getElementById('evac-reroutes-value').innerText = rerouteCount;
-            
-            if (citizenStatus !== 'OFFLINE' && citizenPath.length > 0) {
-                document.getElementById('evac-distance-value').innerText = `${citizenPath.length} cells`;
-                const etaMins = citizenPath.length * 3;
-                document.getElementById('evac-eta-value').innerText = `${etaMins} mins`;
-            } else {
-                document.getElementById('evac-distance-value').innerText = '-';
-                document.getElementById('evac-eta-value').innerText = '-';
-            }
-        }
-
-        function clearCitizen() {
-            clearCitizenLayers();
-            citizenCell = null;
-            citizenStartCell = null;
-            citizenPath = [];
-            citizenOriginalPath = [];
-            citizenStatus = "OFFLINE";
-            rerouteCount = 0;
-            routingLogs = [];
-            const logBox = document.getElementById('evac-logs');
-            if (logBox) logBox.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">No citizen deployed.</div>';
-            updateEvacUI();
-        }
-
-        function simulateCitizenUpToStep(targetStepIdx) {
-            if (!citizenStartCell || !simulationData) return;
-            
-            const stepVal = parseInt(document.getElementById('step').value) || 3;
-            
-            citizenCell = { r: citizenStartCell.r, c: citizenStartCell.c };
-            citizenStatus = "EVACUATING";
-            rerouteCount = 0;
-            routingLogs = [];
-            
-            let path = findEvacuationRoute(citizenCell.r, citizenCell.c, 0);
-            if (!path) {
-                citizenStatus = "TRAPPED";
-                citizenPath = [];
-                citizenOriginalPath = [];
-                routingLogs.push(`[0h 00m] 🚨 Citizen deployed at (${citizenCell.r}, ${citizenCell.c}) but is TRAPPED!`);
-                return;
-            }
-            
-            citizenPath = path;
-            citizenOriginalPath = [...path];
-            
-            routingLogs.push(`[0h 00m] 🏃 Citizen deployed at (${citizenCell.r}, ${citizenCell.c})`);
-            
-            for (let s = 1; s <= targetStepIdx; s++) {
-                if (citizenStatus === "SAFE" || citizenStatus === "TRAPPED") {
-                    break;
-                }
-                
-                const t = s * stepVal;
-                const timeHours = Math.floor(t / 60);
-                const timeMins = t % 60;
-                const timeStr = `${timeHours}h ${timeMins.toString().padStart(2, '0')}m`;
-                
-                if (citizenPath.length > 1) {
-                    citizenPath.shift();
-                    const nextCell = citizenPath[0];
-                    citizenCell = { r: nextCell[0], c: nextCell[1] };
-                    
-                    const isBoundary = (citizenCell.r === 0 || citizenCell.r === GRID_SIZE - 1 || citizenCell.c === 0 || citizenCell.c === GRID_SIZE - 1);
-                    if (isBoundary) {
-                        citizenStatus = "SAFE";
-                        routingLogs.push(`[${timeStr}] ✅ Citizen evacuated successfully to boundary!`);
-                        break;
-                    }
-                    
-                    if (simulationData.ignite_t[citizenCell.r][citizenCell.c] <= t) {
-                        citizenStatus = "TRAPPED";
-                        routingLogs.push(`[${timeStr}] 🚨 Overrun by fire at (${citizenCell.r}, ${citizenCell.c})!`);
-                        break;
-                    }
-                    
-                    let blocked = false;
-                    for (let i = 0; i < citizenPath.length; i++) {
-                        const pt = citizenPath[i];
-                        if (simulationData.ignite_t[pt[0]][pt[1]] <= t) {
-                            blocked = true;
-                            break;
-                        }
-                    }
-                    
-                    if (blocked) {
-                        const newPath = findEvacuationRoute(citizenCell.r, citizenCell.c, t);
-                        if (newPath) {
-                            citizenPath = newPath;
-                            rerouteCount++;
-                            citizenStatus = "REROUTING";
-                            routingLogs.push(`[${timeStr}] ⚠️ Route blocked! Rerouted detour.`);
-                        } else {
-                            citizenStatus = "TRAPPED";
-                            routingLogs.push(`[${timeStr}] 🚨 Detour failed! Trapped at (${citizenCell.r}, ${citizenCell.c}).`);
-                            break;
-                        }
-                    }
-                } else if (citizenPath.length === 1) {
-                    const isBoundary = (citizenCell.r === 0 || citizenCell.r === GRID_SIZE - 1 || citizenCell.c === 0 || citizenCell.c === GRID_SIZE - 1);
-                    if (isBoundary) {
-                        citizenStatus = "SAFE";
-                        routingLogs.push(`[${timeStr}] ✅ Citizen evacuated successfully to boundary!`);
-                    } else {
-                        citizenStatus = "TRAPPED";
-                        routingLogs.push(`[${timeStr}] 🚨 Stranded without escape route.`);
-                    }
-                    break;
-                }
-            }
-        }
-
-        function renderLogs() {
-            const logBox = document.getElementById('evac-logs');
-            if (!logBox) return;
-            logBox.innerHTML = '';
-            if (routingLogs.length === 0) {
-                logBox.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">No logs recorded.</div>';
-                return;
-            }
-            routingLogs.forEach(logText => {
-                const logItem = document.createElement('div');
-                logItem.innerText = logText;
-                if (logText.includes('🚨')) logItem.style.color = '#ef4444';
-                else if (logText.includes('⚠️')) logItem.style.color = '#7c3aed';
-                else if (logText.includes('✅')) logItem.style.color = '#10b981';
-                else if (logText.includes('🏃')) logItem.style.color = '#7c3aed';
-                logBox.appendChild(logItem);
-            });
-            logBox.scrollTop = logBox.scrollHeight;
-        }
-
         function initCanvasEmpty() {
             if (map) return;
-            
+
             // Default center at Amazon Tall Tower Observatory (-2.145, -59.000)
             map = L.map('digital-twin-map').setView([-2.145, -59.000], 13);
-            
+
             // Add ESRI Satellite Imagery layer (Real Amazon forest satellite view)
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 maxZoom: 19,
@@ -2229,7 +2210,7 @@
             buildGridOverlay(-2.145, -59.000);
 
             // Click event on map to update inputs and marker position dynamically
-            map.on('click', function(e) {
+            map.on('click', function (e) {
                 document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
                 document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
                 buildGridOverlay(e.latlng.lat, e.latlng.lng);
@@ -2247,11 +2228,11 @@
         // Create the Leaflet grid of rectangles centered on ignition coords
         function buildGridOverlay(ignitionLat, ignitionLon) {
             clearGridOverlay();
-            
+
             const cell_size = 30.0; // 30 meters cell size
             const r_ignite = 25;
             const c_ignite = 25;
-            
+
             for (let r = 0; r < GRID_SIZE; r++) {
                 let rowRects = [];
                 for (let c = 0; c < GRID_SIZE; c++) {
@@ -2259,15 +2240,15 @@
                     const y1 = (r_ignite - r) * cell_size - cell_size / 2;
                     const x2 = (c - c_ignite) * cell_size + cell_size / 2;
                     const y2 = (r_ignite - r) * cell_size + cell_size / 2;
-                    
+
                     const p1 = xyToLatLon(x1, y1, ignitionLat, ignitionLon);
                     const p2 = xyToLatLon(x2, y2, ignitionLat, ignitionLon);
-                    
+
                     const bounds = [
                         [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])],
                         [Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])]
                     ];
-                    
+
                     const rect = L.rectangle(bounds, {
                         color: 'rgba(255, 255, 255, 0.15)', // subtle white borders to show the grid
                         weight: 0.5,
@@ -2275,30 +2256,30 @@
                         fillOpacity: 0.2, // light transparent green so map shows through
                         interactive: true
                     }).addTo(map);
-                    
+
                     rect.bindTooltip(`Cell: (${r}, ${c})<br>State: Unburned`, { sticky: true });
-                    
+
                     rowRects.push(rect);
                 }
                 gridRectangles.push(rowRects);
             }
-            
+
             // Set marker at the center (ignition) point (draggable)
             ignitionMarker = L.marker([ignitionLat, ignitionLon], { draggable: true }).addTo(map)
                 .bindPopup(`<b>Ignition Center</b><br>Lat: ${ignitionLat.toFixed(5)}<br>Lon: ${ignitionLon.toFixed(5)}`)
                 .openPopup();
 
             // Listen to dragend to update latitude and longitude inputs and rebuild overlay
-            ignitionMarker.on('dragend', function(e) {
+            ignitionMarker.on('dragend', function (e) {
                 const position = ignitionMarker.getLatLng();
                 document.getElementById('latitude').value = position.lat.toFixed(6);
                 document.getElementById('longitude').value = position.lng.toFixed(6);
                 buildGridOverlay(position.lat, position.lng);
             });
-            
+
             // Set view
             map.setView([ignitionLat, ignitionLon], 14);
-            
+
             // Invalidate size to ensure Leaflet renders correctly inside dynamic templates
             setTimeout(() => {
                 map.invalidateSize();
@@ -2311,7 +2292,7 @@
             debounceTimer = setTimeout(() => {
                 const latVal = parseFloat(document.getElementById('latitude').value);
                 const lonVal = parseFloat(document.getElementById('longitude').value);
-                
+
                 if (!isNaN(latVal) && !isNaN(lonVal) && latVal >= -90 && latVal <= 90 && lonVal >= -180 && lonVal <= 180) {
                     if (map) {
                         buildGridOverlay(latVal, lonVal);
@@ -2344,67 +2325,53 @@
         // Run simulation
         async function runSimulation(event) {
             event.preventDefault();
-            
+
             const form = document.getElementById('prediction-form');
             const formData = new FormData(form);
-            
+
             document.getElementById('loading-overlay').style.display = 'flex';
-            
+
             try {
                 const response = await fetch('/run-wildfire-prediction', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Simulation endpoint failed.');
                 }
-                
+
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     // Update form values with auto-detected coordinates if image was loaded
                     document.getElementById('latitude').value = data.ignition_lat.toFixed(6);
                     document.getElementById('longitude').value = data.ignition_lon.toFixed(6);
-                    
+
                     // Save simulation data
                     simulationData = data;
-                    
+
                     // Initialize Leaflet Grid Overlay centered on the new ignition point
                     buildGridOverlay(data.ignition_lat, data.ignition_lon);
-                    
+
 
                     // Prepare player
                     const duration = parseInt(document.getElementById('duration').value);
                     const step = parseInt(document.getElementById('step').value);
                     const maxSteps = Math.floor(duration / step);
-                    
+
                     const slider = document.getElementById('timeline-slider');
                     slider.max = maxSteps;
                     slider.value = 0;
-                    
+
                     currentStepIndex = 0;
                     isPlaying = false;
                     clearInterval(playInterval);
                     document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
-                    
-                    
-                    // Check if there is an existing citizen and re-initialize them on the new simulation
-                    if (citizenStartCell) {
-                        const r = citizenStartCell.r;
-                        const c = citizenStartCell.c;
-                        if (r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE) {
-                            deployCitizenAt(r, c, 0);
-                        } else {
-                            clearCitizen();
-                        }
-                    } else {
-                        clearCitizen();
-                    }
 
                     // Draw step 0
                     drawGridAtStep(0);
-                    
+
                 } else {
                     alert('Simulation failed: ' + data.message);
                 }
@@ -2424,18 +2391,18 @@
                 scenarioPreviewActive = false;
             }
             if (!simulationData || gridRectangles.length === 0) return;
-            
+
             const stepVal = parseInt(document.getElementById('step').value);
             const currentSimTime = stepIdx * stepVal;
-            
+
             // Update time label
             const hours = Math.floor(currentSimTime / 60);
             const mins = currentSimTime % 60;
             document.getElementById('playback-time-label').innerText = `${hours}h ${mins.toString().padStart(2, '0')}m`;
-            
+
             const ignite_t = simulationData.ignite_t;
             const fuel = simulationData.fuel;
-            
+
             // Render each cell color on Leaflet grid
             for (let r = 0; r < GRID_SIZE; r++) {
                 for (let c = 0; c < GRID_SIZE; c++) {
@@ -2443,7 +2410,7 @@
                     let color = '#10b981'; // unburned
                     let opacity = 0.2;
                     let stateStr = "Unburned";
-                    
+
                     if (igTime <= currentSimTime) {
                         if (currentSimTime < igTime + 15.0) {
                             color = '#ef4444'; // burning
@@ -2458,7 +2425,7 @@
                         const fVal = fuel[r][c];
                         opacity = 0.1 + fVal * 0.2; // scale opacity with canopy density
                     }
-                    
+
                     const rect = gridRectangles[r][c];
                     if (rect) {
                         rect.setStyle({
@@ -2471,13 +2438,13 @@
                     }
                 }
             }
-            
+
             // Update centroid path line on Leaflet map
             if (centroidPolyline) {
                 map.removeLayer(centroidPolyline);
                 centroidPolyline = null;
             }
-            
+
             let pathCoords = [];
             const centroids = simulationData.centroids;
             for (let i = 0; i <= stepIdx; i++) {
@@ -2485,7 +2452,7 @@
                     pathCoords.push([centroids[i].lat, centroids[i].lon]);
                 }
             }
-            
+
             if (pathCoords.length > 1) {
                 centroidPolyline = L.polyline(pathCoords, {
                     color: '#dc2626', // bright red line
@@ -2495,21 +2462,12 @@
                     attribution: 'Centroid Path'
                 }).addTo(map);
             }
-            
+
             // Update slider value
             document.getElementById('timeline-slider').value = stepIdx;
-            
+
             // Update directional stats and hazard level lively
             updateDirectionalStats(currentSimTime, ignite_t);
-
-            // Evacuee live update
-            if (citizenStartCell) {
-                simulateCitizenUpToStep(stepIdx);
-                renderCitizenMarker(citizenCell.r, citizenCell.c, citizenStatus === "TRAPPED");
-                drawCitizenPath();
-                updateEvacUI();
-                renderLogs();
-            }
         }
 
         // Compute and update directional coordinates, live centroid movement, and Hazard Agent analysis
@@ -2517,7 +2475,7 @@
             const r_ignite = 25;
             const c_ignite = 25;
             const cell_size = 30.0;
-            
+
             // 8 Directions state
             const directions = {
                 "North": { dr: -1, dc: 0, lat: null, lon: null, dist: 0, status: "Safe", icon: "fa-arrow-up" },
@@ -2546,14 +2504,14 @@
                         // Determine direction relative to ignition center (25, 25)
                         const dr = r - r_ignite;
                         const dc = c - c_ignite;
-                        
+
                         if (dr === 0 && dc === 0) continue; // skip the center cell for directional math
-                        
+
                         const dy = -dr;
                         const dx = dc;
-                        
+
                         let angle = Math.atan2(dy, dx) * 180 / Math.PI; // -180 to 180
-                        
+
                         let dirName = "";
                         if (angle >= -22.5 && angle < 22.5) {
                             dirName = "East";
@@ -2572,14 +2530,14 @@
                         } else if (angle >= -67.5 && angle < -22.5) {
                             dirName = "South-East";
                         }
-                        
-                        const dist = Math.sqrt(dx*dx + dy*dy) * cell_size;
+
+                        const dist = Math.sqrt(dx * dx + dy * dy) * cell_size;
                         if (dist > directions[dirName].dist) {
                             const coords = xyToLatLon(dc * cell_size, (r_ignite - r) * cell_size, simulationData.ignition_lat, simulationData.ignition_lon);
                             directions[dirName].lat = coords[0];
                             directions[dirName].lon = coords[1];
                             directions[dirName].dist = dist;
-                            
+
                             if (currentSimTime < igTime + 15.0) {
                                 directions[dirName].status = "Active";
                             } else {
@@ -2593,13 +2551,13 @@
             // Update Directional Grid HTML
             const gridContainer = document.getElementById("directional-grid");
             gridContainer.innerHTML = "";
-            
+
             Object.keys(directions).forEach(name => {
                 const dir = directions[name];
                 let coordsText = "No active fire";
                 let statusColor = "var(--success)";
                 let statusBg = "var(--success-light)";
-                
+
                 if (dir.lat !== null) {
                     coordsText = `${dir.lat.toFixed(5)}, ${dir.lon.toFixed(5)}`;
                     if (dir.status === "Active") {
@@ -2610,7 +2568,7 @@
                         statusBg = "var(--border-color)";
                     }
                 }
-                
+
                 const itemHtml = `
                     <div class="dir-item" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -2647,12 +2605,12 @@
             const totalCells = GRID_SIZE * GRID_SIZE;
             const totalFired = burningCount + burnedCount;
             const dFactor = (totalFired / totalCells) * 100;
-            
+
             document.getElementById("dfactor-value").innerText = `${dFactor.toFixed(2)}%`;
-            
+
             const badge = document.getElementById("threat-badge");
             const message = document.getElementById("threat-message");
-            
+
             if (dFactor >= 40.0) {
                 badge.innerText = "EXTREMELY HIGH";
                 badge.style.backgroundColor = "var(--danger-light)";
@@ -2739,9 +2697,9 @@
                 smtp_password: smtpPass,
                 smtp_from: smtpUser,
                 recipients: [
-                    { id: "fire",      name: "Fire Department", email: document.getElementById('email-fire').value },
-                    { id: "ambulance", name: "Ambulance",        email: document.getElementById('email-ambulance').value },
-                    { id: "rescue",    name: "Rescue Team",      email: document.getElementById('email-rescue').value }
+                    { id: "fire", name: "Fire Department", email: document.getElementById('email-fire').value },
+                    { id: "ambulance", name: "Ambulance", email: document.getElementById('email-ambulance').value },
+                    { id: "rescue", name: "Rescue Team", email: document.getElementById('email-rescue').value }
                 ]
             };
 
@@ -2764,8 +2722,8 @@
             if (!row) return;
             const badge = row.querySelector('.dept-badge');
             const colors = {
-                sent:    { bg: '#dcfce7', color: '#16a34a' },
-                failed:  { bg: '#fee2e2', color: '#dc2626' },
+                sent: { bg: '#dcfce7', color: '#16a34a' },
+                failed: { bg: '#fee2e2', color: '#dc2626' },
                 pending: { bg: '#fef9c3', color: '#ca8a04' },
                 standby: { bg: 'var(--border-color)', color: 'var(--text-muted)' }
             };
@@ -2877,9 +2835,9 @@
         // Toggle Play/Pause
         function togglePlay() {
             if (!simulationData) return;
-            
+
             const playBtn = document.getElementById('play-btn');
-            
+
             if (isPlaying) {
                 isPlaying = false;
                 clearInterval(playInterval);
@@ -2887,9 +2845,9 @@
             } else {
                 isPlaying = true;
                 playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                
+
                 const maxSteps = parseInt(document.getElementById('timeline-slider').max);
-                
+
                 playInterval = setInterval(() => {
                     if (currentStepIndex >= maxSteps) {
                         currentStepIndex = 0;
@@ -3129,10 +3087,10 @@
 
             document.getElementById('wi-loading').style.display = 'block';
             document.getElementById('wi-results').style.display = 'none';
-            
+
             const prevToggle = document.getElementById('wi-preview-toggle');
             if (prevToggle) prevToggle.checked = false;
-            
+
             if (scenarioPreviewActive && simulationData) {
                 scenarioPreviewActive = false;
                 drawGridAtStep(currentStepIndex);
@@ -3266,10 +3224,10 @@
                     lastSitrepText = data.report;
                     const threat = ctx.d_factor >= 40 ? 'CRITICAL' : ctx.d_factor >= 15 ? 'HIGH' : ctx.d_factor >= 5 ? 'MODERATE' : 'LOW';
                     const tColors = {
-                        CRITICAL: ['#fef2f2','#dc2626'],
-                        HIGH:     ['#fef2f2','#ef4444'],
-                        MODERATE: ['#fffbeb','#d97706'],
-                        LOW:      ['#f0fdf4','#16a34a']
+                        CRITICAL: ['#fef2f2', '#dc2626'],
+                        HIGH: ['#fef2f2', '#ef4444'],
+                        MODERATE: ['#fffbeb', '#d97706'],
+                        LOW: ['#f0fdf4', '#16a34a']
                     };
                     const [tBg, tFg] = tColors[threat] || tColors.LOW;
                     const modelIcon = data.model === 'template' ? '📋' : '🤖';
@@ -3369,15 +3327,15 @@
 
                 if (data && data.length > 0) {
                     reforestationActiveScores = data;
-                    
+
                     // 1. Calculate stats
                     const totalCells = data.length;
                     const destroyedArea = totalCells * 900; // 30x30m cells = 900m2
                     const destroyedHectares = (destroyedArea / 10000).toFixed(2);
-                    
+
                     const sumScores = data.reduce((acc, curr) => acc + curr.recovery_score, 0);
                     const avgScore = sumScores / totalCells;
-                    
+
                     let urgency = "LOW";
                     let urgencyColor = "var(--success)";
                     if (avgScore >= 0.7) {
@@ -3459,7 +3417,7 @@
                     // 3. Build coordinates table
                     const tableBody = document.getElementById('ref-table-body');
                     tableBody.innerHTML = "";
-                    
+
                     const sorted = [...data].sort((a, b) => b.recovery_score - a.recovery_score);
                     const displayLimit = 15;
                     const slice = sorted.slice(0, displayLimit);
@@ -3513,7 +3471,7 @@
         function toggleReforestationOverlay() {
             reforestationOverlayActive = !reforestationOverlayActive;
             const btn = document.getElementById('ref-map-highlight-btn');
-            
+
             if (reforestationOverlayActive) {
                 btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> Remove Reforestation Highlight`;
                 btn.style.background = '#15803d';
@@ -3538,7 +3496,7 @@
                 const rect = gridRectangles[r] ? gridRectangles[r][c] : null;
                 if (!rect) continue;
 
-                const color = recovery_score >= 0.70 ? '#065f46' : recovery_score >= 0.45 ? '#059669' : '#34d399'; 
+                const color = recovery_score >= 0.70 ? '#065f46' : recovery_score >= 0.45 ? '#059669' : '#34d399';
                 const opacity = 0.75;
                 const urgencyStr = recovery_score >= 0.70 ? 'CRITICAL' : recovery_score >= 0.45 ? 'HIGH' : 'MODERATE';
 
@@ -3570,4 +3528,5 @@
 
     </script>
 </body>
+
 </html>

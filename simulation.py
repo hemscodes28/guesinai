@@ -3,24 +3,20 @@ import random
 from typing import Dict, List, Tuple
 
 from input_processing import load_atto_record, get_total_records
-from ml_fire_model import ml_model
 
 class WildfireSimulation:
     def __init__(self, size: int = 50):
         self.size = size
         self.grid: List[List[Dict]] = []
-        self.aqi_grid: List[List[float]] = []  # AQI values 0-500 per cell
         # Start at midday (index 43200 is 12:00 PM on July 1st, 2014)
         self.weather_index = 43200
         self.simulation_step = 0
-        self._step_sample_buffer = []   # ML training sample buffer
         self.initialize_grid()
 
     def initialize_grid(self):
         """Initializes the 50x50 digital twin grid with clustered vegetation, smooth elevation waves, and seed hotspots."""
         self.grid = []
         self.simulation_step = 0
-        self.aqi_grid = [[0.0 for _ in range(self.size)] for _ in range(self.size)]
 
         # Generate vegetation clusters using smooth sine waves + noise
         veg_matrix = []
@@ -226,39 +222,40 @@ class WildfireSimulation:
         return record
 
     def calculate_catch_probability(self, burn_r: int, burn_c: int, neigh_r: int, neigh_c: int) -> float:
-        """Computes fire-catching probability via ML model (falls back to physics if ML unavailable)."""
-        burning  = self.grid[burn_r][burn_c]
+        """Computes the catching probability based on fuel, risk, wind, and elevation slope."""
+        burning = self.grid[burn_r][burn_c]
         neighbor = self.grid[neigh_r][neigh_c]
 
-        fuel         = neighbor["fuel_load"]
-        risk         = neighbor["risk_score"]
+        fuel = neighbor["fuel_load"]
+        risk = neighbor["risk_score"]
         soil_dryness = 1.0 - neighbor["soil_moisture"]
-        rainfall     = neighbor["rainfall"]
 
-        # Wind vector angle alignment
+        # Wind Vector angle alignment
         dy = -(neigh_r - burn_r)
         dx = neigh_c - burn_c
         cell_angle_deg = math.degrees(math.atan2(dx, dy)) % 360.0
-        wind_dir   = burning["wind_direction"]
-        wind_spd   = burning["wind_speed"]
+
+        wind_dir = burning["wind_direction"]
+        wind_spd = burning["wind_speed"]
+
         angle_diff = abs(wind_dir - cell_angle_deg)
         angle_diff = min(angle_diff, 360.0 - angle_diff)
+
         wind_alignment = math.cos(math.radians(angle_diff))
+        wind_effect = math.exp(wind_alignment * (wind_spd / 15.0))
 
-        # Elevation difference
+        # Slope factor (fire spreads faster uphill)
         elev_diff = neighbor["elevation"] - burning["elevation"]
+        if elev_diff > 0:
+            elev_effect = min(2.5, 1.0 + (elev_diff / 30.0))
+        else:
+            elev_effect = max(0.15, 1.0 + (elev_diff / 80.0))
 
-        # Delegate to ML model (with automatic physics fallback)
-        p_catch = ml_model.predict(
-            fuel         = fuel,
-            risk         = risk,
-            soil_dryness = soil_dryness,
-            wind_alignment = wind_alignment,
-            wind_spd     = wind_spd,
-            elev_diff    = elev_diff,
-            rainfall     = rainfall,
-        )
-        return p_catch
+        # Rain suppression
+        rain_effect = max(0.05, 1.0 - (neighbor["rainfall"] / 15.0))
+
+        p_catch = 0.28 * fuel * risk * soil_dryness * wind_effect * elev_effect * rain_effect
+        return min(0.98, max(0.0, p_catch))
 
     def simulate_step(self) -> Tuple[List[List[Dict]], List[Dict]]:
         """Advances the wildfire digital twin simulation by one time step."""
@@ -303,12 +300,6 @@ class WildfireSimulation:
                     extinguished.append({"row": r, "col": c})
 
         self.recalculate_recovery_scores()
-        self._propagate_smoke()   # Update AQI grid after each step
-
-        # Feed ML model with real outcome data every 50 steps
-        if self.simulation_step % 50 == 0 and self.simulation_step > 0:
-            ml_model.last_retrain_step = self.simulation_step
-            ml_model.retrain()
 
         alerts = []
         for cell in newly_ignited:
@@ -351,115 +342,6 @@ class WildfireSimulation:
 
                 priority = (original_veg * 0.5) + ((1.0 - avg_surrounding) * 0.3) + (soil_moisture * 0.2)
                 cell["recovery_score"] = round(max(0.0, min(1.0, priority)), 3)
-
-    def _propagate_smoke(self):
-        """
-        Computes AQI (Air Quality Index) for each cell using a simplified Gaussian
-        plume dispersion model. Smoke is emitted by burning cells and dispersed
-        downwind based on wind speed and direction.
-
-        AQI scale (PM2.5 proxy):
-            0–50    Good
-            51–100  Moderate
-            101–150 Unhealthy for Sensitive Groups
-            151–200 Unhealthy
-            201–300 Very Unhealthy
-            301–500 Hazardous
-        """
-        size = self.size
-        new_aqi = [[0.0 for _ in range(size)] for _ in range(size)]
-
-        # Collect burning cells
-        burning_cells = []
-        for r in range(size):
-            for c in range(size):
-                if self.grid[r][c]["fire_state"] == "burning":
-                    burning_cells.append((r, c))
-
-        if not burning_cells:
-            # Decay existing smoke by 20% per step when no fires
-            for r in range(size):
-                for c in range(size):
-                    self.aqi_grid[r][c] = max(0.0, self.aqi_grid[r][c] * 0.80)
-            return
-
-        # Parameters
-        EMISSION_STRENGTH = 180.0   # AQI units emitted per burning cell
-        SIGMA_BASE = 4.0            # Base Gaussian spread radius (cells)
-        MAX_RANGE = 15              # Max cells to check around each source
-        DECAY_FACTOR = 0.65         # Persistence of previous step's smoke
-
-        for r in range(size):
-            for c in range(size):
-                # Carry forward previous smoke with decay
-                acc = self.aqi_grid[r][c] * DECAY_FACTOR
-
-                for (br, bc) in burning_cells:
-                    dr = r - br
-                    dc = c - bc
-                    dist = math.sqrt(dr * dr + dc * dc)
-
-                    if dist > MAX_RANGE or dist < 0.5:
-                        continue
-
-                    # Wind parameters at the burning source cell
-                    wind_dir_deg = self.grid[br][bc]["wind_direction"]
-                    wind_spd     = max(0.5, self.grid[br][bc]["wind_speed"])
-
-                    # Convert wind direction to unit vector
-                    wind_rad = math.radians(wind_dir_deg)
-                    wx = math.sin(wind_rad)   # +x → East
-                    wy = -math.cos(wind_rad)  # +y → South (row increases downward)
-
-                    # Dot product: how much of the displacement is downwind
-                    dot = (dc * wx + dr * wy) / (dist + 1e-6)
-
-                    # Downwind cells get stronger plume; upwind get much less
-                    downwind_bias = math.exp(dot * wind_spd * 0.15)
-
-                    # Gaussian spatial spread (wider sigma with higher wind)
-                    sigma = SIGMA_BASE + wind_spd * 0.3
-                    gauss = math.exp(-0.5 * (dist / sigma) ** 2)
-
-                    contribution = EMISSION_STRENGTH * gauss * downwind_bias / (dist + 1.0)
-                    acc += contribution
-
-                new_aqi[r][c] = min(500.0, max(0.0, acc))
-
-        self.aqi_grid = new_aqi
-
-    def get_aqi_grid(self) -> List[Dict]:
-        """Returns the current AQI values for all cells."""
-        result = []
-        for r in range(self.size):
-            for c in range(self.size):
-                aqi_val = round(self.aqi_grid[r][c], 1)
-                # Classify AQI
-                if aqi_val <= 50:
-                    category = "Good"
-                    color = "#00e400"
-                elif aqi_val <= 100:
-                    category = "Moderate"
-                    color = "#ffff00"
-                elif aqi_val <= 150:
-                    category = "Unhealthy (Sensitive)"
-                    color = "#ff7e00"
-                elif aqi_val <= 200:
-                    category = "Unhealthy"
-                    color = "#ff0000"
-                elif aqi_val <= 300:
-                    category = "Very Unhealthy"
-                    color = "#8f3f97"
-                else:
-                    category = "Hazardous"
-                    color = "#7e0023"
-                result.append({
-                    "row": r, "col": c,
-                    "aqi": aqi_val,
-                    "category": category,
-                    "color": color
-                })
-        return result
 
     def get_risk_scores(self) -> List[Dict]:
         scores = []
