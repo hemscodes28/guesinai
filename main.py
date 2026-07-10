@@ -316,6 +316,48 @@ class AuthRequest(BaseModel):
     password: str
 
 
+class RecipientSchema(BaseModel):
+    id: str
+    name: str
+    email: str
+
+
+class AlertConfigSchema(BaseModel):
+    enabled: bool
+    threshold: str
+    smtp_host: str
+    smtp_port: int
+    smtp_user: str
+    smtp_password: str
+    smtp_from: str
+    recipients: List[RecipientSchema]
+
+
+class TriggerAlertSchema(BaseModel):
+    threat_level: str
+    d_factor: float
+    lat: float
+    lon: float
+    force: Optional[bool] = False
+
+
+# Global Alert Configuration State
+ALERT_CONFIG = {
+    "enabled": False,
+    "threshold": "HIGH",
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_user": "theguesin.ai@gmail.com",
+    "smtp_password": "jtrnkorvcmqtvowc",
+    "smtp_from": "theguesin.ai@gmail.com",
+    "recipients": [
+        { "id": "fire", "name": "Fire Department", "email": "sarveshbala27@gmail.com" },
+        { "id": "ambulance", "name": "Ambulance", "email": "barathrithish7@gmail.com" },
+        { "id": "rescue", "name": "Rescue Team", "email": "sarveshbala27@gmail.com" }
+    ]
+}
+
+
 # REST ENDPOINTS
 
 @app.post("/signup")
@@ -377,6 +419,163 @@ def signin(req: AuthRequest):
         db.close()
         
     return {"status": "success", "message": "Authenticated successfully."}
+
+
+@app.get("/alert-config")
+def get_alert_config():
+    """
+    Returns the active alert SMTP configuration.
+    """
+    return ALERT_CONFIG
+
+
+@app.post("/alert-config")
+def save_alert_config(req: AlertConfigSchema):
+    """
+    Updates the active alert SMTP configuration and recipient lists.
+    """
+    global ALERT_CONFIG
+    ALERT_CONFIG["enabled"] = req.enabled
+    ALERT_CONFIG["threshold"] = req.threshold
+    ALERT_CONFIG["smtp_host"] = req.smtp_host
+    ALERT_CONFIG["smtp_port"] = req.smtp_port
+    ALERT_CONFIG["smtp_user"] = req.smtp_user
+    ALERT_CONFIG["smtp_password"] = req.smtp_password
+    ALERT_CONFIG["smtp_from"] = req.smtp_from
+    ALERT_CONFIG["recipients"] = [
+        {"id": r.id, "name": r.name, "email": r.email} for r in req.recipients
+    ]
+    logger.info(f"Alert configuration updated. Enabled: {req.enabled}, Threshold: {req.threshold}")
+    return {"status": "success", "config": ALERT_CONFIG}
+
+
+@app.post("/trigger-alert")
+async def trigger_alert(req: TriggerAlertSchema):
+    """
+    Triggers automated email alerts to emergency services when high-threat wildfires are sensed.
+    """
+    logger.info(f"Trigger alert endpoint hit. Threat: {req.threat_level}, D-Factor: {req.d_factor:.2f}%, Force: {req.force}")
+    
+    if not ALERT_CONFIG.get("enabled") and not req.force:
+        return {"status": "skipped", "reason": "Email alerts are disabled in configuration."}
+        
+    threat_levels = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    config_thresh = ALERT_CONFIG.get("threshold", "HIGH")
+    
+    try:
+        config_idx = threat_levels.index(config_thresh)
+        req_idx = threat_levels.index(req.threat_level)
+    except ValueError:
+        config_idx = 2
+        req_idx = 2
+        
+    if req_idx < config_idx and not req.force:
+        return {"status": "skipped", "reason": f"Threat level {req.threat_level} is below threshold {config_thresh}."}
+
+    db = SessionLocal()
+    try:
+        db.add(AlertLog(
+            row=-1,
+            col=-1,
+            alert_type="critical_risk" if req.threat_level in ["HIGH", "CRITICAL"] else "burning",
+            message=f"Wildfire emergency email dispatch. Threat: {req.threat_level}. Lat: {req.lat:.6f}, Lon: {req.lon:.6f}"
+        ))
+        db.commit()
+    except Exception as e:
+        logger.error(f"Error logging alert dispatch to SQLite: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
+    dispatched_recipients = []
+    
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    for r in ALERT_CONFIG.get("recipients", []):
+        try:
+            subject = f"🚨 Guesin.ai EMERGENCY WILDFIRE ALERT: {req.threat_level} Threat"
+            
+            html = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; border-bottom: 3px solid #ef4444; padding-bottom: 15px; margin-bottom: 25px;">
+                        <h2 style="color: #ef4444; margin: 0; font-size: 1.6rem; letter-spacing: 0.5px;">🔥 WILDFIRE EMERGENCY DETECTED</h2>
+                        <p style="font-size: 0.95rem; color: #64748b; margin: 6px 0 0 0; font-weight: 500;">Guesin.ai Digital Twin Early Warning Command</p>
+                    </div>
+                    
+                    <p style="font-size: 1.05rem;">Attention <strong>{r['name']} Dispatch</strong>,</p>
+                    
+                    <p>The Guesin.ai digital twin simulation engine has sensed a critical wildfire boundary breach at the Amazon Tall Tower Observatory (ATTO) digital twin sector.</p>
+                    
+                    <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #ef4444;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #475569; width: 180px;">Threat Classification:</td>
+                                <td style="padding: 8px 0; color: #ef4444; font-weight: bold; font-size: 1.05rem;">{req.threat_level}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #475569;">Destruction Factor:</td>
+                                <td style="padding: 8px 0; font-weight: bold; color: #0f172a;">{req.d_factor:.2f}% of grid sector</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #475569;">Latitude Coordinate:</td>
+                                <td style="padding: 8px 0; font-family: monospace; color: #0f172a;">{req.lat:.6f}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #475569;">Longitude Coordinate:</td>
+                                <td style="padding: 8px 0; font-family: monospace; color: #0f172a;">{req.lon:.6f}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <p style="font-weight: 600; color: #0f172a; margin-top: 20px;">🚨 Dispatch Directives:</p>
+                    <ul style="padding-left: 20px; margin: 10px 0 25px 0; color: #334155;">
+                        <li>Deploy emergency containment and suppression assets to the specified grid coordinates immediately.</li>
+                        <li>Coordinate active evacuation routes for citizens located in the threat perimeter.</li>
+                    </ul>
+                    
+                    <div style="text-align: center; margin: 30px 0 10px 0;">
+                        <a href="http://127.0.0.1:8000/" style="background-color: #ef4444; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.95rem; display: inline-block;">Access Digital Twin Console</a>
+                    </div>
+                    
+                    <p style="font-size: 0.82rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 18px; margin-top: 35px; text-align: center; line-height: 1.4;">
+                        This is a secure, automated notification from Guesin.ai Emergency Services. Please do not reply directly to this mail.
+                    </p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"] = ALERT_CONFIG["smtp_from"]
+            msg["To"] = r["email"]
+            msg.attach(MIMEText(html, "html"))
+            
+            with smtplib.SMTP(ALERT_CONFIG["smtp_host"], ALERT_CONFIG["smtp_port"]) as server:
+                server.starttls()
+                server.login(ALERT_CONFIG["smtp_user"], ALERT_CONFIG["smtp_password"])
+                server.sendmail(ALERT_CONFIG["smtp_from"], r["email"], msg.as_string())
+                
+            logger.info(f"Successfully sent alert email to {r['name']} ({r['email']})")
+            dispatched_recipients.append({"id": r["id"], "email": r["email"], "status": "sent"})
+            
+        except Exception as smtp_err:
+            logger.error(f"Failed to send email to {r['name']} ({r['email']}): {smtp_err}")
+            dispatched_recipients.append({"id": r["id"], "email": r["email"], "status": "failed", "error": str(smtp_err)})
+
+    import datetime
+    return {
+        "status": "triggered",
+        "result": {
+            "dispatched_at": datetime.datetime.now().isoformat(),
+            "recipients": dispatched_recipients
+        }
+    }
+
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def serve_dashboard():
