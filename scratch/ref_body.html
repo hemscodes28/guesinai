@@ -1,0 +1,147 @@
+
+
+<!-- Topbar -->
+<nav class="topbar">
+    <div class="topbar-left">
+        <a href="/" class="back-btn">← Digital Twin</a>
+        <div class="page-title">🌱 Reforestation Intelligence Module</div>
+        <span class="live-badge">AI POWERED</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="download-btn" id="download-csv-btn" onclick="downloadCSV()" disabled>⬇ Export CSV</button>
+        <div style="font-size: 0.75rem; color: var(--slate-400);">Guesin.ai • Amazon ATTO Digital Twin</div>
+    </div>
+</nav>
+
+<!-- Main Layout -->
+<div class="layout">
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+        <div class="hero-text">
+            <h1>🌿 Post-Fire Crop & Species Recommendation Engine</h1>
+            <p>Analyse burned land sectors from the wildfire simulation. Our ML model evaluates soil type, burn severity, hydrology, and climate data to recommend the best crop for each deforested cell — helping farmers make impactful choices.</p>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-pill">
+                <div class="val" id="stat-burned" style="color: var(--red-500);">—</div>
+                <div class="lbl">Burned Cells</div>
+            </div>
+            <div class="stat-pill">
+                <div class="val" id="stat-area" style="color: var(--amber-400);">—</div>
+                <div class="lbl">Deforested (ha)</div>
+            </div>
+            <div class="stat-pill">
+                <div class="val" id="stat-carbon" style="color: var(--teal-400);">—</div>
+                <div class="lbl">CO₂ Recovery (t)</div>
+            </div>
+            <div class="stat-pill">
+                <div class="val" id="stat-confidence" style="color: var(--green-400);">—</div>
+                <div class="lbl">Avg Confidence</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left Panel: Controls + Species Summary -->
+    <div class="left-panel">
+
+        <!-- Analyze Button -->
+        <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis()">
+            <span>🔬 Analyze Burned Land Now</span>
+        </button>
+
+        <div id="no-burned-msg" class="farmer-tip" style="display:none;">
+            <span class="tip-icon">⚠️</span>
+            <span>No burned cells found in the simulation. Run the wildfire simulation first on the Digital Twin dashboard, then come back here.</span>
+        </div>
+
+        <!-- Species Distribution -->
+        <div class="card" id="species-dist-card">
+            <div class="card-header">
+                <div class="card-title">🌿 Recommended Species</div>
+                <span id="total-cells-badge" style="font-size:0.72rem; color:var(--slate-400);"></span>
+            </div>
+            <div class="card-body" id="species-dist-body">
+                <div class="empty-state">
+                    <div class="empty-icon">🌿</div>
+                    <div class="empty-text">Click <strong>Analyze Burned Land</strong> to load AI crop recommendations from the simulation data.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recovery Timeline -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">⏱️ Recovery Timeline</div>
+            </div>
+            <div class="card-body" id="recovery-timeline">
+                <div class="empty-state" style="padding: 16px;">
+                    <div class="empty-text">Awaiting analysis...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Map Panel -->
+    <div class="map-panel">
+        <div id="reforestation-map"></div>
+        <div class="map-legend">
+            <div class="legend-title">🗺️ Map Legend</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#854d0e;"></div>Brazil Nut 🌰</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#166534;"></div>Rubber Tree 🌳</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#7c3aed;"></div>Açaí Palm 🌴</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#0d9488;"></div>Andiroba 🌿</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#dc2626;"></div>Mahogany 🪵</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#475569; opacity:0.5;"></div>Unburned</div>
+        </div>
+    </div>
+
+    <!-- Right Panel: Cell Details + Farmer Advice -->
+    <div class="right-panel">
+
+        <!-- Selected Cell Details -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">📍 Cell Analysis</div>
+                <span style="font-size:0.7rem; color:var(--slate-400);">Click a dot on map</span>
+            </div>
+            <div class="card-body" id="cell-detail-body">
+                <div class="empty-state">
+                    <div class="empty-icon">📍</div>
+                    <div class="empty-text">Click any coloured marker on the map to view AI analysis for that specific plot.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dominant Species Full Info -->
+        <div class="card" id="dominant-card">
+            <div class="card-header">
+                <div class="card-title">🏆 Best Overall Pick</div>
+            </div>
+            <div class="card-body" id="dominant-body">
+                <div class="empty-state" style="padding:16px;">
+                    <div class="empty-text">Run analysis to see the dominant recommended crop for this region.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Farmer Tip Box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">👨‍🌾 Farmer's Advisory</div>
+            </div>
+            <div class="card-body" id="farmer-advisory">
+                <div class="farmer-tip">
+                    <span class="tip-icon">💡</span>
+                    <span>After analysis, you'll see actionable planting guidance tailored to the dominant soil and climate conditions of the burned sector.</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+

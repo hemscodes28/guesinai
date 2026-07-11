@@ -15,6 +15,7 @@ from database import init_db, SessionLocal, WeatherLog, AlertLog, SimulationSnap
 from simulation import WildfireSimulation
 from input_processing import extract_hotspots_from_image, get_total_records, load_atto_record
 from ai_engine import calculate_evacuation_route, allocate_mitigation_resources
+from reforestation_engine import get_batch_recommendations, predict_species_for_cell, SPECIES_INFO
 from WildfirePrediction.fire_spread_model import FireSpreadSimulator, calculate_burn_area
 
 
@@ -341,6 +342,27 @@ class TriggerAlertSchema(BaseModel):
     force: Optional[bool] = False
 
 
+class ReforestationCellSchema(BaseModel):
+    row: int
+    col: int
+    latitude: float
+    longitude: float
+    risk_score: float = 0.5
+    vegetation_density: float = 0.5
+    fuel_load: float = 0.5
+    soil_moisture: float = 0.4
+    elevation: float = 100.0
+    temperature: float = 28.0
+    humidity: float = 75.0
+    wind_speed: float = 3.5
+    rainfall: float = 5.0
+    burn_duration: int = 1
+
+
+class ReforestationRequest(BaseModel):
+    burned_cells: List[ReforestationCellSchema]
+
+
 # Global Alert Configuration State
 ALERT_CONFIG = {
     "enabled": False,
@@ -575,6 +597,69 @@ async def trigger_alert(req: TriggerAlertSchema):
             "recipients": dispatched_recipients
         }
     }
+
+
+
+@app.post("/reforestation/analyze")
+async def reforestation_analyze(req: ReforestationRequest):
+    """
+    Runs the trained RandomForest ML model over all supplied burned cells to
+    recommend optimal reforestation crops/species per deforested area.
+    Returns per-cell recommendations, summary stats, and species catalog.
+    """
+    try:
+        cells_as_dicts = [c.model_dump() for c in req.burned_cells]
+        result = get_batch_recommendations(cells_as_dicts)
+        return JSONResponse(content=result)
+    except Exception as e:
+        logger.error(f"Reforestation analysis error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Reforestation analysis failed: {str(e)}"
+        )
+
+
+@app.get("/reforestation/grid-burned")
+def get_burned_cells_for_reforestation():
+    """
+    Returns all currently burned cells from the live simulation with their
+    full characteristics, ready to be fed into the reforestation ML model.
+    """
+    burned = []
+    for r in range(sim.size):
+        for c in range(sim.size):
+            cell = sim.grid[r][c]
+            if cell["fire_state"] == "burned":
+                burned.append({
+                    "row": cell["row"],
+                    "col": cell["col"],
+                    "latitude": cell["latitude"],
+                    "longitude": cell["longitude"],
+                    "risk_score": cell["risk_score"],
+                    "vegetation_density": cell["vegetation_density"],
+                    "fuel_load": cell["fuel_load"],
+                    "soil_moisture": cell["soil_moisture"],
+                    "elevation": cell["elevation"],
+                    "temperature": cell["temperature"],
+                    "humidity": cell["humidity"],
+                    "wind_speed": cell["wind_speed"],
+                    "rainfall": cell["rainfall"],
+                    "burn_duration": cell["burn_duration"]
+                })
+    return {"burned_cells": burned, "count": len(burned)}
+
+
+@app.get("/reforestation", response_class=HTMLResponse, include_in_schema=False)
+def serve_reforestation_page():
+    """Serves the Reforestation Intelligence Module page."""
+    try:
+        with open("templates/reforestation.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read(), status_code=200)
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Reforestation template not found."
+        )
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
