@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkFlow — Close the rift linking signals and action</title>
+    <meta name="description" content="Green SaaS hero with Neue Haas Grotesk type, canvas boomerang video background, pill desktop nav, staggered mobile drawer, and FluxEngine CTA block." />
+    <meta property="og:title" content="LinkFlow — Boomerang Video Hero" />
+    <meta property="og:description" content="Green SaaS hero with Neue Haas Grotesk type, canvas boomerang video background, pill desktop nav, staggered mobile drawer, and FluxEngine CTA block." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/6e47ef470dd19698c911332a9b4d1cf4?family=Neue+Haas+Grotesk+Text+Pro"
+      rel="stylesheet"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/dec0d9b4e22ca588dc20e1e2e09a59b5?family=Neue+Haas+Grotesk+Display+Pro+55+Roman"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/preset-sites/linkflow/assets/index-Bc4VvQxb.js"></script>
+    <link rel="stylesheet" crossorigin href="/preset-sites/linkflow/assets/index-D0hGZdW4.css">
+      <script src="/preset-sites/_shared/preset-nav-fix.js" defer></script>
+    <style>
+      /* Hide all React content except the video background */
+      #root nav,
+      #root section > div:nth-child(n+2),
+      #root section > button,
+      #root section + *,
+      #root section ~ * {
+        display: none !important;
+      }
+      #root section {
+        height: 100vh !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
+        position: relative !important;
+      }
+      
+      html, body {
+        overflow: hidden !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Custom Overlay Styling */
+      .custom-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-sizing: border-box;
+        font-family: 'Outfit', 'Inter', sans-serif;
+      }
+
+      /* Hero body */
+      .custom-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .custom-logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.75rem;
+        font-weight: 900;
+        color: #2d6a4f; /* Elegant forest green */
+        letter-spacing: -1px;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 4px rgba(255, 255, 255, 0.4);
+        animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      .custom-quote {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.75rem;
+        font-weight: 700;
+        color: #1f2a1d;
+        line-height: 1.25;
+        margin-bottom: 3rem;
+        max-width: 900px;
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+        animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      .custom-btn {
+        background-color: #1f2a1d;
+        color: #ffffff;
+        border: none;
+        padding: 1.1rem 3.5rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        border-radius: 9999px;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(31, 42, 29, 0.2);
+        transition: all 0.3s ease;
+        animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      .custom-btn:hover {
+        background-color: #2d4228;
+        transform: translateY(-2.5px);
+        box-shadow: 0 6px 20px rgba(31, 42, 29, 0.3);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive adjustment */
+      @media (max-width: 768px) {
+        .custom-logo {
+          font-size: 2.75rem;
+        }
+        .custom-quote {
+          font-size: 1.85rem;
+          margin-bottom: 2rem;
+        }
+        .custom-btn {
+          padding: 0.95rem 2.5rem;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div class="custom-overlay">
+      <main class="custom-hero">
+        <div class="custom-logo">Guesin.ai</div>
+        <h1 class="custom-quote">"When the forest calls for help,<br>we answer in a heartbeat."</h1>
+        <button class="custom-btn" onclick="window.location.href='/dashboard#login'">Get Started</button>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1173,54 +1173,9 @@
 <body>
 
     <!-- ========================================== -->
-    <!-- LANDING VIEW                               -->
-    <!-- ========================================== -->
-    <div id="landing-page" class="page-view active">
-        <div class="landing-container">
-            <div class="landing-badge">
-                <i class="fa-solid fa-satellite-dish"></i> Continuous Earth Observation Twin
-            </div>
-            <h1 class="landing-title">
-                Wildfire Simulation <span>Digital Twin</span>
-            </h1>
-            <p class="landing-subtitle">
-                Model, predict, and visualize forest fire propagation patterns in real-time. Integrate live
-                meteorological feeds with satellite imagery to simulate burn fronts and compute safety indices.
-            </p>
-            <button class="btn btn-primary" onclick="showPage('login-page')">
-                Access Digital Twin Engine <i class="fa-solid fa-arrow-right"></i>
-            </button>
-
-            <div class="landing-features">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fa-solid fa-wind"></i></div>
-                    <h3>Weather Modeling</h3>
-                    <p>Integrates dynamic weather profiles (wind direction, wind velocity, humidity, temperature) to
-                        predict propagation direction.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fa-solid fa-border-all"></i></div>
-                    <h3>Cellular Twin Grid</h3>
-                    <p>Accurate cellular automata engine processing coordinate grids for fire front boundaries and fuel
-                        density layers.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
-                    <h3>Analytics Report</h3>
-                    <p>Auto-generates fire arrival maps, centroid trajectories, spread radius reports, and active
-                        wildfire growth curves.</p>
-                </div>
-            </div>
-        </div>
-        <footer>
-            Guesin.ai &copy; 2026. All rights reserved.
-        </footer>
-    </div>
-
-    <!-- ========================================== -->
     <!-- SIGN IN VIEW                               -->
     <!-- ========================================== -->
-    <div id="login-page" class="page-view">
+    <div id="login-page" class="page-view active">
         <div class="login-wrapper">
             <div class="login-card">
                 <div class="login-logo">
@@ -1306,7 +1261,7 @@
     <!-- ========================================== -->
     <div id="dashboard-page" class="page-view">
         <header>
-            <div class="header-logo" onclick="showPage('landing-page')">
+            <div class="header-logo" onclick="window.location.href = '/'">
                 <i class="fa-solid fa-fire-flame-curved"></i>
                 <h2>Guesin.ai Digital Twin</h2>
             </div>
@@ -1325,7 +1280,7 @@
             </div>
             <div class="header-user">
                 <span><i class="fa-solid fa-user-shield"></i> operator@guesin.ai</span>
-                <button class="btn btn-outline" onclick="showPage('landing-page')">
+                <button class="btn btn-outline" onclick="window.location.href = '/'">
                     Log Out <i class="fa-solid fa-sign-out-alt"></i>
                 </button>
             </div>
@@ -2098,9 +2053,24 @@
             document.querySelectorAll('.page-view').forEach(view => {
                 view.classList.remove('active');
             });
-            document.getElementById(pageId).classList.add('active');
-
+            const view = document.getElementById(pageId);
+            if (view) {
+                view.classList.add('active');
+            }
         }
+
+        // Handle routing based on hash
+        function handleHashRoute() {
+            const hash = window.location.hash;
+            if (hash === '#signup') {
+                showPage('signup-page');
+            } else if (hash === '#login' || hash === '#signin') {
+                showPage('login-page');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', handleHashRoute);
+        window.addEventListener('hashchange', handleHashRoute);
 
         // Real sign-in action
         async function handleLogin(event) {

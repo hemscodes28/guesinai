@@ -198,6 +198,7 @@ app = FastAPI(
 
 # Mount static files to serve generated plots and GIF
 app.mount("/static", StaticFiles(directory="WildfirePrediction"), name="static")
+app.mount("/preset-sites/linkflow/assets", StaticFiles(directory="linkflow/linkflow/assets"), name="linkflow-assets")
 
 # CORS Policy configuration
 app.add_middleware(
@@ -662,7 +663,26 @@ def serve_reforestation_page():
         )
 
 
+@app.get("/preset-sites/_shared/preset-nav-fix.js", include_in_schema=False)
+def serve_preset_nav_fix():
+    """Serves an empty script mock for the preset navigation script."""
+    return HTMLResponse(content="", media_type="application/javascript")
+
+
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+def serve_landing_page():
+    """Serves the new LinkFlow landing page."""
+    try:
+        with open("linkflow/linkflow/index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read(), status_code=200)
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Landing page HTML file not found."
+        )
+
+
+@app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
 def serve_dashboard():
     """Serves the user-friendly interactive digital twin dashboard."""
     try:
