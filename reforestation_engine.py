@@ -221,27 +221,74 @@ def get_batch_recommendations(burned_cells: list) -> dict:
     if total_burned == 0:
         return {"status": "no_burned_cells", "recommendations": [], "summary": {}}
 
-    for cell in burned_cells:
-        try:
-            rec = predict_species_for_cell(cell)
-            results.append({
-                "row": cell["row"],
-                "col": cell["col"],
-                "latitude": cell["latitude"],
-                "longitude": cell["longitude"],
-                "recommended_species": rec["recommended_species"],
-                "confidence": rec["confidence"],
-                "top3_predictions": rec["top3_predictions"],
-                "species_info": rec["species_info"],
-                "soil_type": rec["soil_type"],
-                "drainage": rec["drainage"],
-                "burn_severity_estimated": round(min(1.0, cell.get("risk_score", 0.5) * 1.2), 3),
-                "deforestation_percent": round(min(100.0, cell.get("risk_score", 0.5) * 80.0), 1)
-            })
-            sp = rec["recommended_species"]
-            species_counts[sp] = species_counts.get(sp, 0) + 1
-        except Exception as e:
-            logger.error(f"Error predicting for cell ({cell.get('row')},{cell.get('col')}): {e}")
+    # 1. Construct samples list
+    samples = []
+    for cell_data in burned_cells:
+        sample = {
+            "latitude": cell_data.get("latitude", -2.145),
+            "longitude": cell_data.get("longitude", -59.000),
+            "elevation_m": cell_data.get("elevation", 100.0),
+            "temperature_C": cell_data.get("temperature", 28.0),
+            "humidity_percent": cell_data.get("humidity", 75.0),
+            "rainfall_mm_day": max(0.0, cell_data.get("rainfall", 5.0)),
+            "windspeed_mps": cell_data.get("wind_speed", 3.5),
+            "soil_pH": 5.5 + cell_data.get("fuel_load", 0.5) * 0.8,
+            "soil_moisture_percent": cell_data.get("soil_moisture", 0.4) * 100.0,
+            "organic_carbon_percent": 3.0 + cell_data.get("fuel_load", 0.5) * 3.0,
+            "nitrogen_mgkg": 800 + cell_data.get("vegetation_density", 0.6) * 400,
+            "phosphorus_mgkg": 15 + cell_data.get("fuel_load", 0.5) * 20,
+            "potassium_mgkg": 100 + cell_data.get("vegetation_density", 0.6) * 100,
+            "bulk_density_gcm3": 1.4 - cell_data.get("vegetation_density", 0.6) * 0.3,
+            "ndvi": max(0.0, 0.7 - cell_data.get("risk_score", 0.3) * 0.5),
+            "canopy_cover_percent": max(0.0, 60.0 - cell_data.get("risk_score", 0.3) * 50.0),
+            "burn_severity": min(1.0, cell_data.get("risk_score", 0.5) * 1.2),
+            "fire_frequency_5yr": 1 + int(cell_data.get("burn_duration", 1) > 5),
+            "deforestation_percent": min(100.0, cell_data.get("risk_score", 0.5) * 80.0),
+            "native_species_suitability": max(0.0, 80.0 - cell_data.get("risk_score", 0.3) * 40.0),
+            "carbon_sequestration_tCO2_ha": 120.0 + cell_data.get("vegetation_density", 0.6) * 80.0,
+            "soil_type": _infer_soil_type(cell_data),
+            "drainage": _infer_drainage(cell_data),
+        }
+        samples.append(sample)
+
+    try:
+        # 2. Run batch prediction
+        df = pd.DataFrame(samples)[ALL_FEATURES]
+        preds_encoded = model.predict(df)
+        probas = model.predict_proba(df)
+        species_names = encoder.inverse_transform(preds_encoded)
+
+        # 3. Process results
+        for idx, cell in enumerate(burned_cells):
+            try:
+                species_name = species_names[idx]
+                proba = probas[idx]
+                proba_dict = {cls: round(float(p), 4) for cls, p in zip(encoder.classes_, proba)}
+                top3 = sorted(proba_dict.items(), key=lambda x: x[1], reverse=True)[:3]
+                info = SPECIES_INFO.get(species_name, {})
+
+                sample = samples[idx]
+
+                results.append({
+                    "row": cell["row"],
+                    "col": cell["col"],
+                    "latitude": cell["latitude"],
+                    "longitude": cell["longitude"],
+                    "recommended_species": species_name,
+                    "confidence": round(float(max(proba_dict.values())), 4),
+                    "top3_predictions": [{"species": s, "probability": p} for s, p in top3],
+                    "species_info": info,
+                    "soil_type": sample["soil_type"],
+                    "drainage": sample["drainage"],
+                    "burn_severity_estimated": round(min(1.0, cell.get("risk_score", 0.5) * 1.2), 3),
+                    "deforestation_percent": round(min(100.0, cell.get("risk_score", 0.5) * 80.0), 1)
+                })
+                species_counts[species_name] = species_counts.get(species_name, 0) + 1
+            except Exception as e:
+                logger.error(f"Error predicting for cell ({cell.get('row')},{cell.get('col')}): {e}")
+    except Exception as e:
+        logger.error(f"Error running batch inference: {e}")
+        return {"status": "error", "recommendations": [], "summary": {}}
 
     dominant_species = max(species_counts, key=species_counts.get) if species_counts else "Unknown"
     total_area_ha = total_burned * 0.09  # Each 30m x 30m cell = 0.09 ha

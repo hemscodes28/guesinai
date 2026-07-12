@@ -1924,7 +1924,7 @@
     <div class="modal-overlay" id="reforestation-modal">
         <div class="modal-card" style="max-width:760px; max-height:85vh; display:flex; flex-direction:column;">
             <div class="modal-header" style="background:linear-gradient(135deg,#15803d,#16a34a);">
-                <h3 style="color:white;"><i class="fa-solid fa-seedling"></i> Reforestation & Agri-Doctor</h3>
+                <h3 style="color:white;"><i class="fa-solid fa-seedling"></i> Forest Recovery Advisor & Agri-Doctor</h3>
                 <button class="btn-close-modal" onclick="closeReforestation()"><i
                         class="fa-solid fa-xmark"></i></button>
             </div>
@@ -1933,20 +1933,24 @@
                 <!-- Loading State -->
                 <div id="ref-loading" style="text-align:center;padding:2rem;color:var(--text-muted);">
                     <div class="spinner" style="margin:0 auto 1rem;border-top-color:#16a34a;"></div>
-                    <p style="font-weight:600;">Analyzing soil health & damaged zones...</p>
+                    <p style="font-weight:600;">Checking soil health and looking for damaged spots...</p>
                 </div>
 
                 <!-- Empty State (No Damage) -->
                 <div id="ref-empty" style="display:none;text-align:center;padding:3rem;color:var(--text-muted);">
                     <i class="fa-solid fa-heart-circle-check"
                         style="font-size:3rem;color:#16a34a;margin-bottom:1rem;opacity:0.8;"></i>
-                    <p style="font-weight:700;font-size:1.1rem;color:var(--text-main);">Forest is 100% Healthy!</p>
-                    <p style="font-size:0.85rem;margin-top:0.4rem;">No damaged zones detected. Run at least 1 simulation
-                        step with burning fires to calculate reforestation priorities.</p>
+                    <p style="font-weight:700;font-size:1.1rem;color:var(--text-main);">Your Forest is Healthy!</p>
+                    <p style="font-size:0.85rem;margin-top:0.4rem;">No fire damage was found in the forest. To see recommendations, run a simulation on the main map to burn some trees first.</p>
                 </div>
 
                 <!-- Results State -->
                 <div id="ref-results" style="display:none;">
+                    <!-- Demo Mode Alert Banner -->
+                    <div id="ref-demo-banner" style="display:none; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; padding:0.75rem 1rem; border-radius:var(--radius-md); font-size:0.85rem; margin-bottom:1.25rem; font-weight:600; display:flex; align-items:center; gap:0.5rem; text-align:left;">
+                        <i class="fa-solid fa-circle-info"></i> 💡 Demo Mode: Showing forest recovery recommendations based on model analysis of a sample damaged area.
+                    </div>
+
                     <!-- Overview Stats -->
                     <div class="forecast-stats-grid"
                         style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1.25rem;">
@@ -1954,31 +1958,28 @@
                             style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
                             <div class="label"
                                 style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">
-                                Damaged Cells</div>
+                                Damaged Spots</div>
                             <div class="value" id="ref-cell-count"
                                 style="font-size:1.8rem; font-weight:800; color:#16a34a;">0</div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">classified as
-                                burned</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">burned cells</div>
                         </div>
                         <div class="forecast-stat"
                             style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
                             <div class="label"
                                 style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">
-                                Destroyed Area</div>
+                                Total Lost Area</div>
                             <div class="value" id="ref-area-count"
                                 style="font-size:1.05rem; font-weight:800; color:#16a34a; padding:0.4rem 0;">0 ha</div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">estimated land
-                                cover</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">estimated land cover</div>
                         </div>
                         <div class="forecast-stat"
                             style="background:#f0fdf4; border:1px solid #16a34a22; border-radius:var(--radius-md); padding:1rem; text-align:center;">
                             <div class="label"
                                 style="font-size:0.75rem; color:#15803d; font-weight:700; text-transform:uppercase; margin-bottom:0.35rem;">
-                                Recovery Urgency</div>
+                                Urgency to Replant</div>
                             <div class="value" id="ref-urgency"
                                 style="font-size:1.15rem; font-weight:800; color:#dc2626; padding:0.45rem 0;">LOW</div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">priority urgency
-                                rank</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem;">action status</div>
                         </div>
                     </div>
 
@@ -1987,7 +1988,7 @@
                         <button class="btn btn-outline" id="ref-map-highlight-btn"
                             onclick="toggleReforestationOverlay()"
                             style="border-color:#16a34a; color:#16a34a; width:100%; font-weight:700;">
-                            <i class="fa-solid fa-eye"></i> Highlight Planting Zones on Map
+                            <i class="fa-solid fa-eye"></i> Show Replanting Zones on Map
                         </button>
                     </div>
 
@@ -1996,19 +1997,19 @@
                         style="border:1px solid #16a34a33; border-radius:var(--radius-lg); background:#f0fdf455; padding:1.25rem; margin-bottom:1.5rem; box-shadow:var(--shadow-sm); text-align:left;">
                         <h4
                             style="color:#15803d; font-size:1rem; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem; border-bottom:1px solid #16a34a22; padding-bottom:0.5rem;">
-                            <i class="fa-solid fa-user-doctor"></i> Agri-Doctor Intelligent Diagnosis
+                            <i class="fa-solid fa-user-doctor"></i> 🩺 Agri-Doctor Soil Check & Replanting Advice
                         </h4>
 
                         <div style="display:flex; flex-direction:column; gap:1rem;">
                             <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;"
                                 id="ref-soil-diag">
-                                <strong>🩺 Soil Status:</strong> Loading soil diagnostic metrics...
+                                <strong>🩺 Soil Status:</strong> Loading soil status...
                             </div>
                             <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-crop-rec">
-                                <strong>🌱 Replanting Recommendation:</strong> Loading plant recipes...
+                                <strong>🌱 Crop Recommendation:</strong> Running crop recommender model...
                             </div>
                             <div style="font-size:0.85rem; color:var(--text-main); line-height:1.45;" id="ref-schedule">
-                                <strong>⏱️ Restoration Timeline:</strong> Loading phased schedule...
+                                <strong>⏱️ Restoration Action Plan:</strong> Planning schedule...
                             </div>
                         </div>
                     </div>
@@ -2016,18 +2017,19 @@
                     <!-- Priority Zone Table -->
                     <div style="margin-top:1.5rem; text-align:left;">
                         <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-main); margin-bottom:0.6rem;"><i
-                                class="fa-solid fa-list-ol"></i> Planting Priority Coordinates</h4>
+                                class="fa-solid fa-list-ol"></i> Recommended Replanting Spots</h4>
                         <div
                             style="overflow-x:auto; border:1px solid var(--border-color); border-radius:var(--radius-md); max-height:220px; overflow-y:auto;">
                             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.82rem;">
                                 <thead
                                     style="background:var(--bg-main); border-bottom:1px solid var(--border-color); position:sticky; top:0;">
                                     <tr>
-                                        <th style="padding:0.6rem;">Cell (X, Y)</th>
-                                        <th style="padding:0.6rem;">Lat / Lon</th>
-                                        <th style="padding:0.6rem; text-align:center;">Orig Density</th>
-                                        <th style="padding:0.6rem; text-align:center;">Priority Score</th>
-                                        <th style="padding:0.6rem;">Rank</th>
+                                        <th style="padding:0.6rem;">Grid Spot (X, Y)</th>
+                                        <th style="padding:0.6rem;">Map Coordinates</th>
+                                        <th style="padding:0.6rem; text-align:center;">Original Forest Density</th>
+                                        <th style="padding:0.6rem; text-align:center;">Urgency to Replant</th>
+                                        <th style="padding:0.6rem;">Recommended Crop</th>
+                                        <th style="padding:0.6rem;">Priority Level</th>
                                     </tr>
                                 </thead>
                                 <tbody id="ref-table-body">
@@ -3897,144 +3899,193 @@
             empty.style.display = 'none';
 
             try {
+                // Step 1: Fetch recovery scores for the coordinates table
                 const resp = await fetch('/recovery-scores');
-                const data = await resp.json();
+                let recoveryScores = await resp.json();
 
-                if (data && data.length > 0) {
-                    reforestationActiveScores = data;
+                // Step 2: Fetch burned cells from simulation
+                const gridResp = await fetch('/reforestation/grid-burned');
+                const gridData = await gridResp.json();
 
-                    // 1. Calculate stats
-                    const totalCells = data.length;
-                    const destroyedArea = totalCells * 900; // 30x30m cells = 900m2
-                    const destroyedHectares = (destroyedArea / 10000).toFixed(2);
+                let burnedCellsToUse = [];
+                let isDemo = false;
 
-                    const sumScores = data.reduce((acc, curr) => acc + curr.recovery_score, 0);
-                    const avgScore = sumScores / totalCells;
-
-                    let urgency = "LOW";
-                    let urgencyColor = "var(--success)";
-                    if (avgScore >= 0.7) {
-                        urgency = "CRITICAL / IMMEDIATE ACTION";
-                        urgencyColor = "#dc2626";
-                    } else if (avgScore >= 0.45) {
-                        urgency = "HIGH";
-                        urgencyColor = "#d97706";
-                    } else if (avgScore >= 0.25) {
-                        urgency = "MODERATE";
-                        urgencyColor = "#2563eb";
-                    }
-
-                    document.getElementById('ref-cell-count').textContent = totalCells;
-                    document.getElementById('ref-area-count').textContent = `${destroyedHectares} ha (${destroyedArea.toLocaleString()} m²)`;
-                    document.getElementById('ref-urgency').textContent = urgency;
-                    document.getElementById('ref-urgency').style.color = urgencyColor;
-
-                    // 2. Agri-Doctor Diagnosis & Soil Analytics
-                    let soilMoistureAvg = 0.5;
-                    if (simulationData && simulationData.soil && simulationData.soil.length > 0) {
-                        // Gather average moisture from burned coordinate zones
-                        let totalMoisture = 0;
-                        let count = 0;
-                        data.forEach(item => {
-                            if (simulationData.soil[item.row] && simulationData.soil[item.row][item.col] !== undefined) {
-                                totalMoisture += simulationData.soil[item.row][item.col];
-                                count++;
-                            }
-                        });
-                        if (count > 0) {
-                            soilMoistureAvg = totalMoisture / count;
-                        }
-                    }
-
-                    let diagnosisHtml = "";
-                    let cropRecommendation = "";
-                    let scheduleSteps = "";
-
-                    if (soilMoistureAvg < 0.28) {
-                        // Dry/Arid
-                        diagnosisHtml = `<strong>🩺 Soil Status: SEVERE DEHYDRATION & ASH-DRIFT RISK</strong><br>
-                                         Average soil moisture in burned sectors is extremely low (${(soilMoistureAvg * 100).toFixed(0)}%). High ambient heat has baked the topsoil. Direct seed planting will fail due to root desiccation.`;
-                        cropRecommendation = `<strong>🌱 Drought-Resistant Pioneer & Soil binder species:</strong><br>
-                                              • <em>Inga edulis</em> (Guaba - nitrogen-fixing legume that survives in dry ash)<br>
-                                              • <em>Vetiveria zizanioides</em> (Vetiver Grass - binds loose dry soil, preventing slope erosion)<br>
-                                              • <em>Schizolobium parahyba</em> (Guapuruvu - fast canopy restorer).`;
-                        scheduleSteps = `• <strong>Phase 1 (Immediate):</strong> Apply mulch or organic crop residue to trap morning condensation.<br>
-                                         • <strong>Phase 2 (Month 1):</strong> Hydrate soil beds manually or queue planting schedule for the monsoon rain pattern.<br>
-                                         • <strong>Phase 3 (Month 2):</strong> Spot-plant nitrogen-fixing legumes to prime the soil chemical structure.`;
-                    } else if (soilMoistureAvg > 0.65) {
-                        // Saturated/Wet mud
-                        diagnosisHtml = `<strong>🩺 Soil Status: HYDRO-SATURATED / HIGH NUTRIENT LEACHING RISK</strong><br>
-                                         Average soil moisture in burned sectors is very high (${(soilMoistureAvg * 100).toFixed(0)}%). Ash is rich in water-soluble potassium but susceptible to heavy mudslides and rain erosion.`;
-                        cropRecommendation = `<strong>🌱 Hydro-Tolerant Native Climax & Runoff Control:</strong><br>
-                                              • <em>Cecropia peltata</em> (Embauba - rapidly absorbs surplus water, shades weeds)<br>
-                                              • <em>Bertholletia excelsa</em> (Brazil Nut - deep root structure anchors unstable wet soil)<br>
-                                              • Cover grass mixes (Clover / Rye) to instantly stabilize the mud grid.`;
-                        scheduleSteps = `• <strong>Phase 1 (Immediate):</strong> Aerial seed-bombing of cover grasses to lock the soil texture.<br>
-                                         • <strong>Phase 2 (Weeks 2-4):</strong> Plant fast-growing pioneer saplings (Cecropia) to suck up excess water.<br>
-                                         • <strong>Phase 3 (Month 2):</strong> Reintroduce climax hardwood species in secure slope zones.`;
-                    } else {
-                        // Normal/Optimal
-                        diagnosisHtml = `<strong>🩺 Soil Status: BALANCED LOAM / OPTIMAL REGENERATION CONDITIONS</strong><br>
-                                         Average soil moisture is in the optimal range (${(soilMoistureAvg * 100).toFixed(0)}%). Ash provides a rich compost bed of minerals (potassium/phosphorus). Peak planting window.`;
-                        cropRecommendation = `<strong>🌱 High-Diversity Forest Canopy & Pioneer mix:</strong><br>
-                                              • <em>Swietenia macrophylla</em> (Big-leaf Mahogany - primary canopy building block)<br>
-                                              • <em>Cecropia</em> & Wild Guava shrubs (attracts birds that carry wild seeds)<br>
-                                              • Local legume cover plants (nitrogen fixers).`;
-                        scheduleSteps = `• <strong>Phase 1 (Weeks 1-2):</strong> Hand-plant primary hardwood species (Mahogany) in 3m grid arrays.<br>
-                                         • <strong>Phase 2 (Month 1):</strong> Broadcast pioneer seeds to fill intermediate spaces.<br>
-                                         • <strong>Phase 3 (Month 3):</strong> Introduce earthworms and compost cultures to enhance biome health.`;
-                    }
-
-                    document.getElementById('ref-soil-diag').innerHTML = diagnosisHtml;
-                    document.getElementById('ref-crop-rec').innerHTML = cropRecommendation;
-                    document.getElementById('ref-schedule').innerHTML = scheduleSteps;
-
-                    // 3. Build coordinates table
-                    const tableBody = document.getElementById('ref-table-body');
-                    tableBody.innerHTML = "";
-
-                    const sorted = [...data].sort((a, b) => b.recovery_score - a.recovery_score);
-                    const displayLimit = 15;
-                    const slice = sorted.slice(0, displayLimit);
-
-                    slice.forEach(item => {
-                        const score = item.recovery_score;
-                        let priorityBadge = "";
-                        if (score >= 0.70) {
-                            priorityBadge = `<span class="dept-badge" style="background:#fee2e2;color:#dc2626;">CRITICAL (CR-1)</span>`;
-                        } else if (score >= 0.45) {
-                            priorityBadge = `<span class="dept-badge" style="background:#ffedd5;color:#d97706;">HIGH (CR-2)</span>`;
-                        } else {
-                            priorityBadge = `<span class="dept-badge" style="background:#f0fdf4;color:#16a34a;">MODERATE (CR-3)</span>`;
-                        }
-
-                        const rowHtml = `
-                            <tr style="border-bottom:1px solid var(--border-color);">
-                                <td style="padding:0.6rem;font-family:monospace;font-weight:700;">(${item.row}, ${item.col})</td>
-                                <td style="padding:0.6rem;font-family:monospace;font-size:0.8rem;color:var(--text-muted);">${item.latitude.toFixed(5)}, ${item.longitude.toFixed(5)}</td>
-                                <td style="padding:0.6rem;text-align:center;font-family:monospace;">${(item.original_vegetation_density * 100).toFixed(0)}%</td>
-                                <td style="padding:0.6rem;text-align:center;font-family:monospace;font-weight:700;color:#16a34a;">${(score * 100).toFixed(0)}%</td>
-                                <td style="padding:0.6rem;">${priorityBadge}</td>
-                            </tr>
-                        `;
-                        tableBody.insertAdjacentHTML('beforeend', rowHtml);
-                    });
-
-                    if (sorted.length > displayLimit) {
-                        const extraHtml = `
-                            <tr>
-                                <td colspan="5" style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:0.6rem;">
-                                    Showing top ${displayLimit} of ${sorted.length} damaged cells. Use map highlight to view all.
-                                </td>
-                            </tr>
-                        `;
-                        tableBody.insertAdjacentHTML('beforeend', extraHtml);
-                    }
-
-                    results.style.display = 'block';
+                if (gridData.burned_cells && gridData.burned_cells.length > 0) {
+                    burnedCellsToUse = gridData.burned_cells;
+                    // Build recoveryScores from the burned cells themselves (for table matching)
+                    // Use vegetation_density as proxy for original density, risk_score for urgency
+                    recoveryScores = gridData.burned_cells.map(c => ({
+                        row: c.row,
+                        col: c.col,
+                        latitude: c.latitude,
+                        longitude: c.longitude,
+                        original_vegetation_density: c.vegetation_density,
+                        recovery_score: Math.min(0.99, c.risk_score * 0.9 + 0.1)
+                    }));
+                    reforestationActiveScores = recoveryScores;
+                    document.getElementById('ref-demo-banner').style.display = 'none';
                 } else {
-                    empty.style.display = 'block';
+                    // Fallback to Demo Cells so the user gets a beautiful mock report instantly
+                    isDemo = true;
+                    document.getElementById('ref-demo-banner').style.display = 'flex';
+                    recoveryScores = [
+                        { row: 5,  col: 8,  latitude: -2.1200, longitude: -59.5100, original_vegetation_density: 0.45, recovery_score: 0.82 },
+                        { row: 8,  col: 12, latitude: -2.1900, longitude: -59.4800, original_vegetation_density: 0.70, recovery_score: 0.75 },
+                        { row: 15, col: 20, latitude: -2.3200, longitude: -59.3800, original_vegetation_density: 0.80, recovery_score: 0.79 },
+                        { row: 22, col: 30, latitude: -2.5000, longitude: -59.2200, original_vegetation_density: 0.60, recovery_score: 0.68 },
+                        { row: 35, col: 40, latitude: -2.8500, longitude: -58.9500, original_vegetation_density: 0.90, recovery_score: 0.72 }
+                    ];
+                    reforestationActiveScores = recoveryScores;
+                    burnedCellsToUse = [
+                        // High elevation, dry ridge — likely Andiroba
+                        { row: 5,  col: 8,  latitude: -2.1200, longitude: -59.5100, risk_score: 0.85, vegetation_density: 0.45, fuel_load: 0.4, soil_moisture: 0.12, elevation: 310, temperature: 36, humidity: 42, wind_speed: 7.0, rainfall: 0.5, burn_duration: 5 },
+                        // Medium elevation, moderate — likely Rubber Tree or Brazil Nut
+                        { row: 8,  col: 12, latitude: -2.1900, longitude: -59.4800, risk_score: 0.55, vegetation_density: 0.70, fuel_load: 0.65, soil_moisture: 0.42, elevation: 160, temperature: 29, humidity: 72, wind_speed: 3.5, rainfall: 5.0, burn_duration: 2 },
+                        // Mid slope, moist — likely Rubber Tree
+                        { row: 15, col: 20, latitude: -2.3200, longitude: -59.3800, risk_score: 0.65, vegetation_density: 0.80, fuel_load: 0.75, soil_moisture: 0.55, elevation: 95, temperature: 27, humidity: 82, wind_speed: 2.5, rainfall: 10.0, burn_duration: 3 },
+                        // Low elevation, very wet — likely Açaí Palm or Rubber Tree
+                        { row: 22, col: 30, latitude: -2.5000, longitude: -59.2200, risk_score: 0.40, vegetation_density: 0.60, fuel_load: 0.5, soil_moisture: 0.78, elevation: 45, temperature: 26, humidity: 90, wind_speed: 1.5, rainfall: 18.0, burn_duration: 1 },
+                        // Very high altitude, rocky dry — likely Andiroba or Brazil Nut
+                        { row: 35, col: 40, latitude: -2.8500, longitude: -58.9500, risk_score: 0.70, vegetation_density: 0.35, fuel_load: 0.35, soil_moisture: 0.10, elevation: 380, temperature: 38, humidity: 35, wind_speed: 9.0, rainfall: 0.2, burn_duration: 6 }
+                    ];
                 }
+
+                // Step 3: Run Random Forest ML Model analysis
+                const analyzeResp = await fetch('/reforestation/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ burned_cells: burnedCellsToUse })
+                });
+                const analysisResult = await analyzeResp.json();
+                
+                const summary = analysisResult.summary;
+                const spInfo = summary.dominant_species_info || {};
+
+                // 1. Calculate stats in simple terms
+                const totalCells = analysisResult.total_burned_cells;
+                const destroyedHectares = summary.total_deforested_area_ha;
+
+                const sumScores = recoveryScores.reduce((acc, curr) => acc + curr.recovery_score, 0);
+                const avgScore = sumScores / recoveryScores.length;
+
+                let urgency = "LOW";
+                let urgencyColor = "var(--success)";
+                if (avgScore >= 0.7) {
+                    urgency = "🔴 CRITICAL (Immediate Action)";
+                    urgencyColor = "#dc2626";
+                } else if (avgScore >= 0.45) {
+                    urgency = "🟡 HIGH (Start Replanting Soon)";
+                    urgencyColor = "#d97706";
+                } else if (avgScore >= 0.25) {
+                    urgency = "🔵 MODERATE (Safe for Now)";
+                    urgencyColor = "#2563eb";
+                }
+
+                document.getElementById('ref-cell-count').textContent = totalCells;
+                document.getElementById('ref-area-count').textContent = `${destroyedHectares} hectares`;
+                document.getElementById('ref-urgency').textContent = urgency;
+                document.getElementById('ref-urgency').style.color = urgencyColor;
+
+                // 2. Average soil moisture calculation
+                let soilMoistureAvg = 0.5;
+                if (simulationData && simulationData.soil && simulationData.soil.length > 0 && !isDemo) {
+                    let totalMoisture = 0;
+                    let count = 0;
+                    recoveryScores.forEach(item => {
+                        if (simulationData.soil[item.row] && simulationData.soil[item.row][item.col] !== undefined) {
+                            totalMoisture += simulationData.soil[item.row][item.col];
+                            count++;
+                        }
+                    });
+                    if (count > 0) {
+                        soilMoistureAvg = totalMoisture / count;
+                    }
+                } else if (isDemo) {
+                    soilMoistureAvg = 0.23; // Set demo to low moisture (dry soil) to trigger dry soil advisor steps
+                }
+
+                // 3. Formulate simplified Agri-Doctor Soil Diagnosis & Crop Recommendations
+                let moistureExplanation = "";
+                let scheduleSteps = "";
+                if (soilMoistureAvg < 0.28) {
+                    moistureExplanation = `The soil is very dry and has turned to ash. Standard planting might fail because the roots won't get enough water. We need to retain moisture first.`;
+                    scheduleSteps = `• <strong>Step 1 (Right now):</strong> Spread straw, leaves, or mulch over the ground to trap moisture and morning dew.<br>
+                                     • <strong>Step 2 (Next 2-4 weeks):</strong> Wait for the rainy season to begin or water the soil manually.<br>
+                                     • <strong>Step 3 (Month 2):</strong> Plant cover crops first to help restore nutrients to the soil.`;
+                } else if (soilMoistureAvg > 0.65) {
+                    moistureExplanation = `The soil is very wet and muddy. Heavy rain could wash the topsoil away. We need to plant crops that can stabilize the mud.`;
+                    scheduleSteps = `• <strong>Step 1 (Right now):</strong> Scatter grass seeds (like cover grass) to lock the mud in place and prevent soil erosion.<br>
+                                     • <strong>Step 2 (Weeks 2-4):</strong> Plant fast-growing pioneer trees to help absorb the excess water.<br>
+                                     • <strong>Step 3 (Month 2):</strong> Reintroduce heavier native trees on stable parts of the land.`;
+                } else {
+                    moistureExplanation = `The soil has a great balance of moisture and minerals from the ash. This is the perfect time for planting!`;
+                    scheduleSteps = `• <strong>Step 1 (Right now):</strong> Plant primary trees (like Mahogany) in spaced rows.<br>
+                                     • <strong>Step 2 (Month 1):</strong> Plant fast-growing shrubs around them to attract birds and restore forest biodiversity.<br>
+                                     • <strong>Step 3 (Month 3):</strong> Add organic compost to boost long-term soil health.`;
+                }
+
+                const diagnosisHtml = `<strong>🩺 Soil Status:</strong> We checked your land. The soil type is mostly <strong>${analysisResult.recommendations[0].soil_type}</strong> with <strong>${analysisResult.recommendations[0].drainage.toLowerCase()} water drainage</strong>. ${moistureExplanation}`;
+                
+                const cropRecHtml = `<strong>🌱 Crop Recommendation:</strong> Based on the soil check, we recommend planting <strong>${spInfo.icon || '🌱'} ${summary.dominant_recommended_species}</strong> (also known as <em>${spInfo.local_name || summary.dominant_recommended_species}</em>). This is a <strong>${spInfo.category}</strong>. ${spInfo.conditions} <br><br>👨‍🌾 <strong>Farmer Tip:</strong> ${spInfo.farmer_tip}`;
+                
+                const profitAdvisoryHtml = `<strong>⏱️ Profit & Replanting Timeline:</strong> It takes about <strong>${spInfo.growth_time}</strong> to grow and give its first yield. You can harvest it during <strong>${spInfo.harvest_season}</strong> and sell it for around <strong>${spInfo.market_price_range}</strong>. It will also help the environment by absorbing <strong>${summary.carbon_recovery_potential_tCO2} tonnes of carbon dioxide</strong>!<br><br>${scheduleSteps}`;
+
+                document.getElementById('ref-soil-diag').innerHTML = diagnosisHtml;
+                document.getElementById('ref-crop-rec').innerHTML = cropRecHtml;
+                document.getElementById('ref-schedule').innerHTML = profitAdvisoryHtml;
+
+                // 4. Build coordinates table — match each row to its ML recommendation
+                const tableBody = document.getElementById('ref-table-body');
+                tableBody.innerHTML = "";
+
+                // Build a lookup map: (row,col) -> recommended species
+                const speciesMap = {};
+                (analysisResult.recommendations || []).forEach(rec => {
+                    speciesMap[`${rec.row},${rec.col}`] = rec.recommended_species || '—';
+                });
+
+                const sorted = [...recoveryScores].sort((a, b) => b.recovery_score - a.recovery_score);
+                const displayLimit = 15;
+                const slice = sorted.slice(0, displayLimit);
+
+                slice.forEach(item => {
+                    const score = item.recovery_score;
+                    let priorityBadge = "";
+                    if (score >= 0.70) {
+                        priorityBadge = `<span class="dept-badge" style="background:#fee2e2;color:#dc2626;">🔴 URGENT</span>`;
+                    } else if (score >= 0.45) {
+                        priorityBadge = `<span class="dept-badge" style="background:#ffedd5;color:#d97706;">🟡 SECONDARY</span>`;
+                    } else {
+                        priorityBadge = `<span class="dept-badge" style="background:#f0fdf4;color:#16a34a;">🟢 SAFE</span>`;
+                    }
+
+                    const cellSpecies = speciesMap[`${item.row},${item.col}`] || '🌿 Analyzing...';
+
+                    const rowHtml = `
+                        <tr style="border-bottom:1px solid var(--border-color);">
+                            <td style="padding:0.6rem;font-family:monospace;font-weight:700;">(${item.row}, ${item.col})</td>
+                            <td style="padding:0.6rem;font-family:monospace;font-size:0.8rem;color:var(--text-muted);">${item.latitude.toFixed(5)}, ${item.longitude.toFixed(5)}</td>
+                            <td style="padding:0.6rem;text-align:center;font-family:monospace;">${(item.original_vegetation_density * 100).toFixed(0)}%</td>
+                            <td style="padding:0.6rem;text-align:center;font-family:monospace;font-weight:700;color:#16a34a;">${(score * 100).toFixed(0)}%</td>
+                            <td style="padding:0.6rem;font-size:0.78rem;font-weight:600;color:#065f46;">🌱 ${cellSpecies}</td>
+                            <td style="padding:0.6rem;">${priorityBadge}</td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', rowHtml);
+                });
+
+                if (sorted.length > displayLimit) {
+                    const extraHtml = `
+                        <tr>
+                            <td colspan="6" style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-style:italic;padding:0.6rem;">
+                                Showing top ${displayLimit} of ${sorted.length} damaged cells. Use map highlight to view all.
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', extraHtml);
+                }
+
+                results.style.display = 'block';
             } catch (err) {
                 console.error("Reforestation report error:", err);
                 empty.style.display = 'block';
